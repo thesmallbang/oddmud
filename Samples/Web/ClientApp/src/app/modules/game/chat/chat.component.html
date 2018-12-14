@@ -1,0 +1,9 @@
+<div class="ui-chatcontainer">
+  <span>Chat Window Container</span>
+  <div #chatbox fxLayout="column">
+    <span *ngFor="let message of messages; let last = last">
+      {{ message }}
+      {{last ? scrollChatToBottom() : ''}}
+    </span>
+  </div>
+</div>

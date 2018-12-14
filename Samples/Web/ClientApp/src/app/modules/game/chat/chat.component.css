@@ -1,0 +1,4 @@
+.ui-chatcontainer {
+  height: 20vh;
+  overflow-y: scroll;
+}

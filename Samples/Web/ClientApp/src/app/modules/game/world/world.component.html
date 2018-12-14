@@ -1,0 +1,9 @@
+<div class="ui-worldcontainer">
+  <span>World Container</span>
+  <div #worldbox fxLayout="column">
+    <span *ngFor="let message of messages; let last = last">
+      {{ message }}
+      {{last ? scrollToBottom() : ''}}
+    </span>
+  </div>
+</div>

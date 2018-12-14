@@ -10,14 +10,22 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>C:\Users\vbnew\source\repos\OddMud\Samples\Web\plugins\</OutputPath>
+    <OutputPath>C:\Users\vbnew\source\repos\OddMud\Sample\Web\plugins\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Sample\OddMud.BasicGame\OddMud.SampleGame.csproj">
+    <ProjectReference Include="..\..\Core\OddMud.Core.Game\OddMud.Core.Interfaces.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\OddMud.Core.Plugins\OddMud.Core.Plugins.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Sample\OddMud.BasicGame\OddMud.BasicGame.csproj">
       <Private>false</Private>
     </ProjectReference>
   </ItemGroup>
+
+
 
   <ItemGroup>
     <Reference Include="Microsoft.Extensions.Logging.Abstractions">

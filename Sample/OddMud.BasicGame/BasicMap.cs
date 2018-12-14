@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OddMud.SampleGame
+namespace OddMud.BasicGame
 {
     public class BasicMap : IMap
     {

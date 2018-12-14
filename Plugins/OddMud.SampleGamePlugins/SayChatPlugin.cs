@@ -1,23 +1,23 @@
 ﻿using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
-using OddMud.SampleGame;
-using OddMud.SampleGame.Commands;
-using OddMud.SampleGame.Extensions;
+using OddMud.BasicGame;
+using OddMud.BasicGame.Commands;
+using OddMud.BasicGame.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OddMud.SampleGamePlugins
+namespace OddMud.BasicGamePlugins
 {
     public class SayChatPlugin : IProcessorPlugin<IProcessorData<CommandModel>>
     {
         public string Name => nameof(SayChatPlugin);
-        private BasicGame Game;
+        private Game Game;
 
         public void Configure(IGame game)
         {
-            Game = (BasicGame)game;
+            Game = (Game)game;
         }
 
         public async Task ProcessAsync(IProcessorData<CommandModel> request)

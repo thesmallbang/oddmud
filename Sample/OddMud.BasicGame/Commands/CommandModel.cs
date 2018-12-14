@@ -3,7 +3,7 @@ using OddMud.Core.Plugins;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OddMud.SampleGame.Commands
+namespace OddMud.BasicGame.Commands
 {
     public class CommandModel 
     {

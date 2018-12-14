@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using OddMud.SampleGame;
+using OddMud.BasicGame;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,12 +14,12 @@ namespace OddMud.Web.Game
         private readonly ILogger<GameService> _logger;
         private readonly GameServiceSettings _settings;
 
-        public BasicGame Game;
+        public BasicGame.Game Game;
 
 
         public GameService(IOptions<GameServiceSettings> settings,
                                          ILogger<GameService> logger,
-                                         BasicGame game)
+                                         BasicGame.Game game)
         {
             _logger = logger;
             _logger.LogDebug($"Ctor {nameof(GameService)}");

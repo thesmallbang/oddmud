@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OddMud.SampleGame.Events
+namespace OddMud.BasicGame.Events
 {
     class MapChangedEvent : EventArgs, IMapChangeEvent
     {

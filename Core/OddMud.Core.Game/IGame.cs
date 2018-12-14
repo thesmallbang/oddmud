@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace OddMud.Core.Interfaces
@@ -7,6 +8,9 @@ namespace OddMud.Core.Interfaces
     {
         IWorld World { get; }
         ITransport Network { get; }
+
+        event Func<object, EventArgs, Task> Ticked;
+
 
         Task TickAsync();
 

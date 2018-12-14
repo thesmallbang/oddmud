@@ -17,17 +17,18 @@ namespace OddMud.Transport.SignalR
         {
             _logger = logger;
             _hub = hub;
-            _logger.LogDebug($"ICommunication Injection: {nameof(SignalRHubTransport<THub>)}");
+            _logger.LogDebug($"ICommunication Injection");
         }
+
 
         public async Task AddPlayerToMapGroupAsync(IPlayer player, IMap map)
         {
-            await _hub.Groups.AddToGroupAsync(player.NetworkId, $"map_{map.Id}");
+            await _hub.Groups.AddToGroupAsync(player.TransportId, $"map_{map.Id}");
         }
 
         public async Task RemovePlayerFromMapGroupAsync(IPlayer player, IMap map)
         {
-            await _hub.Groups.RemoveFromGroupAsync(player.NetworkId, $"map_{map.Id}");
+            await _hub.Groups.RemoveFromGroupAsync(player.TransportId, $"map_{map.Id}");
         }
 
         public void SendMessageToMap(IMap map, string message)
@@ -43,7 +44,7 @@ namespace OddMud.Transport.SignalR
 
         public void SendMessageToMapExcept(IMap map, IEnumerable<IPlayer> players, string message)
         {
-            _hub.Clients.GroupExcept($"map_{map.Id}", players.Select(p => p.NetworkId).ToList()).SendAsync("ChatStream", message);
+            _hub.Clients.GroupExcept($"map_{map.Id}", players.Select(p => p.TransportId).ToList()).SendAsync("ChatStream", message);
         }
 
         public void SendMessageToMapExcept(IMap map, IPlayer player, string message)
@@ -53,7 +54,7 @@ namespace OddMud.Transport.SignalR
 
         public void SendMessageToPlayer(IPlayer player, string message)
         {
-            SendMessageToPlayer(player.NetworkId, message);
+            SendMessageToPlayer(player.TransportId, message);
         }
 
         public void SendMessageToPlayer(string networkId, string message)
@@ -61,9 +62,30 @@ namespace OddMud.Transport.SignalR
             _hub.Clients.Client(networkId).SendAsync("ChatStream", message);
         }
 
+        public void SendMessageToPlayers(IEnumerable<IPlayer> players, string message)
+        {
+            _hub.Clients.Clients(players.Select(p => p.TransportId).ToList()).SendAsync("ChatStream", message);
+        }
 
+        public void SendViewCommandsToMap(IMap map, IEnumerable<IViewCommand> commands)
+        {
+            _hub.Clients.Group($"map_{map.Id}").SendAsync("WorldStream", commands);
+        }
 
+        public void SendViewCommandsToMapExcept(IMap map, IEnumerable<IPlayer> players, IEnumerable<IViewCommand> commands)
+        {
+            _hub.Clients.GroupExcept($"map_{map.Id}", players.Select(p=>p.TransportId).ToList()).SendAsync("WorldStream", commands);
+        }
 
+        public void SendViewCommandsToMapExcept(IMap map, IPlayer player, IEnumerable<IViewCommand> commands)
+        {
+            SendViewCommandsToMapExcept(map, new List<IPlayer>() { player }, commands);
+        }
+
+        public void SendViewCommandsToPlayer(IPlayer player, IEnumerable<IViewCommand> commands)
+        {
+            _hub.Clients.Client(player.TransportId).SendAsync("WorldStream", commands);
+        }
     }
 
 }

@@ -6,23 +6,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OddMud.SampleGame
+namespace OddMud.BasicGame
 {
-    public class BasicGame : IGame
+    public class Game : IGame
     {
-        private readonly ILogger<BasicGame> _logger;
-        public string Name = nameof(BasicGame);
+        private readonly ILogger<Game> _logger;
+        public string Name = nameof(Game);
         public ITransport Network { get; }
         public IWorld World { get; }
 
         public IReadOnlyList<IPlayer> Players { get { return _players; } }
         private readonly List<IPlayer> _players = new List<IPlayer>();
 
+        public event Func<object, EventArgs, Task> Ticked;
 
 
-
-        public BasicGame(
-            ILogger<BasicGame> logger,
+        public Game(
+            ILogger<Game> logger,
             ITransport network,
             IWorld world
             )
@@ -30,14 +30,14 @@ namespace OddMud.SampleGame
             _logger = logger;
             Network = network;
             World = world;
-            _logger.LogDebug($"IGame Injection: {nameof(BasicGame)}");
+            _logger.LogDebug($"IGame Injection");
         }
 
         public virtual bool AddPlayer(IPlayer player)
         {
             if (Players.Any(p => p.Name == player.Name))
             {
-                Network.SendMessageToPlayer(player.NetworkId, "User is already logged in.");
+                Network.SendMessageToPlayer(player.TransportId, "User is already logged in.");
                 return false;
             }
             _players.Add(player);
@@ -48,6 +48,7 @@ namespace OddMud.SampleGame
 
         public virtual Task TickAsync()
         {
+            Ticked?.Invoke(this, null);
             return Task.FromResult(0);
         }
 

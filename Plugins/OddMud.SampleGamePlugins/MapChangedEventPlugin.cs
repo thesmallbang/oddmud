@@ -1,22 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
-using OddMud.SampleGame;
 using System;
 using System.Threading.Tasks;
 
-namespace OddMud.SampleGamePlugins
+namespace OddMud.BasicGamePlugins
 {
     public class MapChangedEventPlugin : IEventPlugin
     {
         public string Name => nameof(MapChangedEventPlugin);
-        public BasicGame Game;
+        public BasicGame.Game Game;
 
         public void Configure(IGame game)
         {
-            Game = (BasicGame)game;
+            Game = (BasicGame.Game)game;
             Game.World.MapChanged += HandleMapChanged;
-            Game.Log(LogLevel.Debug, $"Configure Plugin {Name}");
         }
 
         private async Task HandleMapChanged(Object sender, IMapChangeEvent e)
@@ -31,6 +29,8 @@ namespace OddMud.SampleGamePlugins
 
             await Game.Network.AddPlayerToMapGroupAsync(e.Player, e.NewMap);
             Game.Network.SendMessageToMapExcept(e.NewMap, e.Player, $"{e.Player.Name} has joined the area.");
+
+
 
         }
 

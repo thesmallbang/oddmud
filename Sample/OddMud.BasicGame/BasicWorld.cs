@@ -1,17 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
+using OddMud.BasicGame.Events;
+using OddMud.BasicGame.Misc;
 using OddMud.Core.Interfaces;
-using OddMud.SampleGame.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OddMud.SampleGame
+namespace OddMud.BasicGame
 {
     public class BasicWorld : IWorld
     {
-        public string Name => "BasicWorld";
+        public string Name => nameof(BasicWorld);
+        public TimeOfDay Time = new TimeOfDay() {timeScale= 60,  StartWorldTime = new DateTime(2000,1,1).Ticks};
+
 
         private List<IMap> _maps = new List<IMap>();
         private readonly ILogger<BasicWorld> _logger;
@@ -27,7 +30,7 @@ namespace OddMud.SampleGame
             )
         {
             _logger = logger;
-            _logger.LogDebug($"IWorld Injection : {nameof(BasicWorld)}");
+            _logger.LogDebug($"IWorld Injection");
             _network = network;
             _maps.Add(new BasicMap("1", "TesTMap", "Some starter map"));
 

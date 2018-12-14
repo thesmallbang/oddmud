@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OddMud.SampleGame
+namespace OddMud.BasicGame
 {
     public class BasicPlayer : IPlayer
     {
         public string Name { get; set; }
 
-        public string NetworkId { get; set; }
+        public string TransportId { get; set; }
 
         public IMap Map { get; set; }
     }

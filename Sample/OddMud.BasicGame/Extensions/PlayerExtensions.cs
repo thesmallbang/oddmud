@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OddMud.SampleGame.Extensions
+namespace OddMud.BasicGame.Extensions
 {
     public static class PlayerExtensions
     {
         public static IPlayer GetPlayerByNetworkId(this IReadOnlyList<IPlayer> players, string networkId)
         {
-            return players.FirstOrDefault(player => player.NetworkId == networkId);
+            return players.FirstOrDefault(player => player.TransportId == networkId);
         }
 
         public static IPlayer GetPlayerByName(this IReadOnlyList<IPlayer> players, string name)

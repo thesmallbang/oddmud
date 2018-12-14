@@ -30,7 +30,9 @@
     <ProjectReference Include="..\..\Core\OddMud.Core.Game\OddMud.Core.Interfaces.csproj" />
     <ProjectReference Include="..\..\Core\OddMud.Core.Plugins\OddMud.Core.Plugins.csproj" />
     <ProjectReference Include="..\..\Core\OddMud.Transport.SignalR\OddMud.Transport.SignalR.csproj" />
-    <ProjectReference Include="..\..\Sample\OddMud.BasicGame\OddMud.SampleGame.csproj" />
+    <ProjectReference Include="..\OddMud.BasicGame\OddMud.BasicGame.csproj">
+      <Private></Private>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -62,6 +64,10 @@
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
     </ItemGroup>
+  </Target>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="dotnet build ../../Plugins/OddMud.SampleGamePlugins/OddMud.SampleGamePlugins.csproj" />
   </Target>
 
   <!-- 

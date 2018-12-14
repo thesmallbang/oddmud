@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using OddMud.Core.Plugins;
-using OddMud.SampleGame;
-using OddMud.SampleGame.Commands;
+using OddMud.BasicGame;
+using OddMud.BasicGame.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +18,13 @@ namespace OddMud.Web.Game
 
 
         private readonly ILogger<GameHubProcessor> _logger;
-        private readonly BasicGame _game;
+        private readonly BasicGame.Game _game;
 
         public GameHubProcessor(
             ILogger<GameHubProcessor> logger,
             FilePluginLoader<IProcessorPlugin<IProcessorData<CommandModel>>> commandPluginLoader,
             FilePluginLoader<IEventPlugin> eventLoader,
-            BasicGame game
+            BasicGame.Game game
             )
         {
             _logger = logger;

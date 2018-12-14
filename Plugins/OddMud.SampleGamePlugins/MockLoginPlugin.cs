@@ -1,21 +1,21 @@
-﻿using OddMud.Core.Interfaces;
+﻿using OddMud.BasicGame;
+using OddMud.BasicGame.Commands;
+using OddMud.BasicGame.Extensions;
+using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
-using OddMud.SampleGame;
-using OddMud.SampleGame.Commands;
-using OddMud.SampleGame.Extensions;
 using System;
 using System.Threading.Tasks;
 
-namespace OddMud.SampleGamePlugins
+namespace OddMud.BasicGamePlugins
 {
     public class MockLoginPlugin : IProcessorPlugin<IProcessorData<CommandModel>>
     {
-        public string Name => "LoginPlugin";
-        private BasicGame Game;
+        public string Name => nameof(MockLoginPlugin);
+        private Game Game;
 
         public void Configure(IGame game)
         {
-            Game = (BasicGame)game;
+            Game = (Game)game;
         }
 
         public async Task ProcessAsync(IProcessorData<CommandModel> request)
@@ -37,7 +37,7 @@ namespace OddMud.SampleGamePlugins
                 return;
             }
 
-            player = new BasicPlayer() { Name = request.Data.Parts[1], NetworkId = request.TransportId };
+            player = new BasicPlayer() { Name = request.Data.Parts[1], TransportId = request.TransportId };
             if (Game.AddPlayer(player))
             {
                 Game.Network.SendMessageToPlayer(request.TransportId, "Logged in as " + request.Data.Parts[1]);

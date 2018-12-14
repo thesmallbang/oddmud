@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using OddMud.Core.Plugins;
-using OddMud.SampleGame.Commands;
+using OddMud.BasicGame.Commands;
 using OddMud.Web.Game;
 
 namespace OddMud.Web.Hubs

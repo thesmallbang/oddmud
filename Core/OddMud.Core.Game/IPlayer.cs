@@ -7,7 +7,7 @@ namespace OddMud.Core.Interfaces
     public interface IPlayer
     {
         string Name { get; }
-        string NetworkId { get; }
+        string TransportId { get; }
 
         IMap Map { get; set; }
     }

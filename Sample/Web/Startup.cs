@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
-using OddMud.SampleGame;
+using OddMud.BasicGame;
 using OddMud.Transport.SignalR;
 using OddMud.Web.Game;
 using OddMud.Web.Hubs;
@@ -43,7 +43,7 @@ namespace OddMud.Web
             services.AddSingleton<IWorld, BasicWorld>();
             services.AddSingleton<IHostedService, GameService>();
             services.AddSingleton<ITransport, SignalRHubTransport<GameHub>>();
-            services.AddSingleton(typeof(BasicGame));
+            services.AddSingleton(typeof(BasicGame.Game));
             
 
             services.AddSignalR()

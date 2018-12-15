@@ -3,40 +3,29 @@ using OddMud.BasicGame.Commands;
 using OddMud.BasicGame.Extensions;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
+using OddMud.SampleGamePlugins;
 using System;
 using System.Threading.Tasks;
 
-namespace OddMud.BasicGamePlugins
+namespace OddMud.BasicGamePlugins.CommandPlugins
 {
-    public class MockLoginPlugin : IProcessorPlugin<IProcessorData<CommandModel>>
+    public class MockLoginPlugin : LoggedInCommandPlugin
     {
-        public string Name => nameof(MockLoginPlugin);
-        private Game Game;
+        public override string Name => nameof(MockLoginPlugin);
 
-        public void Configure(IGame game)
+     
+        public override Task NotLoggedInProcessAsync(IProcessorData<CommandModel> request)
         {
-            Game = (Game)game;
-        }
-
-        public async Task ProcessAsync(IProcessorData<CommandModel> request)
-        {
-            if (request.Data.Parts[0] == "login")
-            {
-                request.Handled = true;
-                await HandleBasicLoginAsync(request);
-            }
-
-            if (request.Data.Parts[0] == "logout")
-            {
-                request.Handled = true;
-                await HandleBasicLogoutAsync(request);
-            }
-
+            request.Handled = true;
+            return HandleBasicLoginAsync(request);
         }
 
 
         private async Task HandleBasicLoginAsync(IProcessorData<CommandModel> request)
         {
+            if (request.Data.FirstPart != "login" || request.Data.Parts.Count < 2)
+                return;
+
             var player = Game.Players.GetPlayerByTransportId(request.TransportId);
             if (player != null)
             {
@@ -45,13 +34,13 @@ namespace OddMud.BasicGamePlugins
             }
 
             player = new BasicPlayer() { Name = request.Data.Parts[1], TransportId = request.TransportId };
+
             if (await Game.AddPlayerAsync(player))
             {
                 await Game.Network.SendMessageToPlayerAsync(request.TransportId, "Logged in as " + request.Data.Parts[1]);
-                await Game.World.MovePlayerAsync(player, Game.World.GetStarterMap());
-
             }
         }
+
 
         private async Task HandleBasicLogoutAsync(IProcessorData<CommandModel> request)
         {

@@ -24,6 +24,8 @@ namespace OddMud.BasicGame.Commands
             }
         }
 
+        public string FirstPart => Parts[0];
+
         public string StringFrom(int index)
         {
             return string.Join(' ', Parts.Skip(index));

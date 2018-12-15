@@ -33,14 +33,18 @@ namespace OddMud.BasicGame
             Network = network;
             World = world;
             _logger.LogDebug($"IGame Injection");
+
+            World.AddMap(new BasicMap("mapkey0", "Sample Map", "Some description of the map"));
         }
 
         public virtual async Task<bool> AddPlayerAsync(IPlayer player)
         {
-            if (!_players.Remove(player))
+            if (Players.Any(p => p == player))
                 return false;
 
-            await PlayerAdded(this, player);
+            if (PlayerAdded != null)
+                await PlayerAdded(this, player);
+
             return true;
         }
 
@@ -50,8 +54,8 @@ namespace OddMud.BasicGame
             if (!Players.Any(p => p == player))
                 return false;
 
-            await player.Map.RemovePlayerAsync(player);
             _players.Remove(player);
+            if (PlayerRemoved != null)
             await PlayerRemoved(this, player);
             return true;
         }

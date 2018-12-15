@@ -4,12 +4,12 @@ using OddMud.Core.Plugins;
 using System;
 using System.Threading.Tasks;
 
-namespace OddMud.BasicGamePlugins
+namespace OddMud.BasicGamePlugins.EventPlugins
 {
-    public class PlayerMovedEventPlugin : IEventPlugin
+    public class OnPlayerMovePlugin : IEventPlugin
     {
 
-        public string Name => nameof(PlayerMovedEventPlugin);
+        public string Name => nameof(OnPlayerMovePlugin);
         public BasicGame.Game Game;
 
         public void Configure(IGame game)
@@ -20,6 +20,7 @@ namespace OddMud.BasicGamePlugins
 
         private async Task HandleMapChanged(Object sender, IMapChangeEvent e)
         {
+
             if (e.OldMap != null)
             {
                 await Game.Network.RemovePlayerFromMapGroupAsync(e.Player, e.NewMap);
@@ -28,8 +29,7 @@ namespace OddMud.BasicGamePlugins
 
             await Game.Network.AddPlayerToMapGroupAsync(e.Player, e.NewMap);
             await Game.Network.SendMessageToMapExceptAsync(e.NewMap, e.Player, $"{e.Player.Name} has joined the area.");
-
-
+            
 
         }
 

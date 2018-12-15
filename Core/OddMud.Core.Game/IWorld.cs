@@ -17,6 +17,8 @@ namespace OddMud.Core.Interfaces
 
         Task MovePlayerAsync(IPlayer player, IMap map);
 
+        void AddMap(IMap map);
+
         IMap GetStarterMap();
 
 

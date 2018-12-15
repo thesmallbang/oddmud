@@ -51,7 +51,7 @@ namespace OddMud.Web.Game
         {
             foreach (var plugin in _commandPlugins)
             {
-                _logger.LogInformation("ProcessAsync - " + nameof(plugin));
+                _logger.LogInformation("ProcessAsync - " + plugin.Name);
                 await plugin.ProcessAsync(request);
 
                 if (request.Handled)

@@ -24,10 +24,10 @@ namespace OddMud.Core.Plugins
         public virtual void LoadPlugins(string path)
         {
             var files = System.IO.Directory.EnumerateFiles(path);
-            foreach (var file in files.Where(file => !file.StartsWith("OddMud.Core") &&  file.EndsWith(".dll")))
+            foreach (var fileName in files.Where(file => file.EndsWith(".dll")))
             {
-                var info = new FileInfo(file);
-                var loader = PluginLoader.CreateFromAssemblyFile(info.FullName, sharedTypes: new[] { typeof(TPlugin) });
+                var fileInfo = new FileInfo(fileName);
+                var loader = PluginLoader.CreateFromAssemblyFile(fileInfo.FullName, sharedTypes: new[] { typeof(TPlugin) });
                 var assembly = loader.LoadDefaultAssembly();
 
                 var pluginTypes = assembly.GetTypes().ToList();

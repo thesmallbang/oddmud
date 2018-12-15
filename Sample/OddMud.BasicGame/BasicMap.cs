@@ -37,6 +37,7 @@ namespace OddMud.BasicGame
         }
         public virtual Task RemovePlayerAsync(IPlayer player)
         {
+            player.Map = null;
             _players.Remove(player);
             return Task.CompletedTask;
         }

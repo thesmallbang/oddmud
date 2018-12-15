@@ -34,9 +34,14 @@ namespace OddMud.BasicGame
             _network = network;
         }
 
+        
+
         public IMap GetStarterMap()
         {
-            return _maps.First();
+            if (!Maps.Any())
+                throw new Exception("Unable to provide starter map when none exist");
+
+            return Maps.First();
         }
 
         public void AddMap(IMap map)
@@ -51,7 +56,7 @@ namespace OddMud.BasicGame
 
         public async Task MovePlayerAsync(IPlayer player, IMap map)
         {
-            _logger.LogInformation($"Moving {player.Name} to {map.Name}");
+            _logger.LogDebug($"Moving {player.Name} to {map.Name}");
 
             var oldMap = player.Map;
             await map.AddPlayerAsync(player);

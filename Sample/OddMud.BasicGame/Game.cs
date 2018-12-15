@@ -55,8 +55,10 @@ namespace OddMud.BasicGame
                 return false;
 
             _players.Remove(player);
+
             if (PlayerRemoved != null)
-            await PlayerRemoved(this, player);
+                await PlayerRemoved(this, player);
+
             return true;
         }
 

@@ -29,6 +29,11 @@ namespace OddMud.BasicGame
             Description = description;
         }
 
+        /// <summary>
+        /// You should probably be using World.MovePlayer in most scenarios
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
         public virtual Task AddPlayerAsync(IPlayer player)
         {
             player.Map = this;

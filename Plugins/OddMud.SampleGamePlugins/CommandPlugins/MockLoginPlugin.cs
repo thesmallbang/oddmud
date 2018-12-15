@@ -13,44 +13,41 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
     {
         public override string Name => nameof(MockLoginPlugin);
 
-     
         public override Task NotLoggedInProcessAsync(IProcessorData<CommandModel> request)
         {
+            if (request.Data.FirstPart != "login" || string.IsNullOrEmpty(request.Data.SecondPart))
+                return Task.CompletedTask;
+
             request.Handled = true;
             return HandleBasicLoginAsync(request);
         }
 
+        public override Task LoggedInProcessAsync(IProcessorData<CommandModel> request, IPlayer player)
+        {
+            switch (request.Data.FirstPart)
+            {
+                case "login":
+                    return Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Already logged in as {player.Name}.");
+                case "logout":
+                    return HandleBasicLogoutAsync(request, player);
+            }
+            return base.LoggedInProcessAsync(request, player);
+        }
 
         private async Task HandleBasicLoginAsync(IProcessorData<CommandModel> request)
         {
-            if (request.Data.FirstPart != "login" || request.Data.Parts.Count < 2)
-                return;
-
-            var player = Game.Players.GetPlayerByTransportId(request.TransportId);
-            if (player != null)
-            {
-                await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Already logged in as {player.Name}.");
-                return;
-            }
-
-            player = new BasicPlayer() { Name = request.Data.Parts[1], TransportId = request.TransportId };
+            var player = new BasicPlayer() { Name = request.Data.SecondPart, TransportId = request.TransportId };
 
             if (await Game.AddPlayerAsync(player))
             {
-                await Game.Network.SendMessageToPlayerAsync(request.TransportId, "Logged in as " + request.Data.Parts[1]);
+                await Game.Network.SendMessageToPlayerAsync(request.TransportId, "Logged in as " + request.Data.SecondPart);
             }
         }
 
-
-        private async Task HandleBasicLogoutAsync(IProcessorData<CommandModel> request)
+        private async Task HandleBasicLogoutAsync(IProcessorData<CommandModel> request, IPlayer player)
         {
-            var player = Game.Players.GetPlayerByTransportId(request.TransportId);
-            if (player == null)
-                return;
-
             if (await Game.RemovePlayerAsync(player))
                 await Game.Network.SendMessageToPlayerAsync(request.TransportId, "Logged out");
-
         }
 
 

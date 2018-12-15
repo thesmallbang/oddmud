@@ -21,70 +21,74 @@ namespace OddMud.Transport.SignalR
         }
 
 
-        public async Task AddPlayerToMapGroupAsync(IPlayer player, IMap map)
+        public Task AddPlayerToMapGroupAsync(IPlayer player, IMap map)
         {
-            await _hub.Groups.AddToGroupAsync(player.TransportId, $"map_{map.Id}");
+            return _hub.Groups.AddToGroupAsync(player.TransportId, $"map_{map.Id}");
         }
 
-        public async Task RemovePlayerFromMapGroupAsync(IPlayer player, IMap map)
+        public Task RemovePlayerFromMapGroupAsync(IPlayer player, IMap map)
         {
-            await _hub.Groups.RemoveFromGroupAsync(player.TransportId, $"map_{map.Id}");
+            return _hub.Groups.RemoveFromGroupAsync(player.TransportId, $"map_{map.Id}");
         }
 
-        public void SendMessageToMap(IMap map, string message)
+        public Task SendMessageToMapAsync(IMap map, string message)
         {
-            SendMessageToMap(map.Id, message);
+            return SendMessageToMapAsync(map.Id, message);
         }
 
-
-        public void SendMessageToMap(string mapId, string message)
+        public Task SendMessageToAllAsync(string message)
         {
-            _hub.Clients.Group($"map_{mapId}").SendAsync("ChatStream", message);
+            return _hub.Clients.All.SendAsync(message);
         }
 
-        public void SendMessageToMapExcept(IMap map, IEnumerable<IPlayer> players, string message)
+        public Task SendMessageToMapAsync(string mapId, string message)
         {
-            _hub.Clients.GroupExcept($"map_{map.Id}", players.Select(p => p.TransportId).ToList()).SendAsync("ChatStream", message);
+            return _hub.Clients.Group($"map_{mapId}").SendAsync("ChatStream", message);
         }
 
-        public void SendMessageToMapExcept(IMap map, IPlayer player, string message)
+        public Task SendMessageToMapExceptAsync(IMap map, IEnumerable<IPlayer> players, string message)
         {
-            SendMessageToMapExcept(map, new List<IPlayer>() { player }, message);
+            return _hub.Clients.GroupExcept($"map_{map.Id}", players.Select(p => p.TransportId).ToList()).SendAsync("ChatStream", message);
         }
 
-        public void SendMessageToPlayer(IPlayer player, string message)
+        public Task SendMessageToMapExceptAsync(IMap map, IPlayer player, string message)
         {
-            SendMessageToPlayer(player.TransportId, message);
+            return SendMessageToMapExceptAsync(map, new List<IPlayer>() { player }, message);
         }
 
-        public void SendMessageToPlayer(string networkId, string message)
+        public Task SendMessageToPlayerAsync(IPlayer player, string message)
         {
-            _hub.Clients.Client(networkId).SendAsync("ChatStream", message);
+            return SendMessageToPlayerAsync(player.TransportId, message);
         }
 
-        public void SendMessageToPlayers(IEnumerable<IPlayer> players, string message)
+        public Task SendMessageToPlayerAsync(string transportId, string message)
         {
-            _hub.Clients.Clients(players.Select(p => p.TransportId).ToList()).SendAsync("ChatStream", message);
+            return _hub.Clients.Client(transportId).SendAsync("ChatStream", message);
         }
 
-        public void SendViewCommandsToMap(IMap map, IEnumerable<IViewCommand> commands)
+        public Task SendMessageToPlayersAsync(IEnumerable<IPlayer> players, string message)
         {
-            _hub.Clients.Group($"map_{map.Id}").SendAsync("WorldStream", commands);
+            return _hub.Clients.Clients(players.Select(p => p.TransportId).ToList()).SendAsync("ChatStream", message);
         }
 
-        public void SendViewCommandsToMapExcept(IMap map, IEnumerable<IPlayer> players, IEnumerable<IViewCommand> commands)
+        public Task SendViewCommandsToMapAsync(IMap map, IEnumerable<IViewCommand> commands)
         {
-            _hub.Clients.GroupExcept($"map_{map.Id}", players.Select(p=>p.TransportId).ToList()).SendAsync("WorldStream", commands);
+            return _hub.Clients.Group($"map_{map.Id}").SendAsync("WorldStream", commands);
         }
 
-        public void SendViewCommandsToMapExcept(IMap map, IPlayer player, IEnumerable<IViewCommand> commands)
+        public Task SendViewCommandsToMapExceptAsync(IMap map, IEnumerable<IPlayer> players, IEnumerable<IViewCommand> commands)
         {
-            SendViewCommandsToMapExcept(map, new List<IPlayer>() { player }, commands);
+            return _hub.Clients.GroupExcept($"map_{map.Id}", players.Select(p=>p.TransportId).ToList()).SendAsync("WorldStream", commands);
         }
 
-        public void SendViewCommandsToPlayer(IPlayer player, IEnumerable<IViewCommand> commands)
+        public Task SendViewCommandsToMapExceptAsync(IMap map, IPlayer player, IEnumerable<IViewCommand> commands)
         {
-            _hub.Clients.Client(player.TransportId).SendAsync("WorldStream", commands);
+            return SendViewCommandsToMapExceptAsync(map, new List<IPlayer>() { player }, commands);
+        }
+
+        public Task SendViewCommandsToPlayerAsync(IPlayer player, IEnumerable<IViewCommand> commands)
+        {
+           return _hub.Clients.Client(player.TransportId).SendAsync("WorldStream", commands);
         }
     }
 

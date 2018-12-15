@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OddMud.BasicGame.Events
 {
-    class MapChangedEvent : EventArgs, IMapChangeEvent
+    class MapChangedEventArgs : EventArgs, IMapChangeEvent
     {
         public IPlayer Player { get; }
 
@@ -13,7 +13,7 @@ namespace OddMud.BasicGame.Events
 
         public IMap NewMap { get; }
 
-        public MapChangedEvent(IPlayer player, IMap oldMap, IMap newMap)
+        public MapChangedEventArgs(IPlayer player, IMap oldMap, IMap newMap)
         {
             Player = player;
             OldMap = oldMap;

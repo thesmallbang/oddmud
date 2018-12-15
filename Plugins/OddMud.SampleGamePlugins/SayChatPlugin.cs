@@ -30,12 +30,12 @@ namespace OddMud.BasicGamePlugins
                 var player = Game.Players.GetPlayerByNetworkId(request.TransportId);
                 if (player == null)
                 {
-                    Game.Network.SendMessageToPlayer(request.TransportId, $"Not logged in.");
+                    await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Not logged in.");
                     return;
                 }
 
 
-                Game.Network.SendMessageToMap(player.Map, $"{player.Name} says {request.Data.StringFrom(1)}");
+                await Game.Network.SendMessageToMapAsync(player.Map, $"{player.Name} says {request.Data.StringFrom(1)}");
             }
 
 

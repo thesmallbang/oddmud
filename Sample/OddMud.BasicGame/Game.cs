@@ -37,7 +37,7 @@ namespace OddMud.BasicGame
         {
             if (Players.Any(p => p.Name == player.Name))
             {
-                Network.SendMessageToPlayer(player.TransportId, "User is already logged in.");
+                Network.SendMessageToPlayerAsync(player.TransportId, "User is already logged in.");
                 return false;
             }
             _players.Add(player);

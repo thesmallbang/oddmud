@@ -33,14 +33,14 @@ namespace OddMud.BasicGamePlugins
             var player = Game.Players.GetPlayerByNetworkId(request.TransportId);
             if (player != null)
             {
-                Game.Network.SendMessageToPlayer(request.TransportId, $"Already logged in as {player.Name}.");
+                await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Already logged in as {player.Name}.");
                 return;
             }
 
             player = new BasicPlayer() { Name = request.Data.Parts[1], TransportId = request.TransportId };
             if (Game.AddPlayer(player))
             {
-                Game.Network.SendMessageToPlayer(request.TransportId, "Logged in as " + request.Data.Parts[1]);
+                await Game.Network.SendMessageToPlayerAsync(request.TransportId, "Logged in as " + request.Data.Parts[1]);
                 await Game.World.MovePlayerAsync(player, Game.World.GetStarterMap());
 
             }

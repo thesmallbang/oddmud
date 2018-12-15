@@ -47,7 +47,7 @@ namespace OddMud.BasicGame
 
             _logger.LogInformation($"Moving {player.Name} to {map.Name}");
             map.AddPlayer(player);
-            await MapChanged(this, new MapChangedEvent(player, oldMap, map));
+            await MapChanged(this, new MapChangedEventArgs(player, oldMap, map));
 
         }
     }

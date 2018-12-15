@@ -7,18 +7,18 @@ namespace OddMud.Core.Interfaces
 {
     public interface ITransport
     {
-        void SendMessageToPlayer(string networkId, string message);
-        void SendMessageToPlayer(IPlayer player, string message);
-        void SendMessageToPlayers(IEnumerable<IPlayer> players, string message);
+        Task SendMessageToPlayerAsync(string transportId, string message);
+        Task SendMessageToPlayerAsync(IPlayer player, string message);
+        Task SendMessageToPlayersAsync(IEnumerable<IPlayer> players, string message);
 
-        void SendMessageToMap(IMap map, string message);
-        void SendMessageToMapExcept(IMap map, IEnumerable<IPlayer> players, string message);
-        void SendMessageToMapExcept(IMap map, IPlayer player, string message);
+        Task SendMessageToMapAsync(IMap map, string message);
+        Task SendMessageToMapExceptAsync(IMap map, IEnumerable<IPlayer> players, string message);
+        Task SendMessageToMapExceptAsync(IMap map, IPlayer player, string message);
 
-        void SendViewCommandsToPlayer(IPlayer player, IEnumerable<IViewCommand> commands);
-        void SendViewCommandsToMap(IMap map, IEnumerable<IViewCommand> commands);
-        void SendViewCommandsToMapExcept(IMap map, IEnumerable<IPlayer> players, IEnumerable<IViewCommand> commands);
-        void SendViewCommandsToMapExcept(IMap map, IPlayer player, IEnumerable<IViewCommand> commands);
+        Task SendViewCommandsToPlayerAsync(IPlayer player, IEnumerable<IViewCommand> commands);
+        Task SendViewCommandsToMapAsync(IMap map, IEnumerable<IViewCommand> commands);
+        Task SendViewCommandsToMapExceptAsync(IMap map, IEnumerable<IPlayer> players, IEnumerable<IViewCommand> commands);
+        Task SendViewCommandsToMapExceptAsync(IMap map, IPlayer player, IEnumerable<IViewCommand> commands);
 
 
         Task AddPlayerToMapGroupAsync(IPlayer player, IMap map);

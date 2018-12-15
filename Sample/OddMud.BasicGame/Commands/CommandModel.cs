@@ -12,7 +12,7 @@ namespace OddMud.BasicGame.Commands
 
         public string RawCommand { get; set; }
 
-        public List<string> Parts
+        public IReadOnlyList<string> Parts
         {
             get
             {
@@ -26,8 +26,7 @@ namespace OddMud.BasicGame.Commands
 
         public string StringFrom(int index)
         {
-            var parts = Parts.GetRange(index, Parts.Count - index);
-            return string.Join(' ', parts);
+            return string.Join(' ', Parts.Skip(index));
         }
 
     }

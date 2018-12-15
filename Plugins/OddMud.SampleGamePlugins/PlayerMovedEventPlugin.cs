@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace OddMud.BasicGamePlugins
 {
-    public class MapChangedEventPlugin : IEventPlugin
+    public class PlayerMovedEventPlugin : IEventPlugin
     {
-        public string Name => nameof(MapChangedEventPlugin);
+
+        public string Name => nameof(PlayerMovedEventPlugin);
         public BasicGame.Game Game;
 
         public void Configure(IGame game)
         {
             Game = (BasicGame.Game)game;
-            Game.World.MapChanged += HandleMapChanged;
+            Game.World.PlayerMoved += HandleMapChanged;
         }
 
         private async Task HandleMapChanged(Object sender, IMapChangeEvent e)

@@ -9,7 +9,7 @@ namespace OddMud.Core.Interfaces
     {
 
 
-        event Func<object, IMapChangeEvent, Task> MapChanged;
+        event Func<object, IMapChangeEvent, Task> PlayerMoved;
 
         IReadOnlyList<IMap> Maps { get; }
 

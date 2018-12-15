@@ -6,9 +6,12 @@ namespace OddMud.BasicGame.Misc
 {
     public class TimeOfDay
     {
-        public double timeScale = 1;
-        public long StartWorldTime = DateTime.Now.Ticks;
-        private long Birth = DateTime.Now.Ticks;
+        public double Timescale = 1;
+
+        // in game time to begin from when the game starts
+        public long StartOffset = DateTime.Now.Ticks;
+
+        private long _created = DateTime.Now.Ticks;
 
 
 
@@ -16,8 +19,8 @@ namespace OddMud.BasicGame.Misc
         {
             get
             {
-                var elapsed = Math.Abs(DateTime.Now.Ticks - Birth);
-                var ticks =  StartWorldTime + (timeScale * elapsed);
+                var elapsed = DateTime.Now.Ticks - _created;
+                var ticks =  StartOffset + (Timescale * elapsed);
                 return new DateTime(Convert.ToInt64(ticks));
             }
         }

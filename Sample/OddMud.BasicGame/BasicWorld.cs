@@ -13,7 +13,7 @@ namespace OddMud.BasicGame
     public class BasicWorld : IWorld
     {
         public string Name => nameof(BasicWorld);
-        public TimeOfDay Time = new TimeOfDay() { timeScale = 60, StartWorldTime = new DateTime(2000, 1, 1).Ticks };
+        public TimeOfDay Time = new TimeOfDay() { Timescale = 60, StartOffset = new DateTime(2000, 1, 1).Ticks };
 
 
         private List<IMap> _maps = new List<IMap>();
@@ -22,7 +22,7 @@ namespace OddMud.BasicGame
 
         public IReadOnlyList<IMap> Maps => _maps;
 
-        public event Func<object, IMapChangeEvent, Task> MapChanged;
+        public event Func<object, IMapChangeEvent, Task> PlayerMoved;
 
         public BasicWorld(
             ILogger<BasicWorld> logger,
@@ -48,6 +48,7 @@ namespace OddMud.BasicGame
             _maps.Add(map);
         }
 
+
         public async Task MovePlayerAsync(IPlayer player, IMap map)
         {
             _logger.LogInformation($"Moving {player.Name} to {map.Name}");
@@ -56,7 +57,7 @@ namespace OddMud.BasicGame
             await map.AddPlayerAsync(player);
             if (player.Map == map)
             {
-                await MapChanged(this, new MapChangedEventArgs(player, oldMap, map));
+                await PlayerMoved(this, new PlayerMovedEventArgs(player, oldMap, map));
             }
 
         }

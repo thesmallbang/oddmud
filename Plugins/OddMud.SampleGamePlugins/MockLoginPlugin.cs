@@ -37,7 +37,7 @@ namespace OddMud.BasicGamePlugins
 
         private async Task HandleBasicLoginAsync(IProcessorData<CommandModel> request)
         {
-            var player = Game.Players.GetPlayerByNetworkId(request.TransportId);
+            var player = Game.Players.GetPlayerByTransportId(request.TransportId);
             if (player != null)
             {
                 await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Already logged in as {player.Name}.");
@@ -55,7 +55,7 @@ namespace OddMud.BasicGamePlugins
 
         private async Task HandleBasicLogoutAsync(IProcessorData<CommandModel> request)
         {
-            var player = Game.Players.GetPlayerByNetworkId(request.TransportId);
+            var player = Game.Players.GetPlayerByTransportId(request.TransportId);
             if (player == null)
                 return;
 

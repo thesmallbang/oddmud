@@ -8,9 +8,9 @@ namespace OddMud.BasicGame.Extensions
 {
     public static class PlayerExtensions
     {
-        public static IPlayer GetPlayerByNetworkId(this IReadOnlyList<IPlayer> players, string networkId)
+        public static IPlayer GetPlayerByTransportId(this IReadOnlyList<IPlayer> players, string transportId)
         {
-            return players.FirstOrDefault(player => player.TransportId == networkId);
+            return players.FirstOrDefault(player => player.TransportId == transportId);
         }
 
         public static IPlayer GetPlayerByName(this IReadOnlyList<IPlayer> players, string name)

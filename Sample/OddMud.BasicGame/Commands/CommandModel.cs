@@ -26,8 +26,8 @@ namespace OddMud.BasicGame.Commands
 
         public string FirstPart => Parts.Count > 0 ? Parts[0] : "";
         public string SecondPart => Parts.Count > 1 ? Parts[1] : "";
-        public string ThirdPart => Parts.Count > 2 ? Parts[0] : "";
-        public string ForthPart => Parts.Count > 3 ? Parts[0] : "";
+        public string ThirdPart => Parts.Count > 2 ? Parts[2] : "";
+        public string ForthPart => Parts.Count > 3 ? Parts[3] : "";
 
 
 

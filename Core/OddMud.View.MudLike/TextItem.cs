@@ -12,5 +12,32 @@ namespace OddMud.View.MudLike
         
         public TextSize Size { get; set; } = TextSize.Normal;
         public TextColor Color { get; set; }
+
+        public TextItem()
+        {
+
+        }
+        public TextItem(string text)
+        {
+            Text = text;
+        }
+        public TextItem(string text, TextColor color)
+        {
+            Text = text;
+            Color = color;
+        }
+
+        public TextItem(string text, TextSize size)
+        {
+            Text = text;
+            Size = size;
+        }
+
+        public TextItem(string text, TextColor color, TextSize size)
+        {
+            Text = text;
+            Color = color;
+            Size = size;
+        }
     }
 }

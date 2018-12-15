@@ -2,3 +2,27 @@
   min-height: 60vh;
   overflow-y: scroll;
 }
+
+
+.textitem {
+  color: black;
+  font-size: 12px;
+}
+
+.text-size-small {
+  font-size: 10px;
+}
+
+.text-size-strong {
+  font-size: 12px;
+  font-weight: 200;
+}
+
+.text-size-large {
+  font-size: 14px;
+}
+
+
+.text-color-red {
+  color: red !important;
+}

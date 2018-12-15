@@ -22,7 +22,8 @@ namespace OddMud.ViewBuilders.MudLikeHtml
             string html = string.Empty;
 
             var tswitch = new TypeSwitch()
-                .Case((TextItem item) => html = BuildTextItem(item));
+                .Case((TextItem item) => html = BuildTextItem(item))
+                .Case((LineBreakItem item) => html = "<br />");
 
             tswitch.Switch(viewItem);
             return html;
@@ -34,20 +35,21 @@ namespace OddMud.ViewBuilders.MudLikeHtml
             if (string.IsNullOrEmpty(item.Text))
                 return string.Empty;
 
-            var output = "<span class='textitem ";
+            var output = "<span class='textitem";
 
             if (item.Size != TextSize.Normal)
-                output += "text-size-" + item.Size.ToString().ToLower();
+                output += " text-size-" + item.Size.ToString().ToLower();
 
             if (item.Color != TextColor.Normal)
             {
-                output += "text-color-" + item.Color.ToString().ToLower();
+                output += " text-color-" + item.Color.ToString().ToLower();
             }
 
             // close our class list and item
             output += $"'>{item.Text}</span>";
             return output;
         }
+
 
 
     }

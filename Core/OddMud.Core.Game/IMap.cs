@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OddMud.Core.Interfaces
 {
@@ -13,7 +14,8 @@ namespace OddMud.Core.Interfaces
 
         IReadOnlyList<IPlayer> Players { get; }
 
-        void AddPlayer(IPlayer player);
+        Task AddPlayerAsync(IPlayer player);
+        Task RemovePlayerAsync(IPlayer player);
 
 
 

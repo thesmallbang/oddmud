@@ -25,8 +25,15 @@ namespace OddMud.BasicGamePlugins
                 request.Handled = true;
                 await HandleBasicLoginAsync(request);
             }
+
+            if (request.Data.Parts[0] == "logout")
+            {
+                request.Handled = true;
+                await HandleBasicLogoutAsync(request);
+            }
+
         }
- 
+
 
         private async Task HandleBasicLoginAsync(IProcessorData<CommandModel> request)
         {
@@ -38,7 +45,7 @@ namespace OddMud.BasicGamePlugins
             }
 
             player = new BasicPlayer() { Name = request.Data.Parts[1], TransportId = request.TransportId };
-            if (Game.AddPlayer(player))
+            if (await Game.AddPlayerAsync(player))
             {
                 await Game.Network.SendMessageToPlayerAsync(request.TransportId, "Logged in as " + request.Data.Parts[1]);
                 await Game.World.MovePlayerAsync(player, Game.World.GetStarterMap());
@@ -46,6 +53,17 @@ namespace OddMud.BasicGamePlugins
             }
         }
 
-      
+        private async Task HandleBasicLogoutAsync(IProcessorData<CommandModel> request)
+        {
+            var player = Game.Players.GetPlayerByNetworkId(request.TransportId);
+            if (player == null)
+                return;
+
+            if (await Game.RemovePlayerAsync(player))
+                await Game.Network.SendMessageToPlayerAsync(request.TransportId, "Logged out");
+
+        }
+
+
     }
 }

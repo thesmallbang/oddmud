@@ -22,12 +22,10 @@ namespace OddMud.Web.Game
                                          BasicGame.Game game)
         {
             _logger = logger;
-            _logger.LogDebug($"Ctor {nameof(GameService)}");
+            _logger.LogDebug($"ctor {nameof(GameService)}");
             _settings = settings.Value;
 
             Game = game;
-            game.Name = "Got it coach.";
-            
         }
         
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,7 +33,7 @@ namespace OddMud.Web.Game
             _logger.LogDebug($"GameService is starting.");
 
             stoppingToken.Register(() =>
-                    _logger.LogDebug($" GameService background task is stopping."));
+                    _logger.LogDebug($"GameService background task is stopping."));
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -46,10 +44,10 @@ namespace OddMud.Web.Game
             _logger.LogDebug($"GameService background task is stopping.");
         }
 
-        public override async Task StopAsync(CancellationToken stoppingToken)
+        public override Task StopAsync(CancellationToken stoppingToken)
         {
             // Run your graceful clean-up actions
-            await Task.FromResult(0);
+            return Task.CompletedTask;
         }
     }
 

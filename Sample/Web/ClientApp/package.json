@@ -1,11 +1,11 @@
 {
-  "name": "WGWM",
+  "name": "oddmud-web",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:ssr": "ng run WGWM:server:dev",
+    "build:ssr": "ng run OddMud:server:dev",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

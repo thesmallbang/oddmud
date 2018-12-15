@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OddMud.BasicGame
 {
@@ -28,11 +29,18 @@ namespace OddMud.BasicGame
             Description = description;
         }
 
-        public virtual void AddPlayer(IPlayer player)
+        public virtual Task AddPlayerAsync(IPlayer player)
         {
             player.Map = this;
             _players.Add(player);
+            return Task.CompletedTask;
         }
+        public virtual Task RemovePlayerAsync(IPlayer player)
+        {
+            _players.Remove(player);
+            return Task.CompletedTask;
+        }
+
 
         public override string ToString()
         {

@@ -13,7 +13,7 @@ namespace OddMud.BasicGame
     public class BasicWorld : IWorld
     {
         public string Name => nameof(BasicWorld);
-        public TimeOfDay Time = new TimeOfDay() {timeScale= 60,  StartWorldTime = new DateTime(2000,1,1).Ticks};
+        public TimeOfDay Time = new TimeOfDay() { timeScale = 60, StartWorldTime = new DateTime(2000, 1, 1).Ticks };
 
 
         private List<IMap> _maps = new List<IMap>();
@@ -32,8 +32,6 @@ namespace OddMud.BasicGame
             _logger = logger;
             _logger.LogDebug($"IWorld Injection");
             _network = network;
-            _maps.Add(new BasicMap("1", "TesTMap", "Some starter map"));
-
         }
 
         public IMap GetStarterMap()
@@ -41,13 +39,25 @@ namespace OddMud.BasicGame
             return _maps.First();
         }
 
+        public void AddMap(IMap map)
+        {
+            if (Maps.Any(m => m.Id == map.Id))
+            {
+                throw new Exception("Duplicate map Id");
+            }
+            _maps.Add(map);
+        }
+
         public async Task MovePlayerAsync(IPlayer player, IMap map)
         {
-            var oldMap = player.Map;
-
             _logger.LogInformation($"Moving {player.Name} to {map.Name}");
-            map.AddPlayer(player);
-            await MapChanged(this, new MapChangedEventArgs(player, oldMap, map));
+
+            var oldMap = player.Map;
+            await map.AddPlayerAsync(player);
+            if (player.Map == map)
+            {
+                await MapChanged(this, new MapChangedEventArgs(player, oldMap, map));
+            }
 
         }
     }

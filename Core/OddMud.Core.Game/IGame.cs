@@ -10,9 +10,14 @@ namespace OddMud.Core.Interfaces
         ITransport Network { get; }
 
         event Func<object, EventArgs, Task> Ticked;
+        event Func<object, IPlayer, Task> PlayerAdded;
+        event Func<object, IPlayer, Task> PlayerRemoved;
 
 
         Task TickAsync();
+        Task<bool> AddPlayerAsync(IPlayer player);
+        Task<bool> RemovePlayerAsync(IPlayer player);
+
 
         void Log(LogLevel level, string message);
     }

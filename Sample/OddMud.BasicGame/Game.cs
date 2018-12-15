@@ -19,6 +19,8 @@ namespace OddMud.BasicGame
         private readonly List<IPlayer> _players = new List<IPlayer>();
 
         public event Func<object, EventArgs, Task> Ticked;
+        public event Func<object, IPlayer, Task> PlayerAdded;
+        public event Func<object, IPlayer, Task> PlayerRemoved;
 
 
         public Game(
@@ -33,23 +35,32 @@ namespace OddMud.BasicGame
             _logger.LogDebug($"IGame Injection");
         }
 
-        public virtual bool AddPlayer(IPlayer player)
+        public virtual async Task<bool> AddPlayerAsync(IPlayer player)
         {
-            if (Players.Any(p => p.Name == player.Name))
-            {
-                Network.SendMessageToPlayerAsync(player.TransportId, "User is already logged in.");
+            if (!_players.Remove(player))
                 return false;
-            }
-            _players.Add(player);
+
+            await PlayerAdded(this, player);
             return true;
         }
 
+        public virtual async Task<bool> RemovePlayerAsync(IPlayer player)
+        {
+
+            if (!Players.Any(p => p == player))
+                return false;
+
+            await player.Map.RemovePlayerAsync(player);
+            _players.Remove(player);
+            await PlayerRemoved(this, player);
+            return true;
+        }
 
 
         public virtual Task TickAsync()
         {
             Ticked?.Invoke(this, null);
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         public virtual void Log(LogLevel level, string message)

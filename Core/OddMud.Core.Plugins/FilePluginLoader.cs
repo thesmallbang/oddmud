@@ -30,7 +30,7 @@ namespace OddMud.Core.Plugins
                 var loader = PluginLoader.CreateFromAssemblyFile(fileInfo.FullName, sharedTypes: new[] { typeof(TPlugin) });
                 var assembly = loader.LoadDefaultAssembly();
 
-                var pluginTypes = assembly.GetTypes().ToList();
+                var pluginTypes = assembly.GetTypes().Where(pt => !pt.IsAbstract && pt.IsClass).ToList();
 
                 pluginTypes.ForEach((p) =>
                 {

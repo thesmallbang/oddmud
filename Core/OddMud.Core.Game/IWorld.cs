@@ -22,5 +22,7 @@ namespace OddMud.Core.Interfaces
         IMap GetStarterMap();
 
 
+
+
     }
 }

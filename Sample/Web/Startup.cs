@@ -11,6 +11,7 @@ using OddMud.BasicGame;
 using OddMud.Transport.SignalR;
 using OddMud.Web.Game;
 using OddMud.Web.Hubs;
+using OddMud.ViewBuilders.MudLikeHtml;
 
 namespace OddMud.Web
 {
@@ -41,6 +42,7 @@ namespace OddMud.Web
             services.AddSingleton(typeof(FilePluginLoader<>));
             services.AddSingleton(typeof(GameHubProcessor));
             services.AddSingleton<IWorld, BasicWorld>();
+            services.AddSingleton<IViewBuilder<string>, MudLikeHtmlBuilder>();
             services.AddSingleton<IHostedService, GameService>();
             services.AddSingleton<ITransport, SignalRHubTransport<GameHub>>();
             services.AddSingleton(typeof(BasicGame.Game));

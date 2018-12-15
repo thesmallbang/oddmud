@@ -13,16 +13,13 @@ namespace OddMud.BasicGame
     public class BasicWorld : IWorld
     {
         public string Name => nameof(BasicWorld);
+        public event Func<object, IMapChangeEvent, Task> PlayerMoved;
         public TimeOfDay Time = new TimeOfDay() { Timescale = 60, StartOffset = new DateTime(2000, 1, 1).Ticks };
-
-
-        private List<IMap> _maps = new List<IMap>();
-        private readonly ILogger<BasicWorld> _logger;
-        private readonly ITransport _network;
-
         public IReadOnlyList<IMap> Maps => _maps;
 
-        public event Func<object, IMapChangeEvent, Task> PlayerMoved;
+        private readonly ILogger<BasicWorld> _logger;
+        private readonly ITransport _network;
+        private List<IMap> _maps = new List<IMap>();
 
         public BasicWorld(
             ILogger<BasicWorld> logger,
@@ -33,8 +30,6 @@ namespace OddMud.BasicGame
             _logger.LogDebug($"IWorld Injection");
             _network = network;
         }
-
-        
 
         public IMap GetStarterMap()
         {

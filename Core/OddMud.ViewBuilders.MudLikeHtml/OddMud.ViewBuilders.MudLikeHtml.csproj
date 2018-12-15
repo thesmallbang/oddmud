@@ -5,19 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\OddMud.Core.Game\OddMud.Core.Interfaces.csproj">
-      <Private>false</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\OddMud.Core.Plugins\OddMud.Core.Plugins.csproj">
-      <Private>false</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\OddMud.View.MudLike\OddMud.View.MudLike.csproj" />
+    <ProjectReference Include="..\OddMud.Core.Game\OddMud.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\OddMud.View.MudLike\OddMud.View.MudLike.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Microsoft.Extensions.Logging.Abstractions">
       <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.logging.abstractions\2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-      <Private>false</Private>
     </Reference>
   </ItemGroup>
 

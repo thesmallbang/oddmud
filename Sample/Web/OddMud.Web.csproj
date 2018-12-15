@@ -30,6 +30,7 @@
     <ProjectReference Include="..\..\Core\OddMud.Core.Game\OddMud.Core.Interfaces.csproj" />
     <ProjectReference Include="..\..\Core\OddMud.Core.Plugins\OddMud.Core.Plugins.csproj" />
     <ProjectReference Include="..\..\Core\OddMud.Transport.SignalR\OddMud.Transport.SignalR.csproj" />
+    <ProjectReference Include="..\..\Core\OddMud.ViewBuilders.MudLikeHtml\OddMud.ViewBuilders.MudLikeHtml.csproj" />
     <ProjectReference Include="..\OddMud.BasicGame\OddMud.BasicGame.csproj">
       <Private></Private>
     </ProjectReference>

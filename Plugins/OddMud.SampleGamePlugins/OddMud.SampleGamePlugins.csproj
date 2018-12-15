@@ -20,6 +20,9 @@
     <ProjectReference Include="..\..\Core\OddMud.Core.Plugins\OddMud.Core.Plugins.csproj">
       <Private>false</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\OddMud.View.MudLike\OddMud.View.MudLike.csproj">
+      <Private>false</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Sample\OddMud.BasicGame\OddMud.BasicGame.csproj">
       <Private>false</Private>
     </ProjectReference>

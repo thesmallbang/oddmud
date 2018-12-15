@@ -4,24 +4,15 @@ using System.Text;
 
 namespace OddMud.Core.Interfaces
 {
-    public interface IViewCommand
+    public interface IViewCommand<TData>
     {
         ViewCommandType CommandType { get; }
-        ViewLocation ViewLocation { get; }
-        string Markdown { get; }
-
+        IEnumerable<TData> Data { get; }
     }
 
     public enum ViewCommandType
     {
         Set,
         Append
-    }
-    public class ViewLocation
-    {
-        public int X = 0;
-        public int Y = 0;
-        // layer / draw order
-        public int Z = 0;
     }
 }

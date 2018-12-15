@@ -12,6 +12,7 @@ export class WorldComponent implements OnInit {
 
   public messages: string[] = [];
   private hub: GameHubService;
+  public worldHtml: string;
 
   constructor(
     gameHub: GameHubService
@@ -21,8 +22,10 @@ export class WorldComponent implements OnInit {
 
   ngOnInit() {
     this.hub.Subscribe(InboundChannels.WorldStream, (data: any) => {
-      const received = `${data.rawCommand}`;
+      const received = `${data}`;
       this.messages.push(received);
+      this.worldHtml = this.messages.join('');
+      this.scrollToBottom();
     });
   }
 

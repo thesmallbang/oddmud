@@ -1,4 +1,5 @@
-﻿using OddMud.Core.Interfaces;
+﻿using OddMud.BasicGame.Misc;
+using OddMud.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,6 +14,10 @@ namespace OddMud.BasicGame
         public string Name { get; private set; } = "Unconfigured";
 
         public string Description { get; private set; } = "Unconfigured";
+
+        public IReadOnlyList<MapExit> Exits => _exits;
+        private List<MapExit> _exits = new List<MapExit>();
+
 
         public IReadOnlyList<IPlayer> Players => _players;
         private List<IPlayer> _players = new List<IPlayer>();

@@ -39,7 +39,7 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
         private async Task ProcessTellAsync(IProcessorData<CommandModel> request, IPlayer player)
         {
             request.Handled = true;
-            var destinationPlayer = Game.Players.GetPlayerByName(request.Data.Parts[1]);
+            var destinationPlayer = Game.Players.GetPlayerByName(request.Data.SecondPart);
             if (destinationPlayer == null)
             {
                 await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Player not found.");

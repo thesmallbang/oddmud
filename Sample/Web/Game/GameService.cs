@@ -44,7 +44,7 @@ namespace OddMud.Web.Game
             _logger.LogDebug($"GameService background task is stopping.");
         }
 
-        public override Task StopAsync(CancellationToken stoppingToken)
+        public override Task StopAsync(CancellationToken cancellationToken)
         {
             // Run your graceful clean-up actions
             return Task.CompletedTask;

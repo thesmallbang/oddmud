@@ -18,7 +18,7 @@ namespace OddMud.Core.Plugins
         public FilePluginLoader(ILogger<FilePluginLoader<TPlugin>> logger)
         {
             _logger = logger;
-            _logger.LogDebug($"Ctor FilePluginLoader<{typeof(TPlugin).FullName}>");
+            _logger.LogDebug($"Injection : FilePluginLoader<{typeof(TPlugin).FullName}>");
         }
 
         public virtual void LoadPlugins(string path)

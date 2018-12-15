@@ -14,7 +14,7 @@ namespace OddMud.ViewBuilders.MudLikeHtml
         public MudLikeHtmlBuilder(ILogger<MudLikeHtmlBuilder> logger)
         {
             _logger = logger;
-            _logger.LogDebug("Injection");
+            _logger.LogDebug("Injection : IViewBuilder");
         }
 
         public string Build(IViewItem viewItem)

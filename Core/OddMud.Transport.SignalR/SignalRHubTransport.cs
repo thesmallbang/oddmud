@@ -22,7 +22,7 @@ namespace OddMud.Transport.SignalR
         {
             _logger = logger;
             _hub = hub;
-            _logger.LogDebug($"ICommunication Injection");
+            _logger.LogDebug($"Injection : ICommunication");
             _viewBuilder = viewBuilder;
         }
 

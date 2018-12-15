@@ -32,7 +32,7 @@ namespace OddMud.BasicGame
             _logger = logger;
             Network = network;
             World = world;
-            _logger.LogDebug($"IGame Injection");
+            _logger.LogDebug($"Injection : IGame");
 
             World.AddMap(new BasicMap("mapkey0", "Sample Map", "Some description of the map"));
         }

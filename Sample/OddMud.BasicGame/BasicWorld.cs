@@ -27,7 +27,7 @@ namespace OddMud.BasicGame
             )
         {
             _logger = logger;
-            _logger.LogDebug($"IWorld Injection");
+            _logger.LogDebug($"Injection : IWorld");
             _network = network;
         }
 

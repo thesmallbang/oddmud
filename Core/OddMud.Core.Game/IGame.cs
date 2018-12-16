@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OddMud.Core.Interfaces
@@ -7,6 +8,7 @@ namespace OddMud.Core.Interfaces
     public interface IGame
     {
         IWorld World { get; }
+        IReadOnlyList<IPlayer> Players { get; }
         ITransport Network { get; }
 
         event Func<object, EventArgs, Task> Ticked;

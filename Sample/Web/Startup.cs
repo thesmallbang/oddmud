@@ -41,13 +41,12 @@ namespace OddMud.Web
 
             services.AddSingleton(typeof(FilePluginLoader<>));
             services.AddSingleton(typeof(GameHubProcessor));
-            services.AddSingleton<IWorld, BasicWorld>();
+            services.AddSingleton<IWorld, GridWorld>();
             services.AddSingleton<IViewBuilder<string>, MudLikeHtmlBuilder>();
             services.AddSingleton<IHostedService, GameService>();
             services.AddSingleton<ITransport, SignalRHubTransport<GameHub>>();
-            services.AddSingleton(typeof(BasicGame.Game));
+            services.AddSingleton<IGame, GridGame>();
             
-
             services.AddSignalR()
                 .AddMessagePackProtocol();
 

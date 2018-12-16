@@ -1,5 +1,5 @@
 <div class="ui-worldcontainer">
-  <span>World Container</span>
+  <span *ngIf="!worldHtml">Login to continue  (type: login username)</span>
   <div #worldbox [innerHTML]="worldHtml">
   </div>
 </div>

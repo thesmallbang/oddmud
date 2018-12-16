@@ -1,4 +1,5 @@
-﻿using OddMud.Core.Interfaces;
+﻿using OddMud.BasicGame;
+using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,11 @@ namespace OddMud.SampleGamePlugins.EventPlugins
     {
 
         public string Name => nameof(AfterPlayerLoginPlugin);
-        public BasicGame.Game Game;
+        public IGame Game;
 
         public void Configure(IGame game)
         {
-            Game = (BasicGame.Game)game;
+            Game = game;
             Game.PlayerAdded += AfterPlayerLogin;
         }
 

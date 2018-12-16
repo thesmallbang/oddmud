@@ -5,6 +5,7 @@ using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using OddMud.SampleGamePlugins;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OddMud.BasicGamePlugins.CommandPlugins
@@ -12,6 +13,9 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
     public class MockLoginPlugin : LoggedInCommandPlugin
     {
         public override string Name => nameof(MockLoginPlugin);
+        public override IReadOnlyList<string> Handles => _handles;
+        private List<string> _handles = new List<string>() { "login", "logout" };
+
 
         public override Task NotLoggedInProcessAsync(IProcessorData<CommandModel> request)
         {
@@ -40,7 +44,7 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
 
             if (await Game.AddPlayerAsync(player))
             {
-                await Game.Network.SendMessageToPlayerAsync(request.TransportId, "Logged in as " + request.Data.SecondPart);
+                await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Logged in as {request.Data.SecondPart} -- PlayerCount: {Game.Players.Count}");
             }
         }
 

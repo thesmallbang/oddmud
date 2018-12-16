@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace OddMud.BasicGame
 {
-    public class BasicWorld : IWorld
+    public abstract class BasicWorld : IWorld
     {
         public string Name => nameof(BasicWorld);
         public event Func<object, IMapChangeEvent, Task> PlayerMoved;
         public TimeOfDay Time = new TimeOfDay() { Timescale = 60, StartOffset = new DateTime(2000, 1, 1).Ticks };
-        public IReadOnlyList<IMap> Maps => _maps;
+        public virtual IReadOnlyList<IMap> Maps => _maps;
 
         private readonly ILogger<BasicWorld> _logger;
         private readonly ITransport _network;
@@ -23,15 +23,15 @@ namespace OddMud.BasicGame
 
         public BasicWorld(
             ILogger<BasicWorld> logger,
-            ITransport network
+            ITransport transport
             )
         {
             _logger = logger;
             _logger.LogDebug($"Injection : IWorld");
-            _network = network;
+            _network = transport;
         }
 
-        public IMap GetStarterMap()
+        public virtual IMap GetStarterMap()
         {
             if (!Maps.Any())
                 throw new Exception("Unable to provide starter map when none exist");
@@ -39,17 +39,18 @@ namespace OddMud.BasicGame
             return Maps.First();
         }
 
-        public void AddMap(IMap map)
+        public virtual void AddMap(IMap map)
         {
             if (Maps.Any(m => m.Id == map.Id))
             {
                 throw new Exception("Duplicate map Id");
             }
+          
             _maps.Add(map);
         }
 
 
-        public async Task MovePlayerAsync(IPlayer player, IMap map)
+        public virtual async Task MovePlayerAsync(IPlayer player, IMap map)
         {
             _logger.LogDebug($"Moving {player.Name} to {map.Name}");
 

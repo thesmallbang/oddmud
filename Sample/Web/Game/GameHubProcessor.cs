@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using OddMud.Core.Interfaces;
 
 namespace OddMud.Web.Game
 {
@@ -18,17 +18,17 @@ namespace OddMud.Web.Game
 
 
         private readonly ILogger<GameHubProcessor> _logger;
-        private readonly BasicGame.Game _game;
+        private readonly GridGame _game;
 
         public GameHubProcessor(
             ILogger<GameHubProcessor> logger,
             FilePluginLoader<IProcessorPlugin<IProcessorData<CommandModel>>> commandPluginLoader,
             FilePluginLoader<IEventPlugin> eventLoader,
-            BasicGame.Game game
+            IGame game
             )
         {
             _logger = logger;
-            _game = game;
+            _game = (GridGame)game;
 
             eventLoader.LoadPlugins("./plugins/");
             var _eventPlugins = eventLoader.Plugins.ToList();

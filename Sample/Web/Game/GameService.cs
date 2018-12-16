@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OddMud.BasicGame;
+using OddMud.Core.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,18 +15,18 @@ namespace OddMud.Web.Game
         private readonly ILogger<GameService> _logger;
         private readonly GameServiceSettings _settings;
 
-        public BasicGame.Game Game;
+        public GridGame Game;
 
 
         public GameService(IOptions<GameServiceSettings> settings,
                                          ILogger<GameService> logger,
-                                         BasicGame.Game game)
+                                         IGame game)
         {
             _logger = logger;
             _logger.LogDebug($"ctor {nameof(GameService)}");
             _settings = settings.Value;
 
-            Game = game;
+            Game = (GridGame)game;
         }
         
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

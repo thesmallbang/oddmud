@@ -34,7 +34,7 @@ namespace OddMud.BasicGame
             World = world;
             _logger.LogDebug($"Injection : IGame");
 
-            World.AddMap(new BasicMap("mapkey0", "Sample Map", "Some description of the map"));
+
         }
 
         public virtual async Task<bool> AddPlayerAsync(IPlayer player)
@@ -42,6 +42,7 @@ namespace OddMud.BasicGame
             if (Players.Any(p => p == player))
                 return false;
 
+            _players.Add(player);
             if (PlayerAdded != null)
                 await PlayerAdded(this, player);
 

@@ -2,3 +2,93 @@
 
 
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+
+
+.textitem {
+  font-family: "Inconsolata";
+  color: black;
+  font-size: 16px;
+}
+
+.text-size-small {
+  font-size: 14px;
+}
+
+.text-size-strong {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.text-size-large {
+  font-size: 20px;
+}
+
+
+.text-color-black {
+  color: black;
+}
+
+.text-color-maroon {
+  color: maroon;
+}
+
+.text-color-green {
+  color: green;
+}
+
+.text-color-olive {
+  color: olive;
+}
+
+.text-color-navy {
+  color: navy;
+}
+
+.text-color-purple {
+  color: purple;
+}
+
+.text-color-teal {
+  color: teal;
+}
+
+.text-color-teal {
+  color: teal;
+}
+
+.text-color-silver {
+  color: silver;
+}
+
+.text-color-gray {
+  color: gray;
+}
+
+.text-color-red {
+  color: teal;
+}
+
+.text-color-lime {
+  color: lime;
+}
+
+.text-color-yellow {
+  color: #949b36;
+}
+
+.text-color-blue {
+  color: blue;
+}
+
+.text-color-fuschia {
+  color: fuchsia;
+}
+
+.text-color-aqua {
+  color: aqua;
+}
+
+.text-color-white {
+  color: white;
+}

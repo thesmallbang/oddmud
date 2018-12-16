@@ -19,9 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.BasicGame", "Sample\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.Web", "Sample\Web\OddMud.Web.csproj", "{074B4041-8A66-4DEB-B779-C51C6B5F2269}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddMud.View.MudLike", "Core\OddMud.View.MudLike\OddMud.View.MudLike.csproj", "{A2A3F892-FA96-4B38-94AB-7FA8DCBC3B8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.View.MudLike", "Core\OddMud.View.MudLike\OddMud.View.MudLike.csproj", "{A2A3F892-FA96-4B38-94AB-7FA8DCBC3B8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddMud.ViewBuilders.MudLikeHtml", "Core\OddMud.ViewBuilders.MudLikeHtml\OddMud.ViewBuilders.MudLikeHtml.csproj", "{C09BCF9D-3761-479C-9359-308BE74B45AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.ViewBuilders.MudLikeHtml", "Core\OddMud.ViewBuilders.MudLikeHtml\OddMud.ViewBuilders.MudLikeHtml.csproj", "{C09BCF9D-3761-479C-9359-308BE74B45AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

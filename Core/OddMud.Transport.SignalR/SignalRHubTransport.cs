@@ -100,9 +100,7 @@ namespace OddMud.Transport.SignalR
 
         private string BuildViewOutput(IViewCommand<IViewItem> command)
         {
-            var output = new StringBuilder();
-            output.Append(string.Join("",command.Data.Select((viewItem) => _viewBuilder.Build(viewItem))));
-            return output.ToString();
+            return string.Join("", command.Data.Select((viewItem) => _viewBuilder.Build(viewItem)));
         }
     }
 

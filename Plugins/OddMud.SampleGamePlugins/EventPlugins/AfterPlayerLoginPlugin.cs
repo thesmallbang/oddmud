@@ -1,6 +1,7 @@
 ﻿using OddMud.BasicGame;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
+using OddMud.View.MudLike;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,7 +23,10 @@ namespace OddMud.SampleGamePlugins.EventPlugins
 
         private async Task AfterPlayerLogin(Object sender, IPlayer player)
         {
-            await Game.World.MovePlayerAsync(player, Game.World.GetStarterMap());
+
+            var assignedPlayerMap = Game.World.GetStarterMap();
+            await Game.World.MovePlayerAsync(player, assignedPlayerMap);
+        
         }
 
     }

@@ -13,6 +13,7 @@ namespace OddMud.Core.Interfaces
     public enum ViewCommandType
     {
         Set,
-        Append
+        Append,
+        Replace
     }
 }

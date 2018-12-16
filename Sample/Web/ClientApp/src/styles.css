@@ -34,7 +34,7 @@
 }
 
 .text-color-green {
-  color: green;
+  color: #27d827;
 }
 
 .text-color-olive {
@@ -50,11 +50,7 @@
 }
 
 .text-color-teal {
-  color: teal;
-}
-
-.text-color-teal {
-  color: teal;
+  color: #039c9c;
 }
 
 .text-color-silver {
@@ -66,7 +62,7 @@
 }
 
 .text-color-red {
-  color: teal;
+  color: #d41414;
 }
 
 .text-color-lime {

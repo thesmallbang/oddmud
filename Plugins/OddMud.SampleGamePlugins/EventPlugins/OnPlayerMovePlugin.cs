@@ -30,7 +30,16 @@ namespace OddMud.BasicGamePlugins.EventPlugins
             {
                 await e.OldMap.RemovePlayerAsync(e.Player);
                 await Game.Network.RemovePlayerFromMapGroupAsync(e.Player, e.OldMap);
-                await Game.Network.SendMessageToMapAsync(e.OldMap, $"{e.Player.Name} has left the area.");
+
+                var playersLeftBehind = e.OldMap.Players.Where(p => p.Name != e.Player.Name).Select(o => o.Name);
+
+                var leftBehindNotification = new MudLikeCommandBuilder()
+               .AddText("players: ")
+               .AddText(string.Join(",", playersLeftBehind), TextColor.Gray)
+               .AddTextLine($" -{e.Player.Name}", TextColor.Red)
+                .Build(ViewCommandType.Replace);
+
+                await Game.Network.SendViewCommandsToMapAsync(e.OldMap, leftBehindNotification);
             }
 
 
@@ -38,24 +47,25 @@ namespace OddMud.BasicGamePlugins.EventPlugins
 
             // display the map information to the player
             var mapView = new MudLikeCommandBuilder()
-                .AddText(map.ToString(), TextColor.Teal, TextSize.Strong)
-                .AddLineBreak()
-                .AddText(map.Description, size: TextSize.Large)
-                .AddLineBreak()
+                .AddTextLine(map.ToString(), TextColor.Teal, TextSize.Strong)
+                .AddTextLine(map.Description, size: TextSize.Large)
                 .AddText("exits: ")
-                .AddText(string.Join(",", map.Exits.Select(o => o.ToString())), TextColor.Green)
-                .AddLineBreak()
-                .AddText("players: ")
-                .AddText(string.Join(",", map.Players.Select(o => o.Name)), TextColor.Gray)
-                .AddLineBreak()
+                .AddTextLine(string.Join(",", map.Exits.Select(o => o.ToString().ToLower())), TextColor.Green)
                 .Build();
 
+            // tell the other players about the player who joined their map
+            var otherPlayers = map.Players.Where(p => p.Name != e.Player.Name).Select(o => o.Name);
 
+            var playersUpdate = new MudLikeCommandBuilder()
+                .AddText("players: ")
+                .AddText(string.Join(",", otherPlayers), TextColor.Gray)
+                .AddTextLine($" +{e.Player.Name}", TextColor.Green)
+                 .Build(ViewCommandType.Replace);
+
+            await Game.Network.AddPlayerToMapGroupAsync(e.Player, map);
             await Game.Network.SendViewCommandsToPlayerAsync(e.Player, mapView);
-            await Game.Network.AddPlayerToMapGroupAsync(e.Player, e.NewMap);
-            await Game.Network.SendMessageToMapExceptAsync(e.NewMap, e.Player, $"{e.Player.Name} has joined the area.");
-
-
+            await Game.Network.SendViewCommandsToMapExceptAsync(map,e.Player, playersUpdate);
+            await Game.Network.SendViewCommandsToPlayerAsync(e.Player, playersUpdate);
         }
 
     }

@@ -24,11 +24,35 @@ export class WorldComponent implements OnInit {
   ngOnInit() {
     this.hub.Subscribe(InboundChannels.WorldStream, (data: any) => {
 
-      if (data.commandType = "Set")
-        this.messages.length = 0;
 
-      const received = `${data.output}`;
-      this.messages.push(received);
+      const received = `${data.output}`
+      console.log('inbound data', data);
+      // set
+      if (data.commandType === 0) {
+        this.messages.length = 0;
+      }
+
+      // set or append
+      if (data.commandType === 0 || data.commandType === 1)
+        this.messages.push(received);
+
+      // replace
+      if (data.commandType === 2) {
+
+        var subset = received.substring(received.indexOf('>') + 1);
+        var word = subset.split(' ')[0];
+        console.log('word to find', word);
+        console.log('messages', this.messages);
+        var messageIndex = this.messages.findIndex((m) => m.substring(m.indexOf('>') + 1).startsWith(word));
+
+        // if we cant find a match just push it as a new message, otherwise replace the current one.
+        if (messageIndex < 0)
+          this.messages.push(received);
+        else
+          this.messages[messageIndex] = received;
+
+      }
+
       this.worldHtml = this.messages.join('');
       this.scrollToBottom();
     });

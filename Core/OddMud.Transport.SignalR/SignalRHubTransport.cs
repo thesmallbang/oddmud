@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using OddMud.Core.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,12 @@ namespace OddMud.Transport.SignalR
         private readonly IHubContext<THub> _hub;
         private readonly IViewBuilder<string> _viewBuilder;
 
+        public IReadOnlyList<string> Connections => _connections;
+        private List<string> _connections = new List<string>();
+
+        public event Func<object, string, Task> Disconnected;
+        public event Func<object, string, Task> Connected;
+
         public SignalRHubTransport(
             ILogger<SignalRHubTransport<THub>> logger,
             IHubContext<THub> hub,
@@ -24,8 +31,11 @@ namespace OddMud.Transport.SignalR
             _hub = hub;
             _logger.LogDebug($"Injection : ICommunication");
             _viewBuilder = viewBuilder;
+            
+
         }
 
+        
 
         public Task AddPlayerToMapGroupAsync(IPlayer player, IMap map)
         {
@@ -101,6 +111,31 @@ namespace OddMud.Transport.SignalR
         private string BuildViewOutput(IViewCommand<IViewItem> command)
         {
             return string.Join("", command.Data.Select((viewItem) => _viewBuilder.Build(viewItem)));
+        }
+
+        public async Task AddConnectionAsync(string transportId)
+        {
+            _connections.Add(transportId);
+            if (this.Connected != null)
+                await this.Connected(this, transportId);
+
+        }
+
+        public async Task RemoveConnectionAsync(string transportId)
+        {
+            _connections.RemoveAll(o=> o == transportId);
+            if (this.Disconnected != null) 
+                await this.Disconnected(this, transportId);
+        }
+
+        public Task SendViewCommandsToAll(IViewCommand<IViewItem> viewCommand)
+        {
+            return _hub.Clients.All.SendAsync("WorldStream", new { viewCommand.CommandType, Output = BuildViewOutput(viewCommand) });
+        }
+
+        public Task SendViewCommandsToAllExcept(IPlayer player, IViewCommand<IViewItem> viewCommand)
+        {
+            return _hub.Clients.AllExcept(new List<string>() { player.TransportId }).SendAsync("WorldStream", new { viewCommand.CommandType, Output = BuildViewOutput(viewCommand) });
         }
     }
 

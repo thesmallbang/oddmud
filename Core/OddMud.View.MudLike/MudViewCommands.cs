@@ -40,6 +40,17 @@ namespace OddMud.View.MudLike
             Data = viewItems;
         }
     }
+    public class MudReplaceViewCommands : IViewCommand<IViewItem>
+    {
+        public ViewCommandType CommandType => ViewCommandType.Replace;
+
+        public IEnumerable<IViewItem> Data { get; private set; }
+
+        public MudReplaceViewCommands(IEnumerable<IViewItem> viewItems)
+        {
+            Data = viewItems;
+        }
+    }
 
 
 }

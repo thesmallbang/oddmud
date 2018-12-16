@@ -37,16 +37,21 @@ namespace OddMud.BasicGamePlugins.EventPlugins
             var map = (GridMap)e.NewMap;
 
             // display the map information to the player
-            var view = new List<IViewItem>();
-            view.Add(new TextItem(map.ToString(), TextColor.Teal, TextSize.Strong));
-            view.Add(new LineBreakItem());
-            view.Add(new TextItem(map.Description, TextSize.Large));
-            view.Add(new LineBreakItem());
-            view.Add(new TextItem("exits: "));
-            view.Add(new TextItem(string.Join("," , map.Exits.Select(o=> o.ToString())), TextColor.Yellow));
-            view.Add(new LineBreakItem());
+            var mapView = new MudLikeCommandBuilder()
+                .AddText(map.ToString(), TextColor.Teal, TextSize.Strong)
+                .AddLineBreak()
+                .AddText(map.Description, size: TextSize.Large)
+                .AddLineBreak()
+                .AddText("exits: ")
+                .AddText(string.Join(",", map.Exits.Select(o => o.ToString())), TextColor.Green)
+                .AddLineBreak()
+                .AddText("players: ")
+                .AddText(string.Join(",", map.Players.Select(o => o.Name)), TextColor.Gray)
+                .AddLineBreak()
+                .Build();
 
-            await Game.Network.SendViewCommandsToPlayerAsync(e.Player, new MudViewCommands(view));
+
+            await Game.Network.SendViewCommandsToPlayerAsync(e.Player, mapView);
             await Game.Network.AddPlayerToMapGroupAsync(e.Player, e.NewMap);
             await Game.Network.SendMessageToMapExceptAsync(e.NewMap, e.Player, $"{e.Player.Name} has joined the area.");
 

@@ -39,7 +39,7 @@ namespace OddMud.BasicGame
 
         public virtual async Task<bool> AddPlayerAsync(IPlayer player)
         {
-            if (Players.Any(p => p == player))
+            if (Players.Any(p => p.Name == player.Name))
                 return false;
 
             _players.Add(player);

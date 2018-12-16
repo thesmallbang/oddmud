@@ -23,7 +23,11 @@ export class WorldComponent implements OnInit {
 
   ngOnInit() {
     this.hub.Subscribe(InboundChannels.WorldStream, (data: any) => {
-      const received = `${data}`;
+
+      if (data.commandType = "Set")
+        this.messages.length = 0;
+
+      const received = `${data.output}`;
       this.messages.push(received);
       this.worldHtml = this.messages.join('');
       this.scrollToBottom();

@@ -43,9 +43,12 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
             var player = new BasicPlayer() { Name = request.Data.SecondPart, TransportId = request.TransportId };
 
             if (await Game.AddPlayerAsync(player))
-            {
                 await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Logged in as {request.Data.SecondPart} -- PlayerCount: {Game.Players.Count}");
-            }
+            else
+                await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Login was rejected");
+
+
+
         }
 
         private async Task HandleBasicLogoutAsync(IProcessorData<CommandModel> request, IPlayer player)

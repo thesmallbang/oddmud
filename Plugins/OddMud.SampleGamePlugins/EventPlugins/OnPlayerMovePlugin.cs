@@ -31,11 +31,9 @@ namespace OddMud.BasicGamePlugins.EventPlugins
                 await e.OldMap.RemovePlayerAsync(e.Player);
                 await Game.Network.RemovePlayerFromMapGroupAsync(e.Player, e.OldMap);
 
-                var playersLeftBehind = e.OldMap.Players.Where(p => p.Name != e.Player.Name).Select(o => o.Name);
+                var playersLeftBehind = e.OldMap.Players.Except(e.Player);
 
-                var leftBehindNotification = new MudLikeCommandBuilder()
-               .AddText("players: ")
-               .AddText(string.Join(",", playersLeftBehind), TextColor.Gray)
+                var leftBehindNotification = new MudLikeCommandBuilder().GetPlayersUpdate(playersLeftBehind)
                .AddTextLine($" -{e.Player.Name}", TextColor.Red)
                 .Build(ViewCommandType.Replace);
 
@@ -54,11 +52,8 @@ namespace OddMud.BasicGamePlugins.EventPlugins
                 .Build();
 
             // tell the other players about the player who joined their map
-            var otherPlayers = map.Players.Where(p => p.Name != e.Player.Name).Select(o => o.Name);
-
-            var playersUpdate = new MudLikeCommandBuilder()
-                .AddText("players: ")
-                .AddText(string.Join(",", otherPlayers), TextColor.Gray)
+            var existingPlayers = map.Players.Except(e.Player);
+            var playersUpdate = new MudLikeCommandBuilder().GetPlayersUpdate(existingPlayers)
                 .AddTextLine($" +{e.Player.Name}", TextColor.Green)
                  .Build(ViewCommandType.Replace);
 

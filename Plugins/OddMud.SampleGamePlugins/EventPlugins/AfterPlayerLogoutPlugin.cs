@@ -1,4 +1,5 @@
-﻿using OddMud.Core.Interfaces;
+﻿using OddMud.BasicGame.Extensions;
+using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using OddMud.View.MudLike;
 using System;
@@ -24,11 +25,9 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         private async Task AfterPlayerLogout(Object sender, IPlayer player)
         {
 
-            var playersLeftBehind = player.Map.Players.Where(p => p.Name != player.Name).Select(o => o.Name);
+            var playersLeftBehind = player.Map.Players.Where(p => p.Name != player.Name);
 
-            var leftBehindNotification = new MudLikeCommandBuilder()
-           .AddText("players: ")
-           .AddText(string.Join(",", playersLeftBehind), TextColor.Gray)
+            var leftBehindNotification = new MudLikeCommandBuilder().GetPlayersUpdate(playersLeftBehind)
            .AddTextLine($" -{player.Name}", TextColor.Red)
             .Build(ViewCommandType.Replace);
 

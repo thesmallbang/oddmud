@@ -26,15 +26,13 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         private async Task AfterPlayerLogout(Object sender, IPlayer player)
         {
 
+            await player.Map.RemovePlayerAsync(player);
+
             var playersLeftBehind = player.Map.Players.Where(p => p.Name != player.Name);
-
-            var leftBehindNotification = new MudLikeCommandBuilder().GetPlayersUpdate(playersLeftBehind)
-           .AddTextLine($" -{player.Name}", TextColor.Red)
-            .Build(ViewCommandType.Replace);
-
+            var leftBehindNotification = new MudLikeCommandBuilder().AddPlayers(playersLeftBehind).Build(ViewCommandType.Replace, "playerlist");
 
             await Game.Network.SendViewCommandsToMapAsync(player.Map, leftBehindNotification);
-            await player.Map.RemovePlayerAsync(player);
+            
         }
 
     }

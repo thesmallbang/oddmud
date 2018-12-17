@@ -17,7 +17,7 @@ namespace OddMud.View.MudLike
         private List<IViewItem> _commands = new List<IViewItem>();
 
 
-        public IViewCommand<IViewItem> Build(ViewCommandType commandType = ViewCommandType.Set)
+        public IViewCommand<IViewItem> Build(ViewCommandType commandType = ViewCommandType.Set, string replaceId = "")
         {
             switch (commandType)
             {
@@ -26,10 +26,24 @@ namespace OddMud.View.MudLike
                 case ViewCommandType.Append:
                     return new MudAppendViewCommands(_commands);
                 case ViewCommandType.Replace:
-                    return new MudReplaceViewCommands(_commands);
+                    return new MudReplaceViewCommands(replaceId,_commands);
             }
             return null;
         }
+
+        public MudLikeCommandBuilder StartContainer(string id)
+        {
+
+            _commands.Add(new ContainerStart(id));
+            return this;
+        }
+        public MudLikeCommandBuilder EndContainer()
+        {
+
+            _commands.Add(new ContainerEnd());
+            return this;
+        }
+
 
         public MudLikeCommandBuilder AddText(string message, TextColor color = TextColor.Normal, TextSize size = TextSize.Normal)
         {

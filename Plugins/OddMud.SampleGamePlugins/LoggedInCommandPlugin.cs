@@ -29,16 +29,14 @@ namespace OddMud.SampleGamePlugins
 
             if (!Handles.Any(handleCommand => handleCommand == request.Data.FirstPart))
                 return;
-            Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, $"PlayerCount: {Game.Players.Count}");
+
             var player = Game.Players.GetPlayerByTransportId(request.TransportId);
             if (player == null)
             {
-                Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, $"In Process {Name} - NotLoggedIn");
                 await NotLoggedInProcessAsync(request);
             }
             else
             {
-                Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, $"In Process {Name} - LoggedIn");
                 await LoggedInProcessAsync(request, player);
             }
         }

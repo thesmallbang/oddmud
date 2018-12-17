@@ -36,7 +36,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
             _logger.LogInformation($"Player in combat? {await _combatModule.IsPlayerInCombatAsync(player)}");
 
-          
+
             var currentMap = (GridMap)player.Map;
             var currentGridLocation = currentMap.Location;
 
@@ -50,8 +50,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                     break;
                 case "e":
                 case "east":
-                    if (currentMap.Exits.Any(e => e == GridExits.East))
-                        exit = GridExits.East;
+                    exit = GridExits.East;
                     break;
                 case "s":
                 case "south":
@@ -59,8 +58,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                     break;
                 case "w":
                 case "west":
-                    if (currentMap.Exits.Any(e => e == GridExits.West))
-                        exit = GridExits.West;
+                    exit = GridExits.West;
                     break;
                 case "u":
                 case "up":
@@ -107,9 +105,9 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                 case GridExits.West:
                     return new GridLocation(currentGridLocation.X - 1, currentGridLocation.Y, currentGridLocation.Z);
                 case GridExits.Up:
-                    return new GridLocation(currentGridLocation.X, currentGridLocation.Y, currentGridLocation.Z+1);
+                    return new GridLocation(currentGridLocation.X, currentGridLocation.Y, currentGridLocation.Z + 1);
                 case GridExits.Down:
-                    return new GridLocation(currentGridLocation.X, currentGridLocation.Y, currentGridLocation.Z-1);
+                    return new GridLocation(currentGridLocation.X, currentGridLocation.Y, currentGridLocation.Z - 1);
 
             }
 

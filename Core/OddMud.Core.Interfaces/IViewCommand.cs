@@ -8,6 +8,8 @@ namespace OddMud.Core.Interfaces
     {
         ViewCommandType CommandType { get; }
         IEnumerable<TData> Data { get; }
+
+        string ReplaceId { get; }
     }
 
     public enum ViewCommandType

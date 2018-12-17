@@ -23,7 +23,10 @@ namespace OddMud.ViewBuilders.MudLikeHtml
 
             var tswitch = new TypeSwitch()
                 .Case((TextItem item) => html = BuildTextItem(item))
-                .Case((LineBreakItem item) => html = "<br />");
+                .Case((LineBreakItem item) => html = "<br />")
+                .Case((ContainerStart item) => html = BuildContainerStart(item))
+                .Case((ContainerEnd item) => html = "</div>")
+                ;
 
             tswitch.Switch(viewItem);
             return html;
@@ -35,7 +38,7 @@ namespace OddMud.ViewBuilders.MudLikeHtml
             if (string.IsNullOrEmpty(item.Text))
                 return string.Empty;
 
-            var output = "<span class='textitem";
+            var output = $"<span class='textitem";
 
             if (item.Size != TextSize.Normal)
                 output += " text-size-" + item.Size.ToString().ToLower();
@@ -50,7 +53,12 @@ namespace OddMud.ViewBuilders.MudLikeHtml
             return output;
         }
 
+        private string BuildContainerStart(ContainerStart item)
+        {
+            return $"<div id='{item.Id}' class='world-inline-container'>";
+        }
 
+      
 
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OddMud.Core.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace OddMud.Web.Game
 {
@@ -31,6 +32,7 @@ namespace OddMud.Web.Game
             _logger = logger;
             _game = (GridGame)game;
 
+
             eventLoader.LoadPlugins("./plugins/");
             var _eventPlugins = eventLoader.Plugins.ToList();
             _eventPlugins.ForEach((eplugin) => {
@@ -52,7 +54,7 @@ namespace OddMud.Web.Game
         {
             foreach (var plugin in _commandPlugins)
             {
-                _logger.LogInformation("ProcessAsync - " + plugin.Name);
+                _logger.LogDebug("ProcessAsync - " + plugin.Name);
                 await plugin.ProcessAsync(request);
 
                 if (request.Handled)

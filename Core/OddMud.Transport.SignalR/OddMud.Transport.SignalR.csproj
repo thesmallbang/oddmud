@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OddMud.Core.Game\OddMud.Core.Interfaces.csproj">
+    <ProjectReference Include="..\OddMud.Core.Interfaces\OddMud.Core.Interfaces.csproj">
       <Private>false</Private>
     </ProjectReference>
   </ItemGroup>

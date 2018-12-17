@@ -26,7 +26,7 @@ namespace OddMud.BasicGamePlugins.EventPlugins
                 lastRunWorldDate = worldTime;
                 var viewUpdate = MudLikeCommandBuilder.Start()
                     .AddWorldDate(worldTime)
-                    .Build(ViewCommandType.Replace);
+                    .Build(ViewCommandType.Replace, "dateview");
 
                 await Game.Network.SendViewCommandsToPlayersAsync(Game.Players, viewUpdate);
             }

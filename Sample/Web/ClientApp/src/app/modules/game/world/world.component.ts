@@ -26,7 +26,6 @@ export class WorldComponent implements OnInit {
 
 
       const received = `${data.output}`
-      console.log('inbound data', data);
       // set
       if (data.commandType === 0) {
         this.messages.length = 0;
@@ -39,17 +38,22 @@ export class WorldComponent implements OnInit {
       // replace
       if (data.commandType === 2) {
 
-        var subset = received.substring(received.indexOf('>') + 1);
-        var word = subset.split(' ')[0];
-        console.log('word to find', word);
-        console.log('messages', this.messages);
-        var messageIndex = this.messages.findIndex((m) => m.substring(m.indexOf('>') + 1).startsWith(word));
+        var tofind = data.replaceId;
+        var messageIndex = this.messages.findIndex((m) => m.includes(`id='${tofind}'`)) ;
 
         // if we cant find a match just push it as a new message, otherwise replace the current one.
         if (messageIndex < 0)
           this.messages.push(received);
-        else
-          this.messages[messageIndex] = received;
+        else {
+          // we need to replace the specific container/div with the inbound one in our message
+
+          var message = this.messages[messageIndex];
+          var divStart = message.indexOf(`<div id='${tofind}'`);
+          var divEnd = message.indexOf("</div>", divStart);
+          var newMessage = `${message.substring(0, divStart)}${received}${message.substring(divEnd + 6)}`;
+          this.messages[messageIndex] =  newMessage;
+        }
+          
 
       }
 

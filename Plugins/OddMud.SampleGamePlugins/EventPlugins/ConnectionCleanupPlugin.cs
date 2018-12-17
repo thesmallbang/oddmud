@@ -18,6 +18,7 @@ namespace OddMud.SampleGamePlugins.EventPlugins
 
         public override void Configure(IGame game, IServiceProvider serviceProvider)
         {
+            base.Configure(game, serviceProvider);
             game.Network.Disconnected += Network_Disconnected;
         }
         

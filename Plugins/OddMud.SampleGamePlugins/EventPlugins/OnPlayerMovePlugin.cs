@@ -33,41 +33,31 @@ namespace OddMud.BasicGamePlugins.EventPlugins
 
                 var playersLeftBehind = e.OldMap.Players.Except(e.Player);
 
-                var leftBehindNotification = new MudLikeCommandBuilder().GetPlayersUpdate(playersLeftBehind)
-               .AddTextLine($" -{e.Player.Name}", TextColor.Red)
-                .Build(ViewCommandType.Replace);
+                var leftBehindNotification = new MudLikeCommandBuilder()
+                    .AddPlayers(playersLeftBehind)
+                        .Build(ViewCommandType.Replace, "playerlist");
 
                 await Game.Network.SendViewCommandsToMapAsync(e.OldMap, leftBehindNotification);
             }
 
 
             var map = (GridMap)e.NewMap;
-
-            // display the map information to the player
-            var mapView = new MudLikeCommandBuilder()
-                .AddTextLine(map.ToString(), TextColor.Teal, TextSize.Strong)
-                .AddTextLine(map.Description, size: TextSize.Large)
-                .AddText("exits: ")
-                .AddTextLine(string.Join(",", map.Exits.Select(o => o.ToString().ToLower())), TextColor.Green)
-                .Build();
-
-            // tell the other players about the player who joined their map
-            var existingPlayers = map.Players.Except(e.Player);
-            var playersUpdate = new MudLikeCommandBuilder().GetPlayersUpdate(existingPlayers)
-                .AddTextLine($" +{e.Player.Name}", TextColor.Green)
-                 .Build(ViewCommandType.Replace);
-
-            var worldDateView = MudLikeCommandBuilder.Start()
-                .AddWorldDate(Game.World.Time.WorldTime)
-                .Build(ViewCommandType.Replace);
-
             await Game.Network.AddPlayerToMapGroupAsync(e.Player, map);
-            await Game.Network.SendViewCommandsToPlayerAsync(e.Player, mapView);
-            await Game.Network.SendViewCommandsToPlayerAsync(e.Player, worldDateView);
 
-            await Game.Network.SendViewCommandsToMapExceptAsync(map, e.Player, playersUpdate);
-            await Game.Network.SendViewCommandsToPlayerAsync(e.Player, playersUpdate);
+            var player = e.Player;
+            // clear the previous output for the player and show the gate date
+            var lookView = MudLikeCommandBuilder.Start()
+                .AddWorldDate(Game.World.Time.WorldTime)
+                .AddMap(map)
+                .Build(ViewCommandType.Set);
+            await Game.Network.SendViewCommandsToPlayerAsync(player, lookView);
+
+            // tell our player who else is on the map
+            var playersUpdate = new MudLikeCommandBuilder().AddPlayers(map.Players)
+                 .Build(ViewCommandType.Replace, "playerlist");
+
+            await Game.Network.SendViewCommandsToMapAsync(map, playersUpdate);
+
         }
-
     }
 }

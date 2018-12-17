@@ -19,7 +19,6 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
 
         public override Task LoggedInProcessAsync(IProcessorData<CommandModel> request, IPlayer player)
         {
-            Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, $"LoggedInProcessAsync {Name} - {string.Join(",", Handles)}");
             switch (request.Data.FirstPart)
             {
                 case "say":

@@ -89,12 +89,12 @@ namespace OddMud.Transport.SignalR
 
         public Task SendViewCommandsToMapAsync(IMap map, IViewCommand<IViewItem> viewCommand)
         {
-            return _hub.Clients.Group($"map_{map.Id}").SendAsync("WorldStream", new { viewCommand.CommandType, Output = BuildViewOutput(viewCommand) });
+            return _hub.Clients.Group($"map_{map.Id}").SendAsync("WorldStream", new { viewCommand.CommandType, viewCommand.ReplaceId,  Output = BuildViewOutput(viewCommand) });
         }
 
         public Task SendViewCommandsToMapExceptAsync(IMap map, IEnumerable<IPlayer> players, IViewCommand<IViewItem> viewCommand)
         {
-            return _hub.Clients.GroupExcept($"map_{map.Id}", players.Select(p => p.TransportId).ToList()).SendAsync("WorldStream", new { viewCommand.CommandType, Output = BuildViewOutput(viewCommand) });
+            return _hub.Clients.GroupExcept($"map_{map.Id}", players.Select(p => p.TransportId).ToList()).SendAsync("WorldStream", new { viewCommand.CommandType, viewCommand.ReplaceId, Output = BuildViewOutput(viewCommand) });
         }
 
         public Task SendViewCommandsToMapExceptAsync(IMap map, IPlayer player, IViewCommand<IViewItem> viewCommand)
@@ -105,7 +105,7 @@ namespace OddMud.Transport.SignalR
 
         public Task SendViewCommandsToPlayerAsync(IPlayer player, IViewCommand<IViewItem> viewCommand)
         {
-            return _hub.Clients.Client(player.TransportId).SendAsync("WorldStream", new { viewCommand.CommandType, Output = BuildViewOutput(viewCommand) });
+            return _hub.Clients.Client(player.TransportId).SendAsync("WorldStream", new { viewCommand.CommandType, viewCommand.ReplaceId,  Output = BuildViewOutput(viewCommand) });
         }
 
         private string BuildViewOutput(IViewCommand<IViewItem> command)
@@ -130,17 +130,17 @@ namespace OddMud.Transport.SignalR
 
         public Task SendViewCommandsToAllAsync(IViewCommand<IViewItem> viewCommand)
         {
-            return _hub.Clients.All.SendAsync("WorldStream", new { viewCommand.CommandType, Output = BuildViewOutput(viewCommand) });
+            return _hub.Clients.All.SendAsync("WorldStream", new { viewCommand.CommandType, viewCommand.ReplaceId, Output = BuildViewOutput(viewCommand) });
         }
 
         public Task SendViewCommandsToAllExceptAsync(IPlayer player, IViewCommand<IViewItem> viewCommand)
         {
-            return _hub.Clients.AllExcept(new List<string>() { player.TransportId }).SendAsync("WorldStream", new { viewCommand.CommandType, Output = BuildViewOutput(viewCommand) });
+            return _hub.Clients.AllExcept(new List<string>() { player.TransportId }).SendAsync("WorldStream", new { viewCommand.CommandType, viewCommand.ReplaceId,  Output = BuildViewOutput(viewCommand) });
         }
 
         public Task SendViewCommandsToPlayersAsync(IEnumerable<IPlayer> players, IViewCommand<IViewItem> viewCommand)
         {
-            return _hub.Clients.Clients(players.Select(p => p.TransportId).ToList()).SendAsync("WorldStream", new { viewCommand.CommandType, Output = BuildViewOutput(viewCommand) });
+            return _hub.Clients.Clients(players.Select(p => p.TransportId).ToList()).SendAsync("WorldStream", new { viewCommand.CommandType, viewCommand.ReplaceId, Output = BuildViewOutput(viewCommand) });
         }
     }
 

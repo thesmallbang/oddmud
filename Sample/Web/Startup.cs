@@ -46,6 +46,7 @@ namespace OddMud.Web
             services.AddSingleton<IHostedService, GameService>();
             services.AddSingleton<ITransport, SignalRHubTransport<GameHub>>();
             services.AddSingleton<IGameModule<CombatModule>, CombatModule>();
+            services.AddSingleton<IGameModule<CombatModule>, CombatModule>();
             services.AddSingleton(typeof(CombatModuleSettings));
             services.AddSingleton<IGame, GridGame>();
             

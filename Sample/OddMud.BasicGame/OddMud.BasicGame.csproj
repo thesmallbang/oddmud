@@ -6,13 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\OddMud.Core.Game\OddMud.Core.Interfaces.csproj">
+    <ProjectReference Include="..\..\Core\OddMud.Core.Interfaces\OddMud.Core.Interfaces.csproj">
       <Private>false</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\OddMud.Core.Plugins\OddMud.Core.Plugins.csproj">
       <Private>false</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\OddMud.View.MudLike\OddMud.View.MudLike.csproj" />
+    <ProjectReference Include="..\..\Core\OddMud.View.MudLike\OddMud.View.MudLike.csproj">
+      <Private>false</Private>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>

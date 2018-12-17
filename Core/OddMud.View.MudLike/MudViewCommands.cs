@@ -11,6 +11,8 @@ namespace OddMud.View.MudLike
 
         public IEnumerable<IViewItem> Data { get; private set; }
 
+        public string ReplaceId => "";
+
         public MudViewCommands(IEnumerable<IViewItem> viewItems)
         {
             Data = viewItems;
@@ -22,6 +24,8 @@ namespace OddMud.View.MudLike
         public ViewCommandType CommandType => ViewCommandType.Set;
 
         public IEnumerable<IViewItem> Data { get; private set; }
+
+        public string ReplaceId => "";
 
         public void SetData(IEnumerable<IViewItem> data)
         {
@@ -35,6 +39,8 @@ namespace OddMud.View.MudLike
 
         public IEnumerable<IViewItem> Data { get; private set; }
 
+        public string ReplaceId => "";
+
         public MudAppendViewCommands(IEnumerable<IViewItem> viewItems)
         {
             Data = viewItems;
@@ -43,11 +49,13 @@ namespace OddMud.View.MudLike
     public class MudReplaceViewCommands : IViewCommand<IViewItem>
     {
         public ViewCommandType CommandType => ViewCommandType.Replace;
+        public string ReplaceId { get; set; }
 
         public IEnumerable<IViewItem> Data { get; private set; }
 
-        public MudReplaceViewCommands(IEnumerable<IViewItem> viewItems)
+        public MudReplaceViewCommands(string replaceId, IEnumerable<IViewItem> viewItems)
         {
+            ReplaceId = replaceId;
             Data = viewItems;
         }
     }

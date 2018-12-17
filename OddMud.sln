@@ -7,8 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{E31AAA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6B27AAA5-63D8-417D-856C-F83E4558BE62}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.Core.Interfaces", "Core\OddMud.Core.Game\OddMud.Core.Interfaces.csproj", "{FB153EF7-0CE9-4D7A-9960-F733B71E0F7F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.Core.Plugins", "Core\OddMud.Core.Plugins\OddMud.Core.Plugins.csproj", "{80967FB8-7AE7-4FC9-B4B1-D74AB8F6D4CE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.Transport.SignalR", "Core\OddMud.Transport.SignalR\OddMud.Transport.SignalR.csproj", "{A507CF0E-8D16-4D25-A4A7-EAE5548E560F}"
@@ -23,16 +21,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.View.MudLike", "Core
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.ViewBuilders.MudLikeHtml", "Core\OddMud.ViewBuilders.MudLikeHtml\OddMud.ViewBuilders.MudLikeHtml.csproj", "{C09BCF9D-3761-479C-9359-308BE74B45AF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.Core.Interfaces", "Core\OddMud.Core.Interfaces\OddMud.Core.Interfaces.csproj", "{2A0BA9A2-CBC6-4F63-ABD0-8B26AE20AC1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FB153EF7-0CE9-4D7A-9960-F733B71E0F7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB153EF7-0CE9-4D7A-9960-F733B71E0F7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB153EF7-0CE9-4D7A-9960-F733B71E0F7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB153EF7-0CE9-4D7A-9960-F733B71E0F7F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{80967FB8-7AE7-4FC9-B4B1-D74AB8F6D4CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{80967FB8-7AE7-4FC9-B4B1-D74AB8F6D4CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80967FB8-7AE7-4FC9-B4B1-D74AB8F6D4CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -61,12 +57,15 @@ Global
 		{C09BCF9D-3761-479C-9359-308BE74B45AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C09BCF9D-3761-479C-9359-308BE74B45AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C09BCF9D-3761-479C-9359-308BE74B45AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A0BA9A2-CBC6-4F63-ABD0-8B26AE20AC1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A0BA9A2-CBC6-4F63-ABD0-8B26AE20AC1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A0BA9A2-CBC6-4F63-ABD0-8B26AE20AC1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A0BA9A2-CBC6-4F63-ABD0-8B26AE20AC1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{FB153EF7-0CE9-4D7A-9960-F733B71E0F7F} = {6B27AAA5-63D8-417D-856C-F83E4558BE62}
 		{80967FB8-7AE7-4FC9-B4B1-D74AB8F6D4CE} = {6B27AAA5-63D8-417D-856C-F83E4558BE62}
 		{A507CF0E-8D16-4D25-A4A7-EAE5548E560F} = {6B27AAA5-63D8-417D-856C-F83E4558BE62}
 		{98571E44-0D91-4E4C-B04F-AB31CB41D5F4} = {E31AAA01-B855-4B98-A78C-50ECF7983148}
@@ -74,6 +73,7 @@ Global
 		{074B4041-8A66-4DEB-B779-C51C6B5F2269} = {E31AAA01-B855-4B98-A78C-50ECF7983148}
 		{A2A3F892-FA96-4B38-94AB-7FA8DCBC3B8A} = {6B27AAA5-63D8-417D-856C-F83E4558BE62}
 		{C09BCF9D-3761-479C-9359-308BE74B45AF} = {6B27AAA5-63D8-417D-856C-F83E4558BE62}
+		{2A0BA9A2-CBC6-4F63-ABD0-8B26AE20AC1A} = {6B27AAA5-63D8-417D-856C-F83E4558BE62}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5963A913-1F3B-432D-A4A2-899A088CC9A2}

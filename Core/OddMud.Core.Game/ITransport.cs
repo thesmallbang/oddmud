@@ -27,8 +27,10 @@ namespace OddMud.Core.Interfaces
         Task SendViewCommandsToMapAsync(IMap map, IViewCommand<IViewItem> viewCommand);
         Task SendViewCommandsToMapExceptAsync(IMap map, IEnumerable<IPlayer> players, IViewCommand<IViewItem> viewCommand);
         Task SendViewCommandsToMapExceptAsync(IMap map, IPlayer player, IViewCommand<IViewItem> viewCommand);
-        Task SendViewCommandsToAll(IViewCommand<IViewItem> viewCommand);
-        Task SendViewCommandsToAllExcept(IPlayer player, IViewCommand<IViewItem> viewCommand);
+        Task SendViewCommandsToAllAsync(IViewCommand<IViewItem> viewCommand);
+        Task SendViewCommandsToAllExceptAsync(IPlayer player, IViewCommand<IViewItem> viewCommand);
+        Task SendViewCommandsToPlayersAsync(IEnumerable<IPlayer> players, IViewCommand<IViewItem> viewCommand);
+
 
 
 

@@ -128,14 +128,19 @@ namespace OddMud.Transport.SignalR
                 await this.Disconnected(this, transportId);
         }
 
-        public Task SendViewCommandsToAll(IViewCommand<IViewItem> viewCommand)
+        public Task SendViewCommandsToAllAsync(IViewCommand<IViewItem> viewCommand)
         {
             return _hub.Clients.All.SendAsync("WorldStream", new { viewCommand.CommandType, Output = BuildViewOutput(viewCommand) });
         }
 
-        public Task SendViewCommandsToAllExcept(IPlayer player, IViewCommand<IViewItem> viewCommand)
+        public Task SendViewCommandsToAllExceptAsync(IPlayer player, IViewCommand<IViewItem> viewCommand)
         {
             return _hub.Clients.AllExcept(new List<string>() { player.TransportId }).SendAsync("WorldStream", new { viewCommand.CommandType, Output = BuildViewOutput(viewCommand) });
+        }
+
+        public Task SendViewCommandsToPlayersAsync(IEnumerable<IPlayer> players, IViewCommand<IViewItem> viewCommand)
+        {
+            return _hub.Clients.Clients(players.Select(p => p.TransportId).ToList()).SendAsync("WorldStream", new { viewCommand.CommandType, Output = BuildViewOutput(viewCommand) });
         }
     }
 

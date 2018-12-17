@@ -8,6 +8,12 @@ namespace OddMud.View.MudLike
     public class MudLikeCommandBuilder
     {
 
+
+        public static MudLikeCommandBuilder Start()
+        {
+            return new MudLikeCommandBuilder();
+        }
+
         private List<IViewItem> _commands = new List<IViewItem>();
 
 

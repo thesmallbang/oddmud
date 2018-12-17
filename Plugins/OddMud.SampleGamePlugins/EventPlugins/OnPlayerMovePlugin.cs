@@ -57,9 +57,15 @@ namespace OddMud.BasicGamePlugins.EventPlugins
                 .AddTextLine($" +{e.Player.Name}", TextColor.Green)
                  .Build(ViewCommandType.Replace);
 
+            var worldDateView = MudLikeCommandBuilder.Start()
+                .AddWorldDate(Game.World.Time.WorldTime)
+                .Build(ViewCommandType.Replace);
+
             await Game.Network.AddPlayerToMapGroupAsync(e.Player, map);
             await Game.Network.SendViewCommandsToPlayerAsync(e.Player, mapView);
-            await Game.Network.SendViewCommandsToMapExceptAsync(map,e.Player, playersUpdate);
+            await Game.Network.SendViewCommandsToPlayerAsync(e.Player, worldDateView);
+
+            await Game.Network.SendViewCommandsToMapExceptAsync(map, e.Player, playersUpdate);
             await Game.Network.SendViewCommandsToPlayerAsync(e.Player, playersUpdate);
         }
 

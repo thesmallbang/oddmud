@@ -14,7 +14,7 @@ namespace OddMud.BasicGame
     {
         public string Name => nameof(BasicWorld);
         public event Func<object, IMapChangeEvent, Task> PlayerMoved;
-        public TimeOfDay Time = new TimeOfDay() { Timescale = 60, StartOffset = new DateTime(2000, 1, 1).Ticks };
+        public TimeOfDay Time = new TimeOfDay() { Timescale = 6000, StartOffset = new DateTime(2000, 1, 1).Ticks };
         public virtual IReadOnlyList<IMap> Maps => _maps;
 
         private readonly ILogger<BasicWorld> _logger;

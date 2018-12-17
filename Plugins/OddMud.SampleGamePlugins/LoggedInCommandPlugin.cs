@@ -15,18 +15,18 @@ namespace OddMud.SampleGamePlugins
     {
         public virtual string Name => nameof(LoggedInCommandPlugin);
         public virtual IGame Game { get; private set; }
-
         public virtual IReadOnlyList<string> Handles => new List<string>();
 
 
-        public void Configure(IGame game, IServiceProvider serviceProvider)
+        public virtual void Configure(IGame game,
+            IServiceProvider serviceProvider)
         {
             Game = game;
         }
 
         public async Task ProcessAsync(IProcessorData<CommandModel> request)
         {
-            
+
             if (!Handles.Any(handleCommand => handleCommand == request.Data.FirstPart))
                 return;
             Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, $"PlayerCount: {Game.Players.Count}");

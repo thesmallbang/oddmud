@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using OddMud.BasicGame;
 using OddMud.BasicGame.Commands;
 using OddMud.BasicGame.Misc;
@@ -17,19 +18,27 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         public override string Name => nameof(PlayerMovementPlugin);
         public new GridGame Game => (GridGame)base.Game;
 
+        private ILogger<PlayerMovementPlugin> _logger;
+        private CombatModule _combatModule;
+
         public override IReadOnlyList<string> Handles => _handles;
         private List<string> _handles = new List<string>() { "north", "east", "south", "west", "n", "e", "s", "w", "up", "down", "u", "d" };
 
+        public override void Configure(IGame game, IServiceProvider serviceProvider)
+        {
+            base.Configure(game, serviceProvider);
+            _logger = (ILogger<PlayerMovementPlugin>)serviceProvider.GetService(typeof(ILogger<PlayerMovementPlugin>));
+            _combatModule = (CombatModule)serviceProvider.GetService(typeof(IGameModule<CombatModule>));
+        }
 
         public override async Task LoggedInProcessAsync(IProcessorData<CommandModel> request, IPlayer player)
         {
 
-            IMap nextMap = null;
+            _logger.LogInformation($"Player in combat? {await _combatModule.IsPlayerInCombatAsync(player)}");
+
+          
             var currentMap = (GridMap)player.Map;
             var currentGridLocation = currentMap.Location;
-
-
-            Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, $"in player movement {currentMap.Name}");
 
             var exit = GridExits.None;
 
@@ -61,8 +70,6 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                 case "down":
                     exit = GridExits.Down;
                     break;
-
-
                 default:
                     return;
             }
@@ -75,11 +82,11 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
             request.Handled = true;
             var nextLocation = GetNextLocation(currentGridLocation, exit);
-            nextMap = Game.World.Maps.FirstOrDefault(map => map.Location.X == nextLocation.X && map.Location.Y == nextLocation.Y && map.Location.Z == nextLocation.Z);
+            var nextMap = Game.World.Maps.FirstOrDefault(map => map.Location.X == nextLocation.X && map.Location.Y == nextLocation.Y && map.Location.Z == nextLocation.Z);
 
             if (nextMap == null)
             {
-                Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, $"next map not found {nextLocation}");
+                Game.Log(LogLevel.Information, $"next map not found {nextLocation}");
                 return;
             }
 

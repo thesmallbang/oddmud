@@ -20,7 +20,8 @@ namespace OddMud.Web.Game
 
         public GameService(IOptions<GameServiceSettings> settings,
                                          ILogger<GameService> logger,
-                                         IGame game)
+                                         IGame game,
+                                         GameHubProcessor gameHubProcessor)
         {
             _logger = logger;
             _logger.LogDebug($"ctor {nameof(GameService)}");

@@ -17,7 +17,7 @@ namespace OddMud.BasicGamePlugins.EventPlugins
         public string Name => nameof(OnPlayerMovePlugin);
         public GridGame Game;
 
-        public void Configure(IGame game)
+        public void Configure(IGame game, IServiceProvider serviceProvider)
         {
             Game = (GridGame)game;
             Game.World.PlayerMoved += HandleMapChanged;

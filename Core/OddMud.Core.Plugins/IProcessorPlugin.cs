@@ -1,4 +1,5 @@
 ﻿using OddMud.Core.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,6 +11,6 @@ namespace OddMud.Core.Plugins
         IReadOnlyList<string> Handles { get; }
 
         Task ProcessAsync(TData request);
-        void Configure(IGame game);
+        void Configure(IGame game, IServiceProvider serviceProvider);
     }
 }

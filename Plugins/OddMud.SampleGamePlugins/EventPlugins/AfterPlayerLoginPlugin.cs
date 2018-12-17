@@ -15,7 +15,7 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         public string Name => nameof(AfterPlayerLoginPlugin);
         public IGame Game;
 
-        public void Configure(IGame game)
+        public void Configure(IGame game, IServiceProvider serviceProvider)
         {
             Game = game;
             Game.PlayerAdded += AfterPlayerLogin;

@@ -1,4 +1,5 @@
-﻿using OddMud.BasicGame.Extensions;
+﻿using OddMud.BasicGame;
+using OddMud.BasicGame.Extensions;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using OddMud.View.MudLike;
@@ -14,11 +15,11 @@ namespace OddMud.SampleGamePlugins.EventPlugins
     {
 
         public string Name => nameof(AfterPlayerLogoutPlugin);
-        public BasicGame.Game Game;
+        public IGame Game;
 
-        public void Configure(IGame game)
+        public void Configure(IGame game, IServiceProvider serviceProvider)
         {
-            Game = (BasicGame.Game)game;
+            Game = game;
             Game.PlayerRemoved += AfterPlayerLogout;
         }
 

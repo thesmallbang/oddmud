@@ -15,7 +15,7 @@ namespace OddMud.Core.Plugins
         public virtual int Interval => 0;
         private long lastTick = 0;
 
-        public virtual void Configure(IGame game)
+        public virtual void Configure(IGame game, IServiceProvider serviceProvider)
         {
             Game = game;
             Game.Ticked += Game_Ticked;

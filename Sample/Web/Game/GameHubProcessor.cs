@@ -24,6 +24,7 @@ namespace OddMud.Web.Game
             ILogger<GameHubProcessor> logger,
             FilePluginLoader<IProcessorPlugin<IProcessorData<CommandModel>>> commandPluginLoader,
             FilePluginLoader<IEventPlugin> eventLoader,
+            IServiceProvider serviceProvider,
             IGame game
             )
         {
@@ -34,7 +35,7 @@ namespace OddMud.Web.Game
             var _eventPlugins = eventLoader.Plugins.ToList();
             _eventPlugins.ForEach((eplugin) => {
                 _logger.LogDebug($"Configure Event Plugin {eplugin.Name}");
-                eplugin.Configure(_game);
+                eplugin.Configure(_game, serviceProvider);
             });
 
             commandPluginLoader.LoadPlugins("./plugins/");
@@ -42,7 +43,7 @@ namespace OddMud.Web.Game
             _commandPlugins.ToList().ForEach((plugin) =>
             {
                 _logger.LogDebug($"Configure Command Plugin {plugin.Name}");
-                plugin.Configure(game);
+                plugin.Configure(game, serviceProvider);
             });
 
         }

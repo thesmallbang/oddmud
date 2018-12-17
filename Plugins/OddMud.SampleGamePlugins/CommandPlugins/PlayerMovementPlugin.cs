@@ -1,0 +1,112 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OddMud.BasicGame;
+using OddMud.BasicGame.Commands;
+using OddMud.BasicGame.Misc;
+using OddMud.Core.Interfaces;
+using OddMud.Core.Plugins;
+
+namespace OddMud.SampleGamePlugins.CommandPlugins
+{
+    public class PlayerMovementPlugin : LoggedInCommandPlugin
+    {
+
+        public override string Name => nameof(PlayerMovementPlugin);
+        public new GridGame Game => (GridGame)base.Game;
+
+        public override IReadOnlyList<string> Handles => _handles;
+        private List<string> _handles = new List<string>() { "north", "east", "south", "west", "n", "e", "s", "w", "up", "down", "u", "d" };
+
+
+        public override async Task LoggedInProcessAsync(IProcessorData<CommandModel> request, IPlayer player)
+        {
+
+            IMap nextMap = null;
+            var currentMap = (GridMap)player.Map;
+            var currentGridLocation = currentMap.Location;
+
+
+            Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, $"in player movement {currentMap.Name}");
+
+            var exit = GridExits.None;
+
+            switch (request.Data.FirstPart)
+            {
+                case "n":
+                case "north":
+                    exit = GridExits.North;
+                    break;
+                case "e":
+                case "east":
+                    if (currentMap.Exits.Any(e => e == GridExits.East))
+                        exit = GridExits.East;
+                    break;
+                case "s":
+                case "south":
+                    exit = GridExits.South;
+                    break;
+                case "w":
+                case "west":
+                    if (currentMap.Exits.Any(e => e == GridExits.West))
+                        exit = GridExits.West;
+                    break;
+                case "u":
+                case "up":
+                    exit = GridExits.Up;
+                    break;
+                case "d":
+                case "down":
+                    exit = GridExits.Down;
+                    break;
+
+
+                default:
+                    return;
+            }
+
+            if (!currentMap.Exits.Any(e => e == exit))
+            {
+                await Game.Network.SendMessageToPlayerAsync(player, "Invalid exit");
+                return;
+            }
+
+            request.Handled = true;
+            var nextLocation = GetNextLocation(currentGridLocation, exit);
+            nextMap = Game.World.Maps.FirstOrDefault(map => map.Location.X == nextLocation.X && map.Location.Y == nextLocation.Y && map.Location.Z == nextLocation.Z);
+
+            if (nextMap == null)
+            {
+                Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, $"next map not found {nextLocation}");
+                return;
+            }
+
+            await Game.World.MovePlayerAsync(player, nextMap);
+            await base.LoggedInProcessAsync(request, player);
+        }
+
+        private GridLocation GetNextLocation(GridLocation currentGridLocation, BasicGame.Misc.GridExits exit)
+        {
+            switch (exit)
+            {
+                case GridExits.North:
+                    return new GridLocation(currentGridLocation.X, currentGridLocation.Y - 1, currentGridLocation.Z);
+                case GridExits.East:
+                    return new GridLocation(currentGridLocation.X + 1, currentGridLocation.Y, currentGridLocation.Z);
+                case GridExits.South:
+                    return new GridLocation(currentGridLocation.X, currentGridLocation.Y + 1, currentGridLocation.Z);
+                case GridExits.West:
+                    return new GridLocation(currentGridLocation.X - 1, currentGridLocation.Y, currentGridLocation.Z);
+                case GridExits.Up:
+                    return new GridLocation(currentGridLocation.X, currentGridLocation.Y, currentGridLocation.Z+1);
+                case GridExits.Down:
+                    return new GridLocation(currentGridLocation.X, currentGridLocation.Y, currentGridLocation.Z-1);
+
+            }
+
+            return null;
+        }
+    }
+}

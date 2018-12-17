@@ -19,7 +19,7 @@ namespace OddMud.SampleGamePlugins
         public virtual IReadOnlyList<string> Handles => new List<string>();
 
 
-        public void Configure(IGame game)
+        public void Configure(IGame game, IServiceProvider serviceProvider)
         {
             Game = game;
         }

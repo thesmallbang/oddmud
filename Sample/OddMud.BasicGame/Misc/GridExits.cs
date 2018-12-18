@@ -5,7 +5,6 @@ using System.Text;
 namespace OddMud.BasicGame.Misc
 {
 
-    [Flags]
     public enum GridExits
     {
         None,

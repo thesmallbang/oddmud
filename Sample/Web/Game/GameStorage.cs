@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OddMud.BasicGame;
+using OddMud.BasicGame.Misc;
 using OddMud.Core.Interfaces;
 using OddMud.Web.Game.Database;
 using OddMud.Web.Game.Database.Entities;
@@ -65,10 +66,9 @@ namespace OddMud.Web.Game
             dbMap.LocationZ = map.Location.Z;
             dbMap.ModifiedBy = "nousercontextyet";
             dbMap.ModifiedDate = DateTime.Now;
-
+            dbMap.Exits = map.Exits.Select(exit => new MapExit() { Direction = (byte)exit }).ToList();
             context.Maps.Update(dbMap);
             await context.SaveChangesAsync();
-
         }
 
         private async Task SaveNewMapAsync(GameDbContext context, GridMap map)
@@ -87,12 +87,6 @@ namespace OddMud.Web.Game
             await context.SaveChangesAsync();
         }
 
-
-        public Task<IEnumerable<IPlayer>> LoadPlayersAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<IMap>> LoadMapsAsync()
         {
 
@@ -100,10 +94,18 @@ namespace OddMud.Web.Game
             {
                 return await dbContext.Maps.Select(db =>
                 new GridMap(
-                    db.Id, db.Name, db.Description, new GridLocation(db.LocationX, db.LocationY, db.LocationZ)
+                    db.Id, db.Name, db.Description, 
+                    new GridLocation(db.LocationX, db.LocationY, db.LocationZ),
+                    db.Exits.Select(e => (GridExits)e.Direction).ToList()
                     )).ToListAsync();
             }
         }
+
+        public Task<IEnumerable<IPlayer>> LoadPlayersAsync()
+        {
+            throw new NotImplementedException();
+        }
+
 
         public Task SavePlayerAsync(IPlayer player)
         {

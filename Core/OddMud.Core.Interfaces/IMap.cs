@@ -13,6 +13,10 @@ namespace OddMud.Core.Interfaces
         string Description { get; }
 
         IReadOnlyList<IPlayer> Players { get; }
+        IReadOnlyList<IItem> Items { get; }
+        IReadOnlyList<IEntity> Npcs { get; }
+
+
 
         Task AddPlayerAsync(IPlayer player);
         Task RemovePlayerAsync(IPlayer player);

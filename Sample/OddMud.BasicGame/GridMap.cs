@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OddMud.BasicGame
 {
-   
+
     public class GridMap : IMap
     {
         public int Id { get; private set; } = 0;
@@ -20,10 +20,21 @@ namespace OddMud.BasicGame
         public IReadOnlyList<GridExits> Exits => _exits;
         private List<GridExits> _exits = new List<GridExits>();
 
+        public IReadOnlyList<ISpawner> Spawners => _spawners;
+        private List<ISpawner> _spawners = new List<ISpawner>();
+
+
 
         public GridLocation Location = new GridLocation();
 
         public IReadOnlyList<IPlayer> Players => _players;
+
+        public IReadOnlyList<IItem> Items => _items;
+        private List<IItem> _items = new List<IItem>();
+        public IReadOnlyList<IEntity> Npcs => _npcs;
+        private List<IEntity> _npcs { get; set; }
+
+
         private List<IPlayer> _players = new List<IPlayer>();
 
         public GridMap()
@@ -43,10 +54,16 @@ namespace OddMud.BasicGame
             _exits = exits.ToList();
         }
 
-        public GridMap(int id, string name, string description, GridLocation worldLocation) : this(id,name,description)
+        public GridMap(int id, string name, string description, GridLocation worldLocation) : this(id, name, description)
         {
             Location = worldLocation;
         }
+
+
+        /**
+         *  Add events for all these list modifier methods
+         * 
+         */
 
 
         /// <summary>
@@ -74,8 +91,27 @@ namespace OddMud.BasicGame
 
         public void RemoveExit(GridExits direction)
         {
-                _exits.Remove(direction);
+            _exits.Remove(direction);
         }
+
+        public void AddSpawner(ISpawner spawner)
+        {
+            _spawners.Add(spawner);
+        }
+        public void RemoveSpawner(ISpawner spawner)
+        {
+            _spawners.Remove(spawner);
+        }
+
+        public void AddItem(IItem item)
+        {
+            _items.Add(item);
+        }
+        public void RemoveItem(IItem item)
+        {
+            _items.Remove(item);
+        }
+        
 
         public override string ToString()
         {

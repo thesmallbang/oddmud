@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 
 namespace OddMud.Core.Interfaces
 {
-    public interface IPlayer : IEntity
+
+    public interface ISpawner
     {
+        ISpawnable SpawnedEntity { get; set; }
 
-        string TransportId { get; }
+        Task SpawnerTick();
 
-
-
-
+        Task ResetAsync();
     }
+
+   
 }

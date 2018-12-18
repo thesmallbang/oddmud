@@ -13,6 +13,8 @@ namespace OddMud.Web.Game.Database
     {
 
         public DbSet<DbMap> Maps { get; set; }
+        public DbSet<DbMapExit> MapExits { get; set; }
+
         public DbSet<DbPlayer> Players { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

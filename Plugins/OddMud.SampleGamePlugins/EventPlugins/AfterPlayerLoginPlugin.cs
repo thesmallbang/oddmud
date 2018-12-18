@@ -25,6 +25,13 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         {
 
             var assignedPlayerMap = Game.World.GetStarterMap();
+            if (assignedPlayerMap == null)
+            {
+                assignedPlayerMap = new GridMap(0, "Void Map", "You have entered a world with nothing. use map commands to begin");
+                await Game.Store.NewMapAsync(assignedPlayerMap);
+                Game.World.AddMap(assignedPlayerMap);
+            }
+
             await Game.World.MovePlayerAsync(player, assignedPlayerMap);
         
         }

@@ -66,6 +66,11 @@ namespace OddMud.BasicGame
             return Task.CompletedTask;
         }
 
+        public void AddExit(GridExits direction)
+        {
+            if (!_exits.Contains(direction))
+                _exits.Add(direction);
+        }
 
         public override string ToString()
         {

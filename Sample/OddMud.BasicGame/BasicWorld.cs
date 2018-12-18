@@ -35,7 +35,8 @@ namespace OddMud.BasicGame
         {
             if (Maps.Count == 0)
             {
-                _maps.Add(new GridMap(0, "Void", "This world has no maps yet. Start creating with map commands"));
+                return null;
+
             }
 
             return Maps[0];

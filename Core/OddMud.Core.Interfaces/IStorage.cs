@@ -8,12 +8,16 @@ namespace OddMud.Core.Interfaces
     public interface IStorage
     {
 
-        Task<IEnumerable<IPlayer>> LoadPlayersAsync();
+        Task<IPlayer> LoadPlayerAsync(string name, string pass);
         Task<IEnumerable<IMap>> LoadMapsAsync();
 
-        Task SaveMapAsync(IMap map);
-        Task SavePlayerAsync(IPlayer player);
-        Task SavePlayersAsync(IEnumerable<IPlayer> players);
+        
+        Task NewMapAsync(IMap map);
+        Task UpdateMapAsync(IMap map);
+
+        Task NewPlayerAsync(IPlayer player, string pass);
+        Task UpdatePlayerAsync(IPlayer player);
+        Task UpdatePlayersAsync(IEnumerable<IPlayer> players);
 
 
     }

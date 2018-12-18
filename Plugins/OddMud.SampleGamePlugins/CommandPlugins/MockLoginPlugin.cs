@@ -14,16 +14,24 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
     {
         public override string Name => nameof(MockLoginPlugin);
         public override IReadOnlyList<string> Handles => _handles;
-        private List<string> _handles = new List<string>() { "login", "logout" };
+        private List<string> _handles = new List<string>() { "login", "logout", "regtest" };
 
 
-        public override Task NotLoggedInProcessAsync(IProcessorData<CommandModel> request)
+        public override async Task NotLoggedInProcessAsync(IProcessorData<CommandModel> request)
         {
+
+            //if (request.Data.FirstPart == "regtest")
+            //{
+            //    await Game.Store.NewPlayerAsync(new BasicPlayer() { Name = "daniel" }, "daniel");
+            //    await Game.Network.SendMessageToPlayerAsync(request.TransportId, "Character created");
+            //}
+
+
             if (request.Data.FirstPart != "login" || string.IsNullOrEmpty(request.Data.SecondPart))
-                return Task.CompletedTask;
+                return;
 
             request.Handled = true;
-            return HandleBasicLoginAsync(request);
+            await HandleBasicLoginAsync(request);
         }
 
         public override Task LoggedInProcessAsync(IProcessorData<CommandModel> request, IPlayer player)
@@ -40,7 +48,15 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
 
         private async Task HandleBasicLoginAsync(IProcessorData<CommandModel> request)
         {
-            var player = new BasicPlayer() { Name = request.Data.SecondPart, TransportId = request.TransportId };
+
+            var player = (BasicPlayer)await Game.Store.LoadPlayerAsync(request.Data.SecondPart, request.Data.ThirdPart);
+            if (player == null)
+            {
+                await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Login was rejected");
+                return;
+            }
+
+            player.TransportId = request.TransportId;
 
             if (await Game.AddPlayerAsync(player))
                 await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Logged in as {request.Data.SecondPart} -- PlayerCount: {Game.Players.Count}");

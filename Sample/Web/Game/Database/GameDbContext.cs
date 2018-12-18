@@ -12,7 +12,8 @@ namespace OddMud.Web.Game.Database
     public class GameDbContext : DbContext
     {
 
-        public DbSet<Map> Maps { get; set; }
+        public DbSet<DbMap> Maps { get; set; }
+        public DbSet<DbPlayer> Players { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

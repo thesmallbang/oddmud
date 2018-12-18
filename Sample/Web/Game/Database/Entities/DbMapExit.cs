@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace OddMud.Web.Game.Database.Entities
 {
 
-    public class MapExit : BaseEntity
+    public class DbMapExit : BaseEntity
     {
 
         [ForeignKey("Map")]
         public int MapId { get; set; }
 
-        public Map Map { get; set; }
+        public DbMap Map { get; set; }
 
         public byte Direction { get; set; }
 

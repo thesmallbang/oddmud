@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OddMud.Web.Game.Database.Entities
 {
-    public class Map : BaseEntity
+    public class DbMap : BaseEntity
     {
       
         [StringLength(256)] // picked 256 arbitrarily
@@ -18,7 +18,7 @@ namespace OddMud.Web.Game.Database.Entities
         public int LocationY { get; set; }
         public int LocationZ { get; set; }
 
-        public ICollection<MapExit> Exits { get; set; }
+        public ICollection<DbMapExit> Exits { get; set; }
 
     }
 }

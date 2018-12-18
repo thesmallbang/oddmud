@@ -40,7 +40,7 @@ namespace OddMud.Web.Game
 
             _logger.LogInformation("Loading maps from storage");
             var maps = await Game.Store.LoadMapsAsync();
-            maps.ToList().ForEach(Game.World.AddMap);
+            maps.ToList().ForEach(async (m) => await Game.World.AddMapAsync(m));
             
             
             while (!stoppingToken.IsCancellationRequested)

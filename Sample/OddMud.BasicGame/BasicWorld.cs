@@ -42,7 +42,7 @@ namespace OddMud.BasicGame
             return Maps[0];
         }
 
-        public virtual void AddMap(IMap map)
+        public virtual Task AddMapAsync(IMap map)
         {
 
             if (Maps.Any(m => m.Id == map.Id))
@@ -51,6 +51,19 @@ namespace OddMud.BasicGame
             }
           
             _maps.Add(map);
+            return Task.CompletedTask;
+        }
+
+        public virtual Task RemoveMapAsync(IMap map)
+        {
+
+            if (!Maps.Any(m => m == map))
+            {
+                return Task.CompletedTask;
+            }
+
+            _maps.Remove(map);
+            return Task.CompletedTask;
         }
 
 
@@ -66,5 +79,9 @@ namespace OddMud.BasicGame
             }
 
         }
+
+
+
+   
     }
 }

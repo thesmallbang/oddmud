@@ -30,7 +30,14 @@ namespace OddMud.Web.Game
         {
             using (var context = new GameDbContext())
             {
-                var dbMap = await context.Maps.FirstOrDefaultAsync(o => o.Id == map.Id);
+                var dbMap = await context.Maps.Include(p => p.Exits).FirstOrDefaultAsync(o => o.Id == map.Id);
+
+
+                if (dbMap.Exits.Any())
+                {
+                    dbMap.Exits.Clear();
+                    dbMap = context.Maps.Update(dbMap).Entity;
+                }
 
                 var gridMap = (GridMap)map;
                 dbMap.Name = gridMap.Name;
@@ -40,15 +47,14 @@ namespace OddMud.Web.Game
                 dbMap.LocationZ = gridMap.Location.Z;
                 dbMap.ModifiedBy = "nousercontextyet";
                 dbMap.ModifiedDate = DateTime.Now;
-                dbMap.Exits = gridMap.Exits.Select(exit => new DbMapExit() { Direction = (byte)exit }).ToList();
-
+                dbMap.Exits = gridMap.Exits.Distinct().Select(exit => new DbMapExit() { Direction = (byte)exit }).ToList();
 
                 context.Maps.Update(dbMap);
                 await context.SaveChangesAsync();
             }
         }
 
-        public async Task NewMapAsync(IMap map)
+        public async Task<int> NewMapAsync(IMap map)
         {
             var gridMap = (GridMap)map;
             var dbMap = new DbMap()
@@ -60,13 +66,27 @@ namespace OddMud.Web.Game
                 LocationX = gridMap.Location.X,
                 LocationY = gridMap.Location.Y,
                 LocationZ = gridMap.Location.Z,
-                Exits = gridMap.Exits.Select(exit => new DbMapExit() { Direction = (byte)exit }).ToList()
+                Exits = gridMap.Exits.Distinct().Select(exit => new DbMapExit() { Direction = (byte)exit }).ToList()
             };
 
             using (var context = new GameDbContext())
             {
-                await context.AddAsync(dbMap);
+                var savedMap = await context.AddAsync(dbMap);
                 await context.SaveChangesAsync();
+                return savedMap.Entity.Id;
+            }
+        }
+
+        public async Task DeleteMapAsync(IMap map)
+        {
+
+            using (var context = new GameDbContext())
+            {
+
+                var dbMap = await context.Maps.FirstOrDefaultAsync(m => m.Id == map.Id);
+                context.Maps.Remove(dbMap);
+                await context.SaveChangesAsync();
+
             }
         }
 
@@ -83,6 +103,19 @@ namespace OddMud.Web.Game
                     )).ToListAsync();
             }
         }
+        public async Task<IMap> LoadMapAsync(int id)
+        {
+            using (var dbContext = new GameDbContext())
+            {
+                return await dbContext.Maps.Where(m=>m.Id == id).Select(db =>
+                new GridMap(
+                    db.Id, db.Name, db.Description,
+                    new GridLocation(db.LocationX, db.LocationY, db.LocationZ),
+                    db.Exits.Select(e => (GridExits)e.Direction).ToList()
+                    )).FirstOrDefaultAsync();
+            }
+        }
+
 
         public async Task<IPlayer> LoadPlayerAsync(string name, string pass)
         {
@@ -104,24 +137,25 @@ namespace OddMud.Web.Game
             }
         }
 
-      
+
         public async Task<bool> NewPlayerAsync(IPlayer player, string pass)
         {
             try
             {
 
-            var dbPlayer = new DbPlayer() {
-                RecordBy = "notlinktoausercontextyet",
-                RecordDate = DateTimeOffset.Now,
-                Name = player.Name,
-                Password = PasswordStorage.CreateHash(pass)
-            };
-            using (var context = new GameDbContext())
-            {
-                context.Players.Add(dbPlayer);
-                await context.SaveChangesAsync();
-                return true;
-            }
+                var dbPlayer = new DbPlayer()
+                {
+                    RecordBy = "notlinktoausercontextyet",
+                    RecordDate = DateTimeOffset.Now,
+                    Name = player.Name,
+                    Password = PasswordStorage.CreateHash(pass)
+                };
+                using (var context = new GameDbContext())
+                {
+                    context.Players.Add(dbPlayer);
+                    await context.SaveChangesAsync();
+                    return true;
+                }
 
             }
             catch (Exception ex)

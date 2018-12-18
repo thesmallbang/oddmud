@@ -11,6 +11,7 @@ using OddMud.SampleGamePlugins;
 using CommandLine;
 using OddMud.BasicGame.Misc;
 using System.Linq;
+using OddMud.View.MudLike;
 
 namespace OddMud.BasicGamePlugins.CommandPlugins
 {
@@ -19,7 +20,7 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
     public class CreateMapParserOptions
     {
         [Option('n', "name", Required = true, HelpText = "Name of the map.")]
-        public  IEnumerable<string> Name { get; set; }
+        public IEnumerable<string> Name { get; set; }
 
         [Option('d', "description", Required = true, HelpText = "Description of the map.")]
         public IEnumerable<string> Description { get; set; }
@@ -28,13 +29,13 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
         public string Direction { get; set; }
 
         [Option('x', "xlocation", Required = false, HelpText = "set the X coordinate")]
-        public int X { get; set; }
+        public int? X { get; set; }
 
         [Option('y', "ylocation", Required = false, HelpText = "set the Y coordinate")]
-        public int Y { get; set; }
+        public int? Y { get; set; }
 
         [Option('z', "zlocation", Required = false, HelpText = "set the Z coordinate")]
-        public int Z { get; set; }
+        public int? Z { get; set; }
 
 
 
@@ -42,18 +43,12 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
     public class DeleteMapParserOptions
     {
 
-        [Option(longName: "direction", Required = false, HelpText = "direction of the map to delete")]
-        public string Direction { get; set; }
+        [Option(longName: "id", Required = true, HelpText = "id of the map to delete")]
+        public int? Id { get; set; }
 
-        [Option('x', "xlocation", Required = false, HelpText = "coordinates for map to delete")]
-        public int X { get; set; }
 
-        [Option('y', "ylocation", Required = false, HelpText = "coordinates for map to delete")]
-        public int Y { get; set; }
-
-        [Option('z', "zlocation", Required = false, HelpText = "coordinates for map to delete")]
-        public int Z { get; set; }
-
+        [Option('c', "cleanup", Required = false, HelpText = "cleanup exits for surrounding maps", Default = true)]
+        public bool Cleanup { get; set; }
 
 
     }
@@ -83,11 +78,11 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
         private Task ProcessCreateAsync(IProcessorData<CommandModel> request, IPlayer player)
         {
             request.Handled = true;
-            
+
             Parser.Default.ParseArguments<CreateMapParserOptions>(request.Data.StringFrom(2).Split(' '))
                 .WithParsed(async (parsed) =>
                 {
-                    if (string.IsNullOrEmpty(parsed.Direction) && parsed.X == 0 && parsed.Y == 0 && parsed.Z == 0)
+                    if (string.IsNullOrEmpty(parsed.Direction) && parsed.X == null)
                     {
                         await Game.Network.SendMessageToPlayerAsync(player, "direction or location parameters are required");
                         return;
@@ -144,7 +139,7 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
                     }
                     else
                     {
-                        newMapLocation = new GridLocation(parsed.X, parsed.Y, parsed.Z);
+                        newMapLocation = new GridLocation(parsed.X.Value, parsed.Y.Value, parsed.Z.Value);
                     }
 
                     if (Game.World.Maps.Any(m => m.Location.X == newMapLocation.X
@@ -167,6 +162,13 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
                             Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, "Adding exit to current map");
                             gridMap.AddExit(parsedExit);
                             await Game.Store.UpdateMapAsync(gridMap);
+
+                            //var mapView = MudLikeCommandBuilder.Start()
+                            //    .AddMap((GridMap)player.Map)
+                            //    .AddPlayers(player.Map.Players)
+                            //    .Build(ViewCommandType.Set);
+                            //await Game.Network.SendViewCommandsToMapAsync(gridMap, mapView);
+
                         }
 
                         // automatically add an exit back on the new map
@@ -195,9 +197,10 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
 
                     Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, "saving new map");
                     var map = new GridMap(0, string.Join(" ", parsed.Name), string.Join(" ", parsed.Description), newMapLocation, newMapExits);
-                    await Game.Store.NewMapAsync(map);
+                    var newMapId = await Game.Store.NewMapAsync(map);
+                    map = (GridMap)await Game.Store.LoadMapAsync(newMapId);
                     Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, "adding to active world");
-                    Game.World.AddMap(map);
+                    await Game.World.AddMapAsync(map);
 
                 })
                 .WithNotParsed(async (issues) =>
@@ -215,10 +218,69 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
             Parser.Default.ParseArguments<DeleteMapParserOptions>(request.Data.StringFrom(2).Split(' '))
                 .WithParsed(async (parsed) =>
                 {
-                    if (string.IsNullOrEmpty(parsed.Direction) && parsed.X == 0 && parsed.Y == 0 && parsed.Z == 0)
+                    if (parsed.Id == null)
                     {
-                        await Game.Network.SendMessageToPlayerAsync(player, "direction or location parameters are required");
+                        await Game.Network.SendMessageToPlayerAsync(player, "direction or location xyz parameters are required");
                         return;
+                    }
+
+                    if (parsed.Id.HasValue)
+                    {
+                        var map = Game.World.Maps.FirstOrDefault(m => m.Id == parsed.Id);
+                        if (map == null)
+                        {
+                            await Game.Network.SendMessageToPlayerAsync(player, $"map with id {parsed.Id.GetValueOrDefault(0)} was not found");
+                            return;
+                        }
+
+                        // update the map exits that were connected to this one.
+                        if (parsed.Cleanup && map.Exits.Count > 0)
+                        {
+                            foreach (var exit in map.Exits)
+                            {
+                                var cleanupLocation = GetNextLocation(map.Location, exit);
+                                var cleanupMap = Game.World.Maps.FirstOrDefault(m =>
+                                       m.Location.X == cleanupLocation.X
+                                       && m.Location.Y == cleanupLocation.Y
+                                       && m.Location.Z == cleanupLocation.Z);
+                                if (cleanupMap == null || !cleanupMap.Exits.Any(o => o == exit))
+                                {
+                                    break;
+                                }
+
+                                switch (exit)
+                                {
+                                    case GridExits.North:
+                                        cleanupMap.RemoveExit(GridExits.South);
+                                        break;
+                                    case GridExits.East:
+                                        cleanupMap.RemoveExit(GridExits.West);
+                                        break;
+                                    case GridExits.South:
+                                        cleanupMap.RemoveExit(GridExits.North);
+                                        break;
+                                    case GridExits.West:
+                                        cleanupMap.RemoveExit(GridExits.East);
+                                        break;
+                                    case GridExits.Up:
+                                        cleanupMap.RemoveExit(GridExits.Down);
+                                        break;
+                                    case GridExits.Down:
+                                        cleanupMap.RemoveExit(GridExits.Up);
+                                        break;
+
+                                }
+
+                                await Game.Store.UpdateMapAsync(cleanupMap);
+
+                            }
+
+                        }
+
+                        await Game.World.RemoveMapAsync(map);
+                        await Game.Store.DeleteMapAsync(map);
+                        await Game.Network.SendMessageToPlayerAsync(player, $"Removed map. HadExits[{map.Exits.Count > 0}]");
+
                     }
 
 

@@ -1,4 +1,5 @@
 ﻿using OddMud.BasicGame;
+using OddMud.BasicGame.Extensions;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using OddMud.View.MudLike;
@@ -13,27 +14,30 @@ namespace OddMud.SampleGamePlugins.EventPlugins
     {
 
         public string Name => nameof(AfterPlayerLoginPlugin);
-        public IGame Game;
+        public GridGame Game;
 
         public void Configure(IGame game, IServiceProvider serviceProvider)
         {
-            Game = game;
+            Game = (GridGame)game;
             Game.PlayerAdded += AfterPlayerLogin;
         }
 
         private async Task AfterPlayerLogin(Object sender, IPlayer player)
         {
 
+
             var assignedPlayerMap = Game.World.GetStarterMap();
             if (assignedPlayerMap == null)
             {
                 assignedPlayerMap = new GridMap(0, "Void Map", "You have entered a world with nothing. use map commands to begin");
                 await Game.Store.NewMapAsync(assignedPlayerMap);
-                Game.World.AddMap(assignedPlayerMap);
+                await Game.World.AddMapAsync(assignedPlayerMap);
             }
 
             await Game.World.MovePlayerAsync(player, assignedPlayerMap);
-        
+
+
+
         }
 
     }

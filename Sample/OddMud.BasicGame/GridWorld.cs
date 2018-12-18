@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using OddMud.Core.Interfaces;
 
 namespace OddMud.BasicGame
@@ -17,14 +18,15 @@ namespace OddMud.BasicGame
         }
 
 
-        public override void AddMap(IMap map)
+        public override Task AddMapAsync(IMap map)
         {
             var gridMap = (GridMap)map;
             if (Maps.Any(m => m.Location.X == gridMap.Location.X && m.Location.Y == gridMap.Location.Y && m.Location.Z == gridMap.Location.Z))
                 throw new Exception("duplicate map location");
 
-            base.AddMap(map);
+            return base.AddMapAsync(map);
         }
+
 
     }
 }

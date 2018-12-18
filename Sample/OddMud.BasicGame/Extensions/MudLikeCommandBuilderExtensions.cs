@@ -28,7 +28,8 @@ namespace OddMud.BasicGame.Extensions
         public static MudLikeCommandBuilder AddMap(this MudLikeCommandBuilder builder, GridMap map)
         {
             return builder
-                .StartContainer("mapdata")
+                .StartContainer("mapview")
+                .AddText($"{map.Id} ", TextColor.Gray, TextSize.Small)
                 .AddTextLine(map.Name, color: TextColor.Aqua , size: TextSize.Strong)
                 .AddTextLine(map.Description, size: TextSize.Strong)
                 .AddText("Exits ")

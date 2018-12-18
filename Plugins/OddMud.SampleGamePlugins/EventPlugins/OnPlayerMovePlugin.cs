@@ -36,7 +36,6 @@ namespace OddMud.BasicGamePlugins.EventPlugins
                 var leftBehindNotification = new MudLikeCommandBuilder()
                     .AddPlayers(playersLeftBehind)
                         .Build(ViewCommandType.Replace, "playerlist");
-
                 await Game.Network.SendViewCommandsToMapAsync(e.OldMap, leftBehindNotification);
             }
 
@@ -45,7 +44,6 @@ namespace OddMud.BasicGamePlugins.EventPlugins
             await Game.Network.AddPlayerToMapGroupAsync(e.Player, map);
 
             var player = e.Player;
-            // clear the previous output for the player and show the gate date
             var lookView = MudLikeCommandBuilder.Start()
                 .AddWorldDate(Game.World.Time.WorldTime)
                 .AddMap(map)

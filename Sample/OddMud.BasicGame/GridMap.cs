@@ -72,6 +72,11 @@ namespace OddMud.BasicGame
                 _exits.Add(direction);
         }
 
+        public void RemoveExit(GridExits direction)
+        {
+                _exits.Remove(direction);
+        }
+
         public override string ToString()
         {
             return $"{Id}-{Name}";

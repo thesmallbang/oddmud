@@ -47,10 +47,10 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
                 .AddWorldDate(Game.World.Time.WorldTime)
                 .AddMap((GridMap)player.Map)
                 .AddPlayers(player.Map.Players)
-                .Build( ViewCommandType.Set);
+                .Build(ViewCommandType.Set);
 
-            await Game.Network.SendViewCommandsToPlayerAsync(player,mapView);
-            
+            await Game.Network.SendViewCommandsToPlayerAsync(player, mapView);
+
 
         }
     }

@@ -14,28 +14,31 @@ namespace OddMud.BasicGame.Extensions
         {
             return builder.StartContainer("playerlist").AddText("players: ")
            .AddText(string.Join(",", players.Select(p => p.Name)), TextColor.Gray)
-           .EndContainer();
+           .EndContainer("playerlist");
         }
         public static MudLikeCommandBuilder AddWorldDate(this MudLikeCommandBuilder builder, DateTime dateTime)
         {
             return builder
                 .StartContainer("dateview")
                 .AddTextLine(dateTime.ToString("D"), TextColor.Fuschia, TextSize.Small)
-                .EndContainer();
+                .EndContainer("dateview");
 
         }
 
-        public static MudLikeCommandBuilder AddMap(this MudLikeCommandBuilder builder, GridMap map)
+        public static MudLikeCommandBuilder AddMap(this MudLikeCommandBuilder builder, GridMap map, bool includePlayers = false)
         {
-            return builder
-                .StartContainer("mapview")
+            builder
+                .StartContainer("mapdata")
                 .AddText($"{map.Id} ", TextColor.Gray, TextSize.Small)
-                .AddTextLine(map.Name, color: TextColor.Aqua , size: TextSize.Strong)
+                .AddTextLine(map.Name, color: TextColor.Aqua, size: TextSize.Strong)
                 .AddTextLine(map.Description, size: TextSize.Strong)
                 .AddText("Exits ")
                 .AddTextLine(string.Join(",", map.Exits.Select(o => o.ToString().ToLower())), TextColor.Green)
-                .EndContainer();
+                .EndContainer("mapdata");
+            if (includePlayers)
+                builder.AddPlayers(map.Players);
 
+            return builder;
         }
 
     }

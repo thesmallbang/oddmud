@@ -25,7 +25,7 @@ namespace OddMud.ViewBuilders.MudLikeHtml
                 .Case((TextItem item) => html = BuildTextItem(item))
                 .Case((LineBreakItem item) => html = "<br />")
                 .Case((ContainerStart item) => html = BuildContainerStart(item))
-                .Case((ContainerEnd item) => html = "</div>")
+                .Case((ContainerEnd item) => html = $"</div><!-- {item.Id} -->")
                 ;
 
             tswitch.Switch(viewItem);

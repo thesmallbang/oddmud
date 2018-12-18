@@ -45,8 +45,7 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
 
             var mapView = MudLikeCommandBuilder.Start()
                 .AddWorldDate(Game.World.Time.WorldTime)
-                .AddMap((GridMap)player.Map)
-                .AddPlayers(player.Map.Players)
+                .AddMap((GridMap)player.Map, includePlayers: true)
                 .Build(ViewCommandType.Set);
 
             await Game.Network.SendViewCommandsToPlayerAsync(player, mapView);

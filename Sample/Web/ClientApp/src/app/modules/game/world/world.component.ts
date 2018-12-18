@@ -48,9 +48,10 @@ export class WorldComponent implements OnInit {
           // we need to replace the specific container/div with the inbound one in our message
 
           var message = this.messages[messageIndex];
+          var endTag = `</div><!-- ${tofind} -->`;
           var divStart = message.indexOf(`<div id='${tofind}'`);
-          var divEnd = message.indexOf("</div>", divStart);
-          var newMessage = `${message.substring(0, divStart)}${received}${message.substring(divEnd + 6)}`;
+          var divEnd = message.indexOf(endTag, divStart);
+          var newMessage = `${message.substring(0, divStart)}${received}${message.substring(divEnd + endTag.length)}`;
           this.messages[messageIndex] =  newMessage;
         }
           

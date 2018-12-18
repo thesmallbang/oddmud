@@ -76,10 +76,6 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="dotnet build ../../Plugins/OddMud.SampleGamePlugins/OddMud.SampleGamePlugins.csproj" />
-  </Target>
-
   <!-- 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="dotnet build ../plugincode/wgwm.plugins.basicchatcommands/wgwm.plugins.basicchatcommands.csproj" />

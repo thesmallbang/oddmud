@@ -13,9 +13,9 @@ namespace OddMud.BasicGame
     {
         public int Id { get; private set; } = 0;
 
-        public string Name { get; private set; } = "Unconfigured";
+        public string Name { get; set; } = "Unconfigured";
 
-        public string Description { get; private set; } = "Unconfigured";
+        public string Description { get; set; } = "Unconfigured";
 
         public IReadOnlyList<GridExits> Exits => _exits;
         private List<GridExits> _exits = new List<GridExits>();

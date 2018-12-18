@@ -37,9 +37,34 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
         [Option('z', "zlocation", Required = false, HelpText = "set the Z coordinate")]
         public int? Z { get; set; }
 
+    }
 
+    public class EditMapParserOptions
+    {
+
+
+        [Option(longName: "id", Required = false, HelpText = "id of the map to edit")]
+        public int? Id { get; set; }
+
+
+        [Option('n', "name", Required = false, HelpText = "Name of the map.")]
+        public IEnumerable<string> Name { get; set; }
+
+        [Option('d', "description", Required = false, HelpText = "Description of the map.")]
+        public IEnumerable<string> Description { get; set; }
+
+
+        [Option('a', "addexits", Required = false)]
+        public IEnumerable<string> AddExits { get; set; }
+
+        [Option('r', "removeexits", Required = false)]
+        public IEnumerable<string> RemoveExits { get; set; }
+
+        [Option('c', "cleanupexits", Required = false, HelpText = "cleanup remote exits on remove", Default = true)]
+        public bool Cleanup { get; set; }
 
     }
+
     public class DeleteMapParserOptions
     {
 
@@ -68,12 +93,72 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
                     return ProcessCreateAsync(request, player);
                 case "delete":
                     return ProcessDeleteAsync(request, player);
+                case "edit":
+                    return ProcessEditAsync(request, player);
 
             }
 
             return base.LoggedInProcessAsync(request, player);
         }
 
+        private Task ProcessEditAsync(IProcessorData<CommandModel> request, IPlayer player)
+        {
+            request.Handled = true;
+
+            Parser.Default.ParseArguments<EditMapParserOptions>(request.Data.StringFrom(2).Split(' '))
+               .WithParsed(async (parsed) =>
+               {
+
+                   var mapId = parsed.Id.HasValue ? parsed.Id.Value : player.Map.Id;
+                   var map = Game.World.Maps.FirstOrDefault(m => m.Id == mapId);
+                   var hasUpdate = false;
+
+                   if (parsed.Name.Any())
+                   {
+                       var completeName = string.Join(" ", parsed.Name);
+                       if (!string.IsNullOrWhiteSpace(completeName))
+                       {
+                           map.Name = completeName;
+                           hasUpdate = true;
+                       }
+                   }
+                   if (parsed.Description.Any())
+                   {
+                       var complete = string.Join(" ", parsed.Description);
+                       if (!string.IsNullOrWhiteSpace(complete))
+                       {
+                           map.Description = complete;
+                           hasUpdate = true;
+                       }
+                   }
+
+                   parsed.AddExits.ToList().ForEach((exit) => {
+                       map.AddExit(Enum.Parse<GridExits>(exit,ignoreCase: true));
+                       hasUpdate = true;
+                   });
+
+                   parsed.RemoveExits.ToList().ForEach((exit) => {
+                       map.RemoveExit(Enum.Parse<GridExits>(exit, ignoreCase: true));
+                       hasUpdate = true;
+                   });
+
+                   if (hasUpdate)
+                   {
+                       await Game.Store.UpdateMapAsync(map);
+
+                       var mapView = MudLikeCommandBuilder.Start().AddMap(map).Build(ViewCommandType.Replace, "mapdata");
+                       await Game.Network.SendViewCommandsToMapAsync(map, mapView);
+
+                   }
+
+               })
+               .WithNotParsed(async (issues) =>
+               {
+                   await Game.Network.SendMessageToPlayerAsync(player, "invalid command(edit) - for help type map help");
+               });
+
+            return Task.CompletedTask;
+        }
 
         private Task ProcessCreateAsync(IProcessorData<CommandModel> request, IPlayer player)
         {

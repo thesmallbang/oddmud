@@ -37,10 +37,10 @@ namespace OddMud.View.MudLike
             _commands.Add(new ContainerStart(id));
             return this;
         }
-        public MudLikeCommandBuilder EndContainer()
+        public MudLikeCommandBuilder EndContainer(string id)
         {
 
-            _commands.Add(new ContainerEnd());
+            _commands.Add(new ContainerEnd(id));
             return this;
         }
 

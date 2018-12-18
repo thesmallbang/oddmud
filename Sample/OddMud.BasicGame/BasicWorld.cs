@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OddMud.BasicGame
 {
-    public abstract class BasicWorld : IWorld
+    public class BasicWorld : IWorld
     {
         public string Name => nameof(BasicWorld);
         public event Func<object, IMapChangeEvent, Task> PlayerMoved;
@@ -33,14 +33,17 @@ namespace OddMud.BasicGame
 
         public virtual IMap GetStarterMap()
         {
-            if (!Maps.Any())
-                throw new Exception("Unable to provide starter map when none exist");
+            if (Maps.Count == 0)
+            {
+                _maps.Add(new GridMap(0, "Void", "This world has no maps yet. Start creating with map commands"));
+            }
 
-            return Maps.First();
+            return Maps[0];
         }
 
         public virtual void AddMap(IMap map)
         {
+
             if (Maps.Any(m => m.Id == map.Id))
             {
                 throw new Exception("Duplicate map Id");

@@ -13,6 +13,8 @@ namespace OddMud.BasicGame
         private readonly ILogger<Game> _logger;
         public string Name = nameof(Game);
         public ITransport Network { get; }
+        public IStorage Store { get; }
+
         public IWorld World { get; }
 
         public IReadOnlyList<IPlayer> Players { get { return _players; } }
@@ -26,14 +28,15 @@ namespace OddMud.BasicGame
         public Game(
             ILogger<Game> logger,
             ITransport network,
-            IWorld world
+            IWorld world,
+            IStorage storage
             )
         {
             _logger = logger;
             Network = network;
+            Store = storage;
             World = world;
             _logger.LogDebug($"Injection : IGame");
-
 
         }
 

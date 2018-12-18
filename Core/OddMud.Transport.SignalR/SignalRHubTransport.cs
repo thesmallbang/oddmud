@@ -49,7 +49,7 @@ namespace OddMud.Transport.SignalR
 
         public Task SendMessageToMapAsync(IMap map, string message)
         {
-            return SendMessageToMapAsync(map.Id, message);
+            return SendMessageToMapAsync(map.Id.ToString(), message);
         }
 
         public Task SendMessageToAllAsync(string message)

@@ -1,4 +1,5 @@
-﻿using OddMud.BasicGame.Misc;
+﻿using Microsoft.Extensions.Logging;
+using OddMud.BasicGame.Misc;
 using OddMud.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,15 @@ namespace OddMud.BasicGame
         public new GridWorld World { get { return (GridWorld)base.World; } }
 
 
-        public GridGame(Microsoft.Extensions.Logging.ILogger<GridGame> logger, Core.Interfaces.ITransport network, IWorld world) : base(logger, network, (IWorld)world)
+        public GridGame(
+            ILogger<GridGame> logger,
+            ITransport network,
+            IWorld world,
+            IStorage storage) : base(logger, network, world, storage)
         {
 
-            World.AddMap(new GridMap("mapkey0", "Sample Map", "Some description of the map", new GridLocation(), new List<GridExits>() { GridExits.East, GridExits.Up }));
-            World.AddMap(new GridMap("mapkey1", "Other Map", "Some description of the other map", new GridLocation(1,0), new List<GridExits>() { GridExits.West }));
+
+
         }
     }
 }

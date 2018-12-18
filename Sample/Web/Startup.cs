@@ -12,6 +12,8 @@ using OddMud.Transport.SignalR;
 using OddMud.Web.Game;
 using OddMud.Web.Hubs;
 using OddMud.ViewBuilders.MudLikeHtml;
+using OddMud.Web.Game.Database;
+using Microsoft.AspNetCore.Http;
 
 namespace OddMud.Web
 {
@@ -39,6 +41,7 @@ namespace OddMud.Web
                 configuration.RootPath = "ClientApp/dist";
             });
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton(typeof(FilePluginLoader<>));
             services.AddSingleton(typeof(GameHubProcessor));
             services.AddSingleton<IWorld, GridWorld>();
@@ -47,11 +50,15 @@ namespace OddMud.Web
             services.AddSingleton<ITransport, SignalRHubTransport<GameHub>>();
             services.AddSingleton<IGameModule<CombatModule>, CombatModule>();
             services.AddSingleton<IGameModule<CombatModule>, CombatModule>();
+            services.AddSingleton<IStorage, GameStorage>();
             services.AddSingleton(typeof(CombatModuleSettings));
             services.AddSingleton<IGame, GridGame>();
             
             services.AddSignalR()
                 .AddMessagePackProtocol();
+
+            services.AddDbContext<GameDbContext>();
+
 
 
         }

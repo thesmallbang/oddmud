@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using OddMud.BasicGame;
 using OddMud.Core.Interfaces;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,6 +38,11 @@ namespace OddMud.Web.Game
             stoppingToken.Register(() =>
                     _logger.LogDebug($"GameService background task is stopping."));
 
+            _logger.LogInformation("Loading maps from storage");
+            var maps = await Game.Store.LoadMapsAsync();
+            maps.ToList().ForEach(Game.World.AddMap);
+            
+            
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Game.TickAsync();

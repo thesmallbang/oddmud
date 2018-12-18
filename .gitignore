@@ -290,6 +290,4 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
-/Uverse.Client/package-lock.json
-/Uverse-Client/package-lock.json
 /.sonarqube

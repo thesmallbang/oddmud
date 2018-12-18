@@ -13,7 +13,7 @@ namespace OddMud.SampleGamePlugins.EventPlugins
     public class ConnectionCleanupPlugin : TickIntervalEventPlugin
     {
         public override string Name => nameof(ConnectionCleanupPlugin);
-        public override int Interval => 5000;
+        public override int Interval => 60 * 1000;
 
 
         public override void Configure(IGame game, IServiceProvider serviceProvider)
@@ -25,11 +25,9 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         public override async Task IntervalTick(object sender, EventArgs e)
         {
             await base.IntervalTick(sender, e);
-            foreach (var player in Game.Players)
-            {
-                if (!Game.Network.Connections.Contains(player.TransportId))
-                    await Game.RemovePlayerAsync(player);
-            }
+
+            var disconnectedPlayers = Game.Players.Where(o=> !Game.Network.Connections.Contains(o.TransportId)).ToList();
+            disconnectedPlayers.ForEach(async (p) => await Game.RemovePlayerAsync(p));
         }
 
         private Task Network_Disconnected(object sender, string transportId)

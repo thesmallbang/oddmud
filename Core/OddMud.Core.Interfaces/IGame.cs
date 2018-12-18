@@ -8,6 +8,7 @@ namespace OddMud.Core.Interfaces
     public interface IGame
     {
         IWorld World { get; }
+        IStorage Store { get; }
         IReadOnlyList<IPlayer> Players { get; }
         ITransport Network { get; }
 

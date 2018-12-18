@@ -18,22 +18,24 @@ namespace OddMud.BasicGame.Extensions
         }
         public static MudLikeCommandBuilder AddWorldDate(this MudLikeCommandBuilder builder, DateTime dateTime)
         {
-            return builder.StartContainer("dateview").AddText("date: ")
-                            .AddTextLine(dateTime.ToString("D"), TextColor.Fuschia, TextSize.Small)
-                            .EndContainer();
+            return builder
+                .StartContainer("dateview")
+                .AddText("date: ")
+                .AddTextLine(dateTime.ToString("D"), TextColor.Fuschia, TextSize.Small)
+                .EndContainer();
 
         }
 
         public static MudLikeCommandBuilder AddMap(this MudLikeCommandBuilder builder, GridMap map)
         {
             return builder
-                .StartContainer("mapdata").AddTextLine(map.ToString(), TextColor.Teal, TextSize.Strong)
-                .AddTextLine(map.Description, size: TextSize.Large)
-                .EndContainer()
-                .StartContainer("mapexitdata")
-                .AddText("exits: ")
+                .StartContainer("mapdata")
+                .AddTextLine(map.Name, color: TextColor.Aqua , size: TextSize.Strong)
+                .AddTextLine(map.Description, size: TextSize.Strong)
+                .AddText("Exits ")
                 .AddTextLine(string.Join(",", map.Exits.Select(o => o.ToString().ToLower())), TextColor.Green)
                 .EndContainer();
+
         }
 
     }

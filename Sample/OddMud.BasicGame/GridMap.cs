@@ -11,7 +11,7 @@ namespace OddMud.BasicGame
    
     public class GridMap : IMap
     {
-        public string Id { get; private set; } = "0";
+        public int Id { get; private set; } = 0;
 
         public string Name { get; private set; } = "Unconfigured";
 
@@ -31,19 +31,19 @@ namespace OddMud.BasicGame
 
         }
 
-        public GridMap(string id, string name, string description)
+        public GridMap(int id, string name, string description)
         {
             Id = id;
             Name = name;
             Description = description;
         }
 
-        public GridMap(string id, string name, string description, GridLocation worldLocation, IEnumerable<GridExits> exits) : this(id, name, description, worldLocation)
+        public GridMap(int id, string name, string description, GridLocation worldLocation, IEnumerable<GridExits> exits) : this(id, name, description, worldLocation)
         {
             _exits = exits.ToList();
         }
 
-        public GridMap(string id, string name, string description, GridLocation worldLocation) : this(id,name,description)
+        public GridMap(int id, string name, string description, GridLocation worldLocation) : this(id,name,description)
         {
             Location = worldLocation;
         }

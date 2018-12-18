@@ -7,7 +7,7 @@ namespace OddMud.Core.Interfaces
 {
     public interface IMap
     {
-        string Id { get; }
+        int Id { get; }
 
         string Name { get; }
         string Description { get; }

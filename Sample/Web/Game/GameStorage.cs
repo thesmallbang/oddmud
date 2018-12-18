@@ -57,6 +57,9 @@ namespace OddMud.Web.Game
                 Description = map.Description,
                 RecordBy = "notlinktoausercontextyet",
                 RecordDate = DateTimeOffset.Now,
+                LocationX = gridMap.Location.X,
+                LocationY = gridMap.Location.Y,
+                LocationZ = gridMap.Location.Z,
                 Exits = gridMap.Exits.Select(exit => new DbMapExit() { Direction = (byte)exit }).ToList()
             };
 

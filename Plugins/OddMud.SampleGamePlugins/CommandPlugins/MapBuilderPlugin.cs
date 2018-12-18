@@ -39,6 +39,24 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
 
 
     }
+    public class DeleteMapParserOptions
+    {
+
+        [Option(longName: "direction", Required = false, HelpText = "direction of the map to delete")]
+        public string Direction { get; set; }
+
+        [Option('x', "xlocation", Required = false, HelpText = "coordinates for map to delete")]
+        public int X { get; set; }
+
+        [Option('y', "ylocation", Required = false, HelpText = "coordinates for map to delete")]
+        public int Y { get; set; }
+
+        [Option('z', "zlocation", Required = false, HelpText = "coordinates for map to delete")]
+        public int Z { get; set; }
+
+
+
+    }
 
     public class MapBuilderPlugin : LoggedInCommandPlugin
     {
@@ -54,7 +72,7 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
                 case "create":
                     return ProcessCreateAsync(request, player);
                 case "delete":
-                    return ProcessDeleteAsync(request);
+                    return ProcessDeleteAsync(request, player);
 
             }
 
@@ -184,15 +202,33 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
                 })
                 .WithNotParsed(async (issues) =>
                 {
-                    await Game.Network.SendMessageToPlayerAsync(player, "invalid command - for help type map create --help");
+                    await Game.Network.SendMessageToPlayerAsync(player, "invalid command - for help type map help");
                 });
 
             return Task.CompletedTask;
         }
 
-        private Task ProcessDeleteAsync(IProcessorData<CommandModel> request)
+        private Task ProcessDeleteAsync(IProcessorData<CommandModel> request, IPlayer player)
         {
             request.Handled = true;
+
+            Parser.Default.ParseArguments<DeleteMapParserOptions>(request.Data.StringFrom(2).Split(' '))
+                .WithParsed(async (parsed) =>
+                {
+                    if (string.IsNullOrEmpty(parsed.Direction) && parsed.X == 0 && parsed.Y == 0 && parsed.Z == 0)
+                    {
+                        await Game.Network.SendMessageToPlayerAsync(player, "direction or location parameters are required");
+                        return;
+                    }
+
+
+                })
+                .WithNotParsed(async (issues) =>
+                {
+                    await Game.Network.SendMessageToPlayerAsync(player, "invalid command - for help type map help");
+                });
+
+
             return Task.CompletedTask;
         }
 

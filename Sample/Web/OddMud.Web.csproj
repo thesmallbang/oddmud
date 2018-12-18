@@ -76,7 +76,7 @@
   </Target>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="dotnet build ../../Plugins/OddMud.SampleGamePlugins/OddMud.SampleGamePlugins.csproj" />
+    <Exec Command="dotnet build --no-incremental ../../Plugins/OddMud.SampleGamePlugins/OddMud.SampleGamePlugins.csproj" />
   </Target>
 
   <!-- 

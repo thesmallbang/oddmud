@@ -38,6 +38,9 @@ namespace OddMud.Web.Game.Database
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ForSqlServerUseIdentityColumns();
+
+            modelBuilder.Entity<DbPlayer>().HasIndex(p => p.Name).IsUnique();
+
         }
 
     }

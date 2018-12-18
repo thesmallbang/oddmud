@@ -52,10 +52,10 @@ namespace OddMud.BasicGamePlugins.EventPlugins
                 .Build(ViewCommandType.Set);
             await Game.Network.SendViewCommandsToPlayerAsync(player, lookView);
 
-            // tell our player who else is on the map
+
+            // update the map with a new playerslist
             var playersUpdate = new MudLikeCommandBuilder().AddPlayers(map.Players)
                  .Build(ViewCommandType.Replace, "playerlist");
-
             await Game.Network.SendViewCommandsToMapAsync(map, playersUpdate);
 
         }

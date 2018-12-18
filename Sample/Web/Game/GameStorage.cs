@@ -102,8 +102,11 @@ namespace OddMud.Web.Game
         }
 
       
-        public async Task NewPlayerAsync(IPlayer player, string pass)
+        public async Task<bool> NewPlayerAsync(IPlayer player, string pass)
         {
+            try
+            {
+
             var dbPlayer = new DbPlayer() {
                 RecordBy = "notlinktoausercontextyet",
                 RecordDate = DateTimeOffset.Now,
@@ -114,7 +117,16 @@ namespace OddMud.Web.Game
             {
                 context.Players.Add(dbPlayer);
                 await context.SaveChangesAsync();
+                return true;
             }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("new player rejected: " + ex.Message);
+                return false;
+            }
+
         }
 
         public Task UpdatePlayerAsync(IPlayer player)

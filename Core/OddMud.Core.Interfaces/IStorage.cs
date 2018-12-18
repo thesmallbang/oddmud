@@ -15,7 +15,7 @@ namespace OddMud.Core.Interfaces
         Task NewMapAsync(IMap map);
         Task UpdateMapAsync(IMap map);
 
-        Task NewPlayerAsync(IPlayer player, string pass);
+        Task<bool> NewPlayerAsync(IPlayer player, string pass);
         Task UpdatePlayerAsync(IPlayer player);
         Task UpdatePlayersAsync(IEnumerable<IPlayer> players);
 

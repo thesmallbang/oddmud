@@ -20,7 +20,6 @@ namespace OddMud.BasicGame.Extensions
         {
             return builder
                 .StartContainer("dateview")
-                .AddText("date: ")
                 .AddTextLine(dateTime.ToString("D"), TextColor.Fuschia, TextSize.Small)
                 .EndContainer();
 

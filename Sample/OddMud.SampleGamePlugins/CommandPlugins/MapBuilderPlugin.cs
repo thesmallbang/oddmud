@@ -133,12 +133,12 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                    }
 
                    parsed.AddExits.ToList().ForEach((exit) => {
-                       map.AddExit(Enum.Parse<GridExits>(exit,ignoreCase: true));
+                       map.AddExit(Enum.Parse<Exits>(exit,ignoreCase: true));
                        hasUpdate = true;
                    });
 
                    parsed.RemoveExits.ToList().ForEach((exit) => {
-                       map.RemoveExit(Enum.Parse<GridExits>(exit, ignoreCase: true));
+                       map.RemoveExit(Enum.Parse<Exits>(exit, ignoreCase: true));
                        hasUpdate = true;
                    });
 
@@ -174,7 +174,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                     }
 
                     GridLocation newMapLocation = null;
-                    GridExits parsedExit = GridExits.None;
+                    Exits parsedExit = Exits.None;
                     var gridMap = (GridMap)player.Map;
 
                     if (!string.IsNullOrEmpty(parsed.Direction))
@@ -184,36 +184,36 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                         {
                             case "n":
                             case "north":
-                                parsedExit = GridExits.North;
+                                parsedExit = Exits.North;
                                 break;
                             case "e":
                             case "east":
-                                parsedExit = GridExits.East;
+                                parsedExit = Exits.East;
                                 break;
                             case "s":
                             case "south":
-                                parsedExit = GridExits.South;
+                                parsedExit = Exits.South;
                                 break;
 
                             case "w":
                             case "west":
-                                parsedExit = GridExits.West;
+                                parsedExit = Exits.West;
                                 break;
 
                             case "u":
                             case "up":
-                                parsedExit = GridExits.Up;
+                                parsedExit = Exits.Up;
                                 break;
 
                             case "d":
                             case "down":
-                                parsedExit = GridExits.Down;
+                                parsedExit = Exits.Down;
                                 break;
 
 
                         }
 
-                        if (parsedExit == GridExits.None)
+                        if (parsedExit == Exits.None)
                         {
                             await Game.Network.SendMessageToPlayerAsync(player, "direction was not valid");
                             return;
@@ -236,11 +236,11 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                     }
 
 
-                    var newMapExits = new List<GridExits>();
+                    var newMapExits = new List<Exits>();
 
                     // to help assist with creation, we are going to automatically add an exit on the current map for the direction of the next map.
                     // this only occurs if the direction flag was used
-                    if (parsedExit != GridExits.None)
+                    if (parsedExit != Exits.None)
                     {
                         if (!gridMap.Exits.Contains(parsedExit))
                         {
@@ -259,23 +259,23 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                         // automatically add an exit back on the new map
                         switch (parsedExit)
                         {
-                            case GridExits.North:
-                                newMapExits.Add(GridExits.South);
+                            case Exits.North:
+                                newMapExits.Add(Exits.South);
                                 break;
-                            case GridExits.East:
-                                newMapExits.Add(GridExits.West);
+                            case Exits.East:
+                                newMapExits.Add(Exits.West);
                                 break;
-                            case GridExits.South:
-                                newMapExits.Add(GridExits.North);
+                            case Exits.South:
+                                newMapExits.Add(Exits.North);
                                 break;
-                            case GridExits.West:
-                                newMapExits.Add(GridExits.East);
+                            case Exits.West:
+                                newMapExits.Add(Exits.East);
                                 break;
-                            case GridExits.Up:
-                                newMapExits.Add(GridExits.Down);
+                            case Exits.Up:
+                                newMapExits.Add(Exits.Down);
                                 break;
-                            case GridExits.Down:
-                                newMapExits.Add(GridExits.Up);
+                            case Exits.Down:
+                                newMapExits.Add(Exits.Up);
                                 break;
                         }
                     }
@@ -335,23 +335,23 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
                                 switch (exit)
                                 {
-                                    case GridExits.North:
-                                        cleanupMap.RemoveExit(GridExits.South);
+                                    case Exits.North:
+                                        cleanupMap.RemoveExit(Exits.South);
                                         break;
-                                    case GridExits.East:
-                                        cleanupMap.RemoveExit(GridExits.West);
+                                    case Exits.East:
+                                        cleanupMap.RemoveExit(Exits.West);
                                         break;
-                                    case GridExits.South:
-                                        cleanupMap.RemoveExit(GridExits.North);
+                                    case Exits.South:
+                                        cleanupMap.RemoveExit(Exits.North);
                                         break;
-                                    case GridExits.West:
-                                        cleanupMap.RemoveExit(GridExits.East);
+                                    case Exits.West:
+                                        cleanupMap.RemoveExit(Exits.East);
                                         break;
-                                    case GridExits.Up:
-                                        cleanupMap.RemoveExit(GridExits.Down);
+                                    case Exits.Up:
+                                        cleanupMap.RemoveExit(Exits.Down);
                                         break;
-                                    case GridExits.Down:
-                                        cleanupMap.RemoveExit(GridExits.Up);
+                                    case Exits.Down:
+                                        cleanupMap.RemoveExit(Exits.Up);
                                         break;
 
                                 }
@@ -380,21 +380,21 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         }
 
 
-        private GridLocation GetNextLocation(GridLocation currentGridLocation, GridExits exit)
+        private GridLocation GetNextLocation(GridLocation currentGridLocation, Exits exit)
         {
             switch (exit)
             {
-                case GridExits.North:
+                case Exits.North:
                     return new GridLocation(currentGridLocation.X, currentGridLocation.Y - 1, currentGridLocation.Z);
-                case GridExits.East:
+                case Exits.East:
                     return new GridLocation(currentGridLocation.X + 1, currentGridLocation.Y, currentGridLocation.Z);
-                case GridExits.South:
+                case Exits.South:
                     return new GridLocation(currentGridLocation.X, currentGridLocation.Y + 1, currentGridLocation.Z);
-                case GridExits.West:
+                case Exits.West:
                     return new GridLocation(currentGridLocation.X - 1, currentGridLocation.Y, currentGridLocation.Z);
-                case GridExits.Up:
+                case Exits.Up:
                     return new GridLocation(currentGridLocation.X, currentGridLocation.Y, currentGridLocation.Z + 1);
-                case GridExits.Down:
+                case Exits.Down:
                     return new GridLocation(currentGridLocation.X, currentGridLocation.Y, currentGridLocation.Z - 1);
 
             }

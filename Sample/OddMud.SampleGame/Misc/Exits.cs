@@ -5,7 +5,7 @@ using System.Text;
 namespace OddMud.SampleGame.Misc
 {
 
-    public enum GridExits
+    public enum Exits
     {
         None,
         North,

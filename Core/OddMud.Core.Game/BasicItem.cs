@@ -8,11 +8,16 @@ namespace OddMud.Core.Game
 {
     public class BasicItem : IItem
     {
-        public string Name => nameof(BasicItem);
+        public string Name { get; set; }
+        public string Description { get; set; }
+
+        public int Id { get; set; }
 
         public event Func<IItem, IEntity, Task> PickedUp;
         public event Func<IItem, IEntity, Task> Dropped;
         public event Func<ISpawnable, IMap, Task> Spawned;
+
+
 
 
         public Task MarkAsPickedUpAsync(IEntity entityWhoPickedUp)

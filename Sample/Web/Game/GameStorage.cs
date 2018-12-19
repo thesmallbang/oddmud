@@ -15,6 +15,10 @@ namespace OddMud.Web.Game
 {
     public class GameStorage : IStorage
     {
+
+        // implement cache here or switch to using a singleton dbcontext for the ef cache? ..here we can have them already converted..
+        // is that what the Game object is for...
+
         private readonly ILogger<GameStorage> _logger;
 
         public GameStorage(
@@ -31,7 +35,8 @@ namespace OddMud.Web.Game
             {
                 var dbMap = await context.Maps.Include(p => p.Exits).FirstOrDefaultAsync(o => o.Id == map.Id);
 
-
+                // workaround ..moving on its not important now
+                // i know this is not needed but it was appending to the database instead of clearing and then adding.
                 if (dbMap.Exits.Any())
                 {
                     dbMap.Exits.Clear();
@@ -98,7 +103,7 @@ namespace OddMud.Web.Game
                 new GridMap(
                     db.Id, db.Name, db.Description,
                     new GridLocation(db.LocationX, db.LocationY, db.LocationZ),
-                    db.Exits.Select(e => (GridExits)e.Direction).ToList()
+                    db.Exits.Select(e => (Exits)e.Direction).ToList()
                     )).ToListAsync();
             }
         }
@@ -106,12 +111,12 @@ namespace OddMud.Web.Game
         {
             using (var dbContext = new GameDbContext())
             {
-                return await dbContext.Maps.Where(m=>m.Id == id).Select(db =>
-                new GridMap(
-                    db.Id, db.Name, db.Description,
-                    new GridLocation(db.LocationX, db.LocationY, db.LocationZ),
-                    db.Exits.Select(e => (GridExits)e.Direction).ToList()
-                    )).FirstOrDefaultAsync();
+                return await dbContext.Maps.Where(m => m.Id == id).Select(db =>
+                  new GridMap(
+                      db.Id, db.Name, db.Description,
+                      new GridLocation(db.LocationX, db.LocationY, db.LocationZ),
+                      db.Exits.Select(e => (Exits)e.Direction).ToList()
+                      )).FirstOrDefaultAsync();
             }
         }
 
@@ -173,6 +178,76 @@ namespace OddMud.Web.Game
         public Task UpdatePlayersAsync(IEnumerable<IPlayer> players)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task NewItemAsync(IItem item)
+        {
+            // use some sort of mapper? to clean this up?
+            var gridItem = (GridItem)item;
+            var dbItem = new DbItem()
+            {
+                Name = item.Name,
+                Description = item.Description,
+                ItemTypes = gridItem.ItemTypes.Select(it => new DbItemTypes() { ItemType = (byte)it }).ToList()
+            };
+
+            using (var context = new GameDbContext())
+            {
+                await context.Items.AddAsync(dbItem);
+                await context.SaveChangesAsync();
+            }
+
+        }
+
+        public async Task UpdateItemAsync(IItem item)
+        {
+            using (var context = new GameDbContext())
+            {
+                var dbItem = await context.Items.Include(i => i.ItemTypes).FirstOrDefaultAsync();
+                if (dbItem == null)
+                    return;
+
+                var gridItem = (GridItem)item;
+
+                dbItem.Name = gridItem.Name;
+                dbItem.Description = gridItem.Description;
+
+                if (dbItem.ItemTypes.Any())
+                {
+                    dbItem.ItemTypes.Clear();
+                    dbItem = context.Items.Update(dbItem).Entity;
+                }
+
+                dbItem.ItemTypes = gridItem.ItemTypes.Select(it => new DbItemTypes() { ItemType = (byte)it }).ToList();
+                context.Items.Update(dbItem);
+                await context.SaveChangesAsync();
+
+            }
+        }
+
+        public async Task DelteItemAsync(IItem item)
+        {
+            using (var context = new GameDbContext())
+            {
+                var dbItem = await context.Items.FirstOrDefaultAsync(i => i.Id == item.Id);
+                if (dbItem == null)
+                    return;
+
+                context.Items.Remove(dbItem);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<IEnumerable<IItem>> LoadItemsAsync()
+        {
+            using (var dbContext = new GameDbContext())
+            {
+                return await dbContext.Items.Select(db =>
+                new GridItem(
+                    db.Id, db.Name, db.Description,
+                    db.ItemTypes.Select(it => (ItemTypes)it.ItemType)
+                    )).ToListAsync();
+            }
         }
     }
 }

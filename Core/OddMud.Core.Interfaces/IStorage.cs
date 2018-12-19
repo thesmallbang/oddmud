@@ -22,5 +22,10 @@ namespace OddMud.Core.Interfaces
         Task UpdatePlayersAsync(IEnumerable<IPlayer> players);
 
 
+        Task<IEnumerable<IItem>> LoadItemsAsync();
+        Task NewItemAsync(IItem item);
+        Task UpdateItemAsync(IItem item);
+        Task DelteItemAsync(IItem item);
+
     }
 }

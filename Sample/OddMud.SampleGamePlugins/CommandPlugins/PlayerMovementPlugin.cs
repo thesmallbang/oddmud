@@ -40,33 +40,33 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
             var currentMap = (GridMap)player.Map;
             var currentGridLocation = currentMap.Location;
 
-            var exit = GridExits.None;
+            var exit = Exits.None;
 
             switch (request.Data.FirstPart)
             {
                 case "n":
                 case "north":
-                    exit = GridExits.North;
+                    exit = Exits.North;
                     break;
                 case "e":
                 case "east":
-                    exit = GridExits.East;
+                    exit = Exits.East;
                     break;
                 case "s":
                 case "south":
-                    exit = GridExits.South;
+                    exit = Exits.South;
                     break;
                 case "w":
                 case "west":
-                    exit = GridExits.West;
+                    exit = Exits.West;
                     break;
                 case "u":
                 case "up":
-                    exit = GridExits.Up;
+                    exit = Exits.Up;
                     break;
                 case "d":
                 case "down":
-                    exit = GridExits.Down;
+                    exit = Exits.Down;
                     break;
                 default:
                     return;
@@ -92,21 +92,21 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
             await base.LoggedInProcessAsync(request, player);
         }
 
-        private GridLocation GetNextLocation(GridLocation currentGridLocation, GridExits exit)
+        private GridLocation GetNextLocation(GridLocation currentGridLocation, Exits exit)
         {
             switch (exit)
             {
-                case GridExits.North:
+                case Exits.North:
                     return new GridLocation(currentGridLocation.X, currentGridLocation.Y - 1, currentGridLocation.Z);
-                case GridExits.East:
+                case Exits.East:
                     return new GridLocation(currentGridLocation.X + 1, currentGridLocation.Y, currentGridLocation.Z);
-                case GridExits.South:
+                case Exits.South:
                     return new GridLocation(currentGridLocation.X, currentGridLocation.Y + 1, currentGridLocation.Z);
-                case GridExits.West:
+                case Exits.West:
                     return new GridLocation(currentGridLocation.X - 1, currentGridLocation.Y, currentGridLocation.Z);
-                case GridExits.Up:
+                case Exits.Up:
                     return new GridLocation(currentGridLocation.X, currentGridLocation.Y, currentGridLocation.Z + 1);
-                case GridExits.Down:
+                case Exits.Down:
                     return new GridLocation(currentGridLocation.X, currentGridLocation.Y, currentGridLocation.Z - 1);
 
             }

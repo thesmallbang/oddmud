@@ -13,8 +13,8 @@ namespace OddMud.SampleGame
     public class GridMap : BasicMap
     {
 
-        public IReadOnlyList<GridExits> Exits => _exits;
-        private List<GridExits> _exits = new List<GridExits>();
+        public IReadOnlyList<Exits> Exits => _exits;
+        private List<Exits> _exits = new List<Exits>();
         public GridLocation Location = new GridLocation();
 
 
@@ -30,7 +30,7 @@ namespace OddMud.SampleGame
             Description = description;
         }
 
-        public GridMap(int id, string name, string description, GridLocation worldLocation, IEnumerable<GridExits> exits) : this(id, name, description, worldLocation)
+        public GridMap(int id, string name, string description, GridLocation worldLocation, IEnumerable<Exits> exits) : this(id, name, description, worldLocation)
         {
             _exits = exits.ToList();
         }
@@ -45,13 +45,13 @@ namespace OddMud.SampleGame
          *  Add events for all these list modifier methods
          * 
          */
-        public void AddExit(GridExits direction)
+        public void AddExit(Exits direction)
         {
             if (!_exits.Contains(direction))
                 _exits.Add(direction);
         }
 
-        public void RemoveExit(GridExits direction)
+        public void RemoveExit(Exits direction)
         {
             _exits.Remove(direction);
         }

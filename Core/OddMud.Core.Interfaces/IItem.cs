@@ -7,7 +7,9 @@ namespace OddMud.Core.Interfaces
 {
     public interface IItem : ISpawnable
     {
-
+        int Id { get; }
+        string Name { get; }
+        string Description { get; }
         event Func<IItem, IEntity, Task> PickedUp;
         event Func<IItem, IEntity, Task> Dropped;
 

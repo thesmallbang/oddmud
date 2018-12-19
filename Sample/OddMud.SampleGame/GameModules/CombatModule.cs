@@ -13,6 +13,9 @@ namespace OddMud.SampleGame.GameModules
         private readonly IGame _game;
         private readonly CombatModuleSettings _settings;
 
+        public IReadOnlyList<IEncounter> Encounters => _encounters;
+        private List<IEncounter> _encounters = new List<IEncounter>();
+
         public CombatModule(
             ILogger<CombatModule> logger,
             CombatModuleSettings settings,
@@ -34,6 +37,18 @@ namespace OddMud.SampleGame.GameModules
         {
             return Task.FromResult<bool>(false);
         }
+
+        private Task AddEncounterAsync(IEncounter encounter)
+        {
+            _encounters.Add(encounter);
+            return Task.CompletedTask;
+        }
+        private Task RemoveEncounterAsync(IEncounter encounter)
+        {
+            _encounters.Add(encounter);
+            return Task.CompletedTask;
+        }
+
 
     }
 }

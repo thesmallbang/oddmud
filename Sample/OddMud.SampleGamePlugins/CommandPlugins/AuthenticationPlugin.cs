@@ -1,10 +1,7 @@
-﻿using OddMud.SampleGame;
-using OddMud.SampleGame.Commands;
-using OddMud.SampleGame.Extensions;
+﻿using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
-using OddMud.SampleGamePlugins;
-using System;
+using OddMud.SampleGame.Commands;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

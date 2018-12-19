@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\OddMud.Core.Game\OddMud.Core.Game.csproj" />
+    <ProjectReference Include="..\..\Core\OddMud.Core.Game\OddMud.Core.Game.csproj">
+      <Private>false</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\OddMud.Core.Interfaces\OddMud.Core.Interfaces.csproj">
       <Private>false</Private>
     </ProjectReference>

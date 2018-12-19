@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using OddMud.SampleGamePlugins;
+using OddMud.Core.Game;
 
 namespace OddMud.SampleGamePlugins.CommandPlugins
 {

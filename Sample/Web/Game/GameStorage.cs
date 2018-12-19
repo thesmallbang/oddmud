@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using OddMud.Core.Game;
+using OddMud.Core.Interfaces;
 using OddMud.SampleGame;
 using OddMud.SampleGame.Misc;
-using OddMud.Core.Interfaces;
 using OddMud.Web.Game.Database;
 using OddMud.Web.Game.Database.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using OddMud.Core.Game;
 
 namespace OddMud.Web.Game
 {

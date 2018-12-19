@@ -15,6 +15,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\OddMud.Core.Game\OddMud.Core.Game.csproj">
+      <Private>false</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\OddMud.Core.Interfaces\OddMud.Core.Interfaces.csproj">
       <Private>false</Private>
     </ProjectReference>
@@ -22,6 +25,9 @@
       <Private>false</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\OddMud.View.MudLike\OddMud.View.MudLike.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\OddMud.SampleGame\OddMud.SampleGame.csproj">
       <Private>false</Private>
     </ProjectReference>
   </ItemGroup>

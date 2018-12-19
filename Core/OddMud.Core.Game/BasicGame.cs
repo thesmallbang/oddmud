@@ -18,6 +18,10 @@ namespace OddMud.Core.Game
         public IWorld World { get; }
 
         public IReadOnlyList<IPlayer> Players { get { return _players; } }
+
+        public IReadOnlyList<IItem> Items => _items;
+
+        private readonly List<IItem> _items = new List<IItem>();
         private readonly List<IPlayer> _players = new List<IPlayer>();
 
         public event Func<object, EventArgs, Task> Ticked;
@@ -58,18 +62,18 @@ namespace OddMud.Core.Game
             if (!Players.Any(p => p == player))
                 return false;
 
-            _players.Remove(player);
+           var removed = _players.Remove(player);
 
-            if (PlayerRemoved != null)
+            if (removed && PlayerRemoved != null)
                 await PlayerRemoved(this, player);
 
-            return true;
+            return removed;
         }
 
 
         public virtual Task TickAsync()
         {
-            Ticked?.Invoke(this, null);
+           Ticked?.Invoke(this, null);
             return Task.CompletedTask;
         }
 
@@ -78,6 +82,29 @@ namespace OddMud.Core.Game
             _logger?.Log(level, message);
         }
 
+        public virtual Task<bool> AddItemAsync(IItem item)
+        {
+            _items.Add(item);
+            return Task.FromResult(true);
+        }
 
+        public virtual Task<bool> RemoveItemAsync(IItem item)
+        {
+            return Task.FromResult(_items.Remove(item));
+        }
+
+        public async Task<bool> AddSpawnerAsync(ISpawner spawner)
+        {
+            await World.AddSpawnerAsync(spawner);
+
+            return true;
+        }
+
+        public async Task<bool> RemoveSpawnerAsync(ISpawner spawner)
+        {
+            await World.RemoveSpawnerAsync(spawner);
+
+            return true;
+        }
     }
 }

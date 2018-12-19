@@ -12,7 +12,7 @@ namespace OddMud.Core.Interfaces
         Task SpawnerTickAsync();
     }
 
-    public interface ISpawner<T>
+    public interface ISpawner<T> : ISpawner
         where T : ISpawnable
     {
         event Func<T, Task> Spawned;

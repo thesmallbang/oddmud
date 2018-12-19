@@ -29,6 +29,9 @@ namespace OddMud.SampleGamePlugins.EventPlugins
             {
                 await module.TickAsync();
             }
+           // Parallel.ForEach(gameModules, module => module.TickAsync());
+
+
             await base.IntervalTick(sender, e);
 
         }

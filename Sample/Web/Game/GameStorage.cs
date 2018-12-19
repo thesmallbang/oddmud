@@ -16,11 +16,8 @@ namespace OddMud.Web.Game
     public class GameStorage : IStorage
     {
 
-        // implement cache here or switch to using a singleton dbcontext for the ef cache? ..here we can have them already converted..
-        // is that what the Game object is for...
-
         private readonly ILogger<GameStorage> _logger;
-
+        
         public GameStorage(
             ILogger<GameStorage> logger
             )
@@ -120,7 +117,6 @@ namespace OddMud.Web.Game
             }
         }
 
-
         public async Task<IPlayer> LoadPlayerAsync(string name, string pass)
         {
             using (var dbContext = new GameDbContext())
@@ -170,9 +166,19 @@ namespace OddMud.Web.Game
 
         }
 
-        public Task UpdatePlayerAsync(IPlayer player)
+        public async Task UpdatePlayerAsync(IPlayer player)
         {
-            throw new NotImplementedException();
+            using (var context = new GameDbContext())
+            {
+                var dbPlayer = await context.Players.FirstOrDefaultAsync();
+
+                dbPlayer.Name = player.Name;
+                dbPlayer.LastMap = player.Map.Id;
+
+                context.Players.Update(dbPlayer);
+                await context.SaveChangesAsync();
+            }
+
         }
 
         public Task UpdatePlayersAsync(IEnumerable<IPlayer> players)
@@ -242,12 +248,70 @@ namespace OddMud.Web.Game
         {
             using (var dbContext = new GameDbContext())
             {
-                return await dbContext.Items.Select(db =>
+                _logger.LogInformation("About to load items");
+                var items = await dbContext.Items.Select(db =>
                 new GridItem(
                     db.Id, db.Name, db.Description,
-                    db.ItemTypes.Select(it => (ItemTypes)it.ItemType)
+                    db.ItemTypes.Select(it => (ItemTypes)it.ItemType).ToList()
                     )).ToListAsync();
+
+                _logger.LogInformation("Loaded items");
+                return items;
             }
+        }
+
+        public async Task<IEnumerable<ISpawner>> LoadSpawnersAsync()
+        {
+            using (var dbContext = new GameDbContext())
+            {
+                var dbSpawners = await dbContext.Spawners.ToListAsync();
+
+                var result = new List<ISpawner>();
+                foreach (var dbSpawner in dbSpawners)
+                {
+                    var spawnType = (SpawnType)dbSpawner.SpawnType;
+                    switch (spawnType)
+                    {
+                        case SpawnType.Item:
+                            result.Add((ISpawner)new GridItemSpawner(dbSpawner.MapId, dbSpawner.EntityId));
+                            break;
+                        default:
+                            _logger.LogWarning($"Unsupported spawn type from database was ignored SpawnerId: {dbSpawner.SpawnType}");
+                            break;
+                    }
+                }
+
+                _logger.LogInformation("Loaded items");
+                return result;
+            }
+        }
+
+        public async Task NewSpawnerAsync(ISpawner spawner)
+        {
+            var sSpawner = (SingletonSpawner)spawner;
+
+            // use some sort of mapper? to clean this up?
+            var dbSpawner = new DbSpawner()
+            {
+                Enabled = true,
+                EntityId = sSpawner.EntityId
+            };
+
+            using (var context = new GameDbContext())
+            {
+                await context.Spawners.AddAsync(dbSpawner);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public Task UpdateSpawnerAsync(ISpawner spawner)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DelteSpawnerAsync(ISpawner spawner)
+        {
+            throw new NotImplementedException();
         }
     }
 }

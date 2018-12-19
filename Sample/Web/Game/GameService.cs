@@ -30,19 +30,35 @@ namespace OddMud.Web.Game
 
             Game = (GridGame)game;
         }
-        
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogDebug($"GameService is starting.");
 
             stoppingToken.Register(() =>
+                    // IGame.ShutdownAsync
                     _logger.LogDebug($"GameService background task is stopping."));
 
             _logger.LogInformation("Loading maps from storage");
             var maps = await Game.Store.LoadMapsAsync();
             maps.ToList().ForEach(async (m) => await Game.World.AddMapAsync(m));
-            
-            
+
+            _logger.LogInformation("Loading items from storage");
+            var items = await Game.Store.LoadItemsAsync();
+            items.ToList().ForEach(async (i) => await Game.AddItemAsync(i));
+
+            _logger.LogInformation("Loading spawners from storage");
+            var spawners = await Game.Store.LoadSpawnersAsync();
+            spawners.Select(o => (GridSpawner)o).ToList().ForEach(async (i) => {
+                await Game.AddSpawnerAsync((ISpawner)i);
+                // set the map object on each spawner loaded from db
+                i.Map = Game.World.Maps.FirstOrDefault(m => m.Id == i.MapId);
+            });
+
+
+
+            // should probably move this stuff into a IGame.StartupAsync
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Game.TickAsync();
@@ -54,6 +70,8 @@ namespace OddMud.Web.Game
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
+            // IGame.ShutdownAsync
+
             // Run your graceful clean-up actions
             return Task.CompletedTask;
         }

@@ -14,10 +14,10 @@ namespace OddMud.Core.Game
         public string Name => nameof(BasicWorld);
         public event Func<object, IMapChangeEvent, Task> PlayerMoved;
         public TimeOfDay Time = new TimeOfDay() { Timescale = 6000 };
-        public virtual IReadOnlyList<IMap> Maps => _maps;
+        public virtual IEnumerable<IMap> Maps => _maps;
         private List<IMap> _maps = new List<IMap>();
 
-        public IReadOnlyList<ISpawner> Spawners => _spawners;
+        public IEnumerable<ISpawner> Spawners => _spawners;
         private List<ISpawner> _spawners = new List<ISpawner>();
 
         private readonly ILogger<BasicWorld> _logger;
@@ -35,13 +35,13 @@ namespace OddMud.Core.Game
 
         public virtual IMap GetStarterMap()
         {
-            if (Maps.Count == 0)
+            if (Maps.Count() == 0)
             {
                 return null;
 
             }
 
-            return Maps[0];
+            return Maps.First();
         }
 
         public virtual Task AddMapAsync(IMap map)

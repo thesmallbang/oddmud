@@ -13,12 +13,12 @@ namespace OddMud.SampleGame
         public readonly List<ItemTypes> ItemTypes = new List<ItemTypes>() { Misc.ItemTypes.Normal };
 
 
-        public GridItem(int id,  string name, string description, IEnumerable<ItemTypes> itemTypes)
+        public GridItem(int id,  string name, string description, List<ItemTypes> itemTypes)
         {
             Id = id;
             Name = name;
             Description = description;
-            ItemTypes = itemTypes.ToList();
+            ItemTypes = itemTypes;
         }
     }
 }

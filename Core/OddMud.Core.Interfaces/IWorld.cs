@@ -11,8 +11,8 @@ namespace OddMud.Core.Interfaces
 
         event Func<object, IMapChangeEvent, Task> PlayerMoved;
 
-        IReadOnlyList<IMap> Maps { get; }
-        IReadOnlyList<ISpawner> Spawners { get; }
+        IEnumerable<IMap> Maps { get; }
+        IEnumerable<ISpawner> Spawners { get; }
 
 
         string Name { get; }

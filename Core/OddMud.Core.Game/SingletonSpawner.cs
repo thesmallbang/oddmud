@@ -11,10 +11,10 @@ namespace OddMud.Core.Game
 
         public virtual event Func<ISpawnable, Task> Spawned;
 
-        public virtual ISpawnable SpawnedEntity { get; private set; }
-        public virtual int EntityId { get; set; }
+        public virtual ISpawnable SpawnedEntity { get; set; }
+        public int EntityId { get; set; }
 
-        public virtual SpawnType SpawnType { get; set; } = SpawnType.Item;
+        public virtual SpawnType SpawnType { get; set; }
 
         public int ResetDuration { get; set; } = 10 * 1000;
 
@@ -22,6 +22,10 @@ namespace OddMud.Core.Game
 
         public virtual Task SpawnAsync()
         {
+
+            if (Spawned != null)
+                return Spawned.Invoke(SpawnedEntity);
+
             return Task.CompletedTask;
         }
 
@@ -30,7 +34,7 @@ namespace OddMud.Core.Game
             if (SpawnedEntity != null)
                 return Task.CompletedTask;
 
-            if (_lastReset.AddMilliseconds(ResetDuration) < DateTime.Now)
+            if (_lastReset.AddMilliseconds(ResetDuration) > DateTime.Now)
                 return Task.CompletedTask;
 
             return SpawnAsync();

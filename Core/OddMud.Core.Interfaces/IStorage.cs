@@ -27,5 +27,11 @@ namespace OddMud.Core.Interfaces
         Task UpdateItemAsync(IItem item);
         Task DelteItemAsync(IItem item);
 
+        Task<IEnumerable<ISpawner>> LoadSpawnersAsync();
+        Task NewSpawnerAsync(ISpawner spawner);
+        Task UpdateSpawnerAsync(ISpawner spawner);
+        Task DelteSpawnerAsync(ISpawner spawner);
+
+
     }
 }

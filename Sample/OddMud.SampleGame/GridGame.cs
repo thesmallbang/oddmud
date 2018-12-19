@@ -17,7 +17,7 @@ namespace OddMud.SampleGame
             IStorage storage) : base(logger, network, world, storage)
         {
 
-
+            
 
         }
     }

@@ -15,6 +15,8 @@ namespace OddMud.Web.Game.Database
         public DbSet<DbMap> Maps { get; set; }
         public DbSet<DbMapExit> MapExits { get; set; }
         public DbSet<DbItem> Items { get; set; }
+        public DbSet<DbSpawner> Spawners { get; set; }
+
         public DbSet<DbItemTypes> ItemsAssignedTypes { get; set; }
 
 

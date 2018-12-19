@@ -1,12 +1,13 @@
 ﻿using McMaster.NETCore.Plugins;
 using Microsoft.Extensions.Logging;
+using OddMud.Core.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace OddMud.Core.Plugins
+namespace OddMud.SampleGame
 {
     public class FilePluginLoader<TPlugin> : IPluginLoader<TPlugin>
       where TPlugin : IPlugin

@@ -1,4 +1,4 @@
-﻿namespace OddMud.SampleGame
+﻿namespace OddMud.SampleGame.GameModules
 {
     public class CombatModuleSettings
     {

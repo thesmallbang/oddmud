@@ -11,11 +11,19 @@ namespace OddMud.Core.Game
         private readonly IMap _map;
         public override event Func<ISpawnable, Task> Spawned;
 
+        public ItemSpawner(IMap map, int itemId)
+        {
+            EntityId = itemId;
+            _map = map;
+        }
+        public ItemSpawner(IMap map, int itemId, int respawnDelayMilliseconds) : this(map, itemId)
+        {
+            ResetDuration = respawnDelayMilliseconds;
+        }
+
 
         public override async Task SpawnAsync()
         {
-
-
             var item = new BasicItem();
             await _map.AddItemAsync(item);
 
@@ -24,6 +32,7 @@ namespace OddMud.Core.Game
 
             // we want to know when the item is picked up as our reset flag to know we can spawn again after the delay
             item.PickedUp += ResetSpawner;
+            await base.SpawnAsync();
         }
 
         private async Task ResetSpawner(IItem item, IEntity whoPickedUp)
@@ -36,10 +45,6 @@ namespace OddMud.Core.Game
         }
 
 
-        public ItemSpawner(IMap map, int itemId)
-        {
-            EntityId = itemId;
-            _map = map;
-        }
+      
     }
 }

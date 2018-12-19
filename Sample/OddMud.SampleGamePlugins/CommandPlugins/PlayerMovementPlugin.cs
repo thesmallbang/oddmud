@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using OddMud.SampleGame;
@@ -9,6 +8,7 @@ using OddMud.SampleGame.Commands;
 using OddMud.SampleGame.Misc;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
+using OddMud.SampleGame.GameModules;
 
 namespace OddMud.SampleGamePlugins.CommandPlugins
 {

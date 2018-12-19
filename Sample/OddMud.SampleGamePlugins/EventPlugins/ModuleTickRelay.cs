@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using OddMud.SampleGame.GameModules;
 
 namespace OddMud.SampleGamePlugins.EventPlugins
 {

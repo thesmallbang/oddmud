@@ -14,6 +14,7 @@ using OddMud.Web.Hubs;
 using OddMud.ViewBuilders.MudLikeHtml;
 using OddMud.Web.Game.Database;
 using Microsoft.AspNetCore.Http;
+using OddMud.SampleGame.GameModules;
 
 namespace OddMud.Web
 {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OddMud.SampleGame
+namespace OddMud.SampleGame.GameModules
 {
     public class CombatModule : IGameModule<CombatModule>
     {

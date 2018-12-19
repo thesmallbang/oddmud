@@ -1,4 +1,4 @@
-﻿namespace OddMud.BasicGame
+﻿namespace OddMud.Core.Game
 {
 
     public enum SpawnType

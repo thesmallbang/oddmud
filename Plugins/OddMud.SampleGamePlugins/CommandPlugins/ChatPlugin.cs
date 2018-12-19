@@ -1,15 +1,15 @@
 ﻿using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
-using OddMud.BasicGame;
-using OddMud.BasicGame.Commands;
-using OddMud.BasicGame.Extensions;
+using OddMud.SampleGame;
+using OddMud.SampleGame.Commands;
+using OddMud.SampleGame.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using OddMud.SampleGamePlugins;
 
-namespace OddMud.BasicGamePlugins.CommandPlugins
+namespace OddMud.SampleGamePlugins.CommandPlugins
 {
     public class ChatPlugin : LoggedInCommandPlugin
     {

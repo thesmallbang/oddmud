@@ -1,6 +1,6 @@
-﻿using OddMud.BasicGame;
-using OddMud.BasicGame.Extensions;
-using OddMud.BasicGame.Misc;
+﻿using OddMud.SampleGame;
+using OddMud.SampleGame.Extensions;
+using OddMud.SampleGame.Misc;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using OddMud.View.MudLike;
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OddMud.BasicGamePlugins.EventPlugins
+namespace OddMud.SampleGamePlugins.EventPlugins
 {
     public class OnPlayerMovePlugin : IEventPlugin
     {

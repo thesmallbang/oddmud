@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OddMud.BasicGame.Misc
+namespace OddMud.SampleGame.Misc
 {
 
     public enum GridExits

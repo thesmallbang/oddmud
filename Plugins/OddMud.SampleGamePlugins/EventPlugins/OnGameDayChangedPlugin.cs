@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
-using OddMud.BasicGame;
-using OddMud.BasicGame.Extensions;
+using OddMud.SampleGame;
+using OddMud.SampleGame.Extensions;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using OddMud.View.MudLike;
 using System;
 using System.Threading.Tasks;
 
-namespace OddMud.BasicGamePlugins.EventPlugins
+namespace OddMud.SampleGamePlugins.EventPlugins
 {
     public class OnGameDayChangedPlugin : TickIntervalEventPlugin
     {

@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OddMud.BasicGame
+namespace OddMud.Core.Game
 {
-    public class Game : IGame
+    public class BasicGame : IGame
     {
-        private readonly ILogger<Game> _logger;
-        public string Name = nameof(Game);
+        private readonly ILogger<BasicGame> _logger;
+        public string Name = nameof(BasicGame);
         public ITransport Network { get; }
         public IStorage Store { get; }
 
@@ -25,8 +25,8 @@ namespace OddMud.BasicGame
         public event Func<object, IPlayer, Task> PlayerRemoved;
 
 
-        public Game(
-            ILogger<Game> logger,
+        public BasicGame(
+            ILogger<BasicGame> logger,
             ITransport network,
             IWorld world,
             IStorage storage

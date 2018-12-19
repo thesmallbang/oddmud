@@ -21,6 +21,11 @@ namespace OddMud.Core.Interfaces
         Task AddPlayerAsync(IPlayer player);
         Task RemovePlayerAsync(IPlayer player);
 
+        Task AddItemAsync(IItem item);
+        Task RemoveItemAsync(IItem item);
+
+        Task AddNpcAsync(IEntity entity);
+        Task RemoveNpcAsync(IEntity entity);
 
 
     }

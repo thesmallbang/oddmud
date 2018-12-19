@@ -10,6 +10,7 @@ namespace OddMud.Core.Interfaces
         IWorld World { get; }
         IStorage Store { get; }
         IReadOnlyList<IPlayer> Players { get; }
+                
         ITransport Network { get; }
 
         event Func<object, EventArgs, Task> Ticked;

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using OddMud.BasicGame;
-using OddMud.BasicGame.Commands;
-using OddMud.BasicGame.Misc;
+using OddMud.SampleGame;
+using OddMud.SampleGame.Commands;
+using OddMud.SampleGame.Misc;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 
@@ -92,7 +92,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
             await base.LoggedInProcessAsync(request, player);
         }
 
-        private GridLocation GetNextLocation(GridLocation currentGridLocation, BasicGame.Misc.GridExits exit)
+        private GridLocation GetNextLocation(GridLocation currentGridLocation, GridExits exit)
         {
             switch (exit)
             {

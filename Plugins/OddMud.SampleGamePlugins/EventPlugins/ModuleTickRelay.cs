@@ -1,4 +1,4 @@
-﻿using OddMud.BasicGame;
+﻿using OddMud.SampleGame;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using System;

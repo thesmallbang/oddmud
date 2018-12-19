@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
-using OddMud.BasicGame;
+using OddMud.SampleGame;
 using OddMud.Transport.SignalR;
 using OddMud.Web.Game;
 using OddMud.Web.Hubs;

@@ -1,16 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
-using OddMud.BasicGame.Misc;
+using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace OddMud.BasicGame
+namespace OddMud.SampleGame
 {
-    public class GridGame : Game
+    public class GridGame : BasicGame
     {
 
-        public new GridWorld World { get { return (GridWorld)base.World; } }
+        public new GridWorld World => (GridWorld)base.World;
 
 
         public GridGame(

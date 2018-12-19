@@ -1,6 +1,6 @@
-﻿using OddMud.BasicGame;
-using OddMud.BasicGame.Commands;
-using OddMud.BasicGame.Extensions;
+﻿using OddMud.SampleGame;
+using OddMud.SampleGame.Commands;
+using OddMud.SampleGame.Extensions;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using OddMud.SampleGamePlugins;
@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OddMud.BasicGamePlugins.CommandPlugins
+namespace OddMud.SampleGamePlugins.CommandPlugins
 {
     public class AuthenticationPlugin : LoggedInCommandPlugin
     {
@@ -28,7 +28,7 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
                     return;
                 }
 
-                var created = await Game.Store.NewPlayerAsync(new BasicPlayer() { Name = request.Data.SecondPart }, request.Data.ThirdPart);
+                var created = await Game.Store.NewPlayerAsync((IPlayer)new BasicPlayer() { Name = request.Data.SecondPart }, request.Data.ThirdPart);
                 if (created)
                     await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Character {request.Data.SecondPart} created");
                 else
@@ -68,7 +68,7 @@ namespace OddMud.BasicGamePlugins.CommandPlugins
 
             player.TransportId = request.TransportId;
 
-            if (await Game.AddPlayerAsync(player))
+            if (await Game.AddPlayerAsync((IPlayer)player))
                 await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Logged in as {request.Data.SecondPart} -- PlayerCount: {Game.Players.Count}");
             else
                 await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Login was rejected");

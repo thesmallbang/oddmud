@@ -12,6 +12,8 @@ namespace OddMud.Core.Interfaces
         event Func<object, IMapChangeEvent, Task> PlayerMoved;
 
         IReadOnlyList<IMap> Maps { get; }
+        IReadOnlyList<ISpawner> Spawners { get; }
+
 
         string Name { get; }
 
@@ -20,6 +22,8 @@ namespace OddMud.Core.Interfaces
         Task AddMapAsync(IMap map);
         Task RemoveMapAsync(IMap map);
 
+        Task AddSpawnerAsync(ISpawner spawner);
+        Task RemoveSpawnerAsync(ISpawner spawner);
 
         IMap GetStarterMap();
 

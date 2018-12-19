@@ -5,9 +5,9 @@ namespace OddMud.Core.Interfaces
 {
     public interface ISpawnable
     {
-        event Func<IMap, Task> Spawned;
+        event Func<ISpawnable, IMap, Task> Spawned;
 
-        Task SpawnAsync(IMap map, ISpawner spawner = null);
+        Task SpawnAsync(IMap map);
         
 
     }

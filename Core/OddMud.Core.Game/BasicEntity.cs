@@ -4,29 +4,28 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OddMud.BasicGame
+namespace OddMud.Core.Game
 {
-    public class BasicPlayer : IPlayer
+    public abstract class BasicEntity : IEntity
     {
-        public string Name { get; set; }
-
-        public string TransportId { get; set; }
+        public virtual string Name { get; set; }
 
         public virtual IMap Map { get; set; }
+
+        public event Func<IItem, IEntity, Task> ItemPickedUp;
+        public event Func<IItem, IEntity, Task> ItemDropped;
+        public event Func<ISpawnable, IMap, Task> Spawned;
 
         public virtual IReadOnlyList<IItem> Items => _items;
         private List<IItem> _items = new List<IItem>();
 
-        public event Func<IItem, IEntity, Task> ItemPickedUp;
-        public event Func<IItem, IEntity, Task> ItemDropped;
-        public event Func<IMap, Task> Spawned;
-
+        
         public virtual async Task PickupItemAsync(IItem item)
         {
 
-            var map = (GridMap)Map;
-            map.RemoveItem(item);
+            await Map.RemoveItemAsync(item);
             _items.Add(item);
+            await item.MarkAsPickedUpAsync(this);
 
             if (ItemPickedUp != null)
                 await ItemPickedUp.Invoke(item, this);
@@ -35,20 +34,20 @@ namespace OddMud.BasicGame
 
         public virtual async Task DropItemAsync(IItem item)
         {
-
-            var map = (GridMap)Map;
-            map.AddItem(item);
+        
+            await Map.AddItemAsync(item);
             _items.Remove(item);
+            await item.MarkAsDroppedAsync(this);
 
             if (ItemDropped != null)
                 await ItemDropped.Invoke(item, this);
         }
 
-        public virtual Task SpawnAsync(IMap map, ISpawner spawner = null)
+        public Task SpawnAsync(IMap map)
         {
-
-            if (Spawned != null)
-                return Spawned(map);
+            
+           if (Spawned != null)
+                return Spawned.Invoke(this, map);
 
             return Task.CompletedTask;
         }

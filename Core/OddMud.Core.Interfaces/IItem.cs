@@ -11,6 +11,7 @@ namespace OddMud.Core.Interfaces
         event Func<IItem, IEntity, Task> PickedUp;
         event Func<IItem, IEntity, Task> Dropped;
 
-        
+        Task MarkAsPickedUpAsync(IEntity entityWhoPickedUp);
+        Task MarkAsDroppedAsync(IEntity entityWhoDropped);
     }
 }

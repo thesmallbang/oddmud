@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using OddMud.Core.Plugins;
-using OddMud.BasicGame;
-using OddMud.BasicGame.Commands;
+using OddMud.SampleGame;
+using OddMud.SampleGame.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;

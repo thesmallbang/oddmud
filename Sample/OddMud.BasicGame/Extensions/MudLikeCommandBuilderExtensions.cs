@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OddMud.BasicGame.Extensions
+namespace OddMud.SampleGame.Extensions
 {
     public static class MudLikeCommandBuilderExtensions
     {

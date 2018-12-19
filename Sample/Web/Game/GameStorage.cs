@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OddMud.BasicGame;
-using OddMud.BasicGame.Misc;
+using OddMud.SampleGame;
+using OddMud.SampleGame.Misc;
 using OddMud.Core.Interfaces;
 using OddMud.Web.Game.Database;
 using OddMud.Web.Game.Database.Entities;
@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OddMud.Core.Game;
 
 namespace OddMud.Web.Game
 {
@@ -133,7 +134,7 @@ namespace OddMud.Web.Game
                     return null;
                 }
 
-                return new BasicPlayer() { Name = dbPlayer.Name };
+                return (IPlayer)new BasicPlayer() { Name = dbPlayer.Name };
             }
         }
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OddMud.BasicGame
+namespace OddMud.SampleGame
 {
     public class GridLocation
     {

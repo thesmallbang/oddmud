@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using OddMud.BasicGame.Events;
-using OddMud.BasicGame.Misc;
+using OddMud.Core.Game.Events;
 using OddMud.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OddMud.BasicGame
+namespace OddMud.Core.Game
 {
     public class BasicWorld : IWorld
     {
@@ -16,11 +15,14 @@ namespace OddMud.BasicGame
         public event Func<object, IMapChangeEvent, Task> PlayerMoved;
         public TimeOfDay Time = new TimeOfDay() { Timescale = 6000 };
         public virtual IReadOnlyList<IMap> Maps => _maps;
+        private List<IMap> _maps = new List<IMap>();
+
+        public IReadOnlyList<ISpawner> Spawners => _spawners;
+        private List<ISpawner> _spawners = new List<ISpawner>();
 
         private readonly ILogger<BasicWorld> _logger;
         private readonly ITransport _network;
-        private List<IMap> _maps = new List<IMap>();
-
+        
         public BasicWorld(
             ILogger<BasicWorld> logger,
             ITransport transport
@@ -80,8 +82,16 @@ namespace OddMud.BasicGame
 
         }
 
+        public virtual Task AddSpawnerAsync(ISpawner spawner)
+        {
+            _spawners.Add(spawner);
+            return Task.CompletedTask;
+        }
 
-
-   
+        public virtual Task RemoveSpawnerAsync(ISpawner spawner)
+        {
+            _spawners.Remove(spawner);
+            return Task.CompletedTask;
+        }
     }
 }

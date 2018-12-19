@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OddMud.SampleGame.Misc;
+using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
 
-namespace OddMud.BasicGame
+namespace OddMud.SampleGame
 {
     public class GridWorld : BasicWorld
     {

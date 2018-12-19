@@ -1,5 +1,5 @@
-﻿using OddMud.BasicGame;
-using OddMud.BasicGame.Extensions;
+﻿using OddMud.SampleGame;
+using OddMud.SampleGame.Extensions;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using System;

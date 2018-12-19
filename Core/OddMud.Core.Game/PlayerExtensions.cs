@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OddMud.BasicGame.Extensions
+namespace OddMud.Core.Game
 {
     public static class PlayerExtensions
     {

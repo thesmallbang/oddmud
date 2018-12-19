@@ -8,12 +8,18 @@ namespace OddMud.Core.Interfaces
 
     public interface ISpawner
     {
-        ISpawnable SpawnedEntity { get; set; }
 
-        Task SpawnerTick();
+        Task SpawnerTickAsync();
+    }
 
-        Task ResetAsync();
+    public interface ISpawner<T>
+        where T : ISpawnable
+    {
+        event Func<T, Task> Spawned;
+
     }
 
    
+    
+
 }

@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.Transport.SignalR", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.SampleGamePlugins", "Plugins\OddMud.SampleGamePlugins\OddMud.SampleGamePlugins.csproj", "{98571E44-0D91-4E4C-B04F-AB31CB41D5F4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.BasicGame", "Sample\OddMud.BasicGame\OddMud.BasicGame.csproj", "{964E733F-895C-49CA-A077-9D80E0D47450}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.SampleGame", "Sample\OddMud.BasicGame\OddMud.SampleGame.csproj", "{964E733F-895C-49CA-A077-9D80E0D47450}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.Web", "Sample\Web\OddMud.Web.csproj", "{074B4041-8A66-4DEB-B779-C51C6B5F2269}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.ViewBuilders.MudLikeHtml", "Core\OddMud.ViewBuilders.MudLikeHtml\OddMud.ViewBuilders.MudLikeHtml.csproj", "{C09BCF9D-3761-479C-9359-308BE74B45AF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OddMud.Core.Interfaces", "Core\OddMud.Core.Interfaces\OddMud.Core.Interfaces.csproj", "{2A0BA9A2-CBC6-4F63-ABD0-8B26AE20AC1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OddMud.Core.Game", "Core\OddMud.Core.Game\OddMud.Core.Game.csproj", "{94B4BB31-7104-4C0D-9485-E96B336665F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{2A0BA9A2-CBC6-4F63-ABD0-8B26AE20AC1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A0BA9A2-CBC6-4F63-ABD0-8B26AE20AC1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A0BA9A2-CBC6-4F63-ABD0-8B26AE20AC1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94B4BB31-7104-4C0D-9485-E96B336665F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94B4BB31-7104-4C0D-9485-E96B336665F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94B4BB31-7104-4C0D-9485-E96B336665F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94B4BB31-7104-4C0D-9485-E96B336665F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +80,7 @@ Global
 		{A2A3F892-FA96-4B38-94AB-7FA8DCBC3B8A} = {6B27AAA5-63D8-417D-856C-F83E4558BE62}
 		{C09BCF9D-3761-479C-9359-308BE74B45AF} = {6B27AAA5-63D8-417D-856C-F83E4558BE62}
 		{2A0BA9A2-CBC6-4F63-ABD0-8B26AE20AC1A} = {6B27AAA5-63D8-417D-856C-F83E4558BE62}
+		{94B4BB31-7104-4C0D-9485-E96B336665F9} = {6B27AAA5-63D8-417D-856C-F83E4558BE62}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5963A913-1F3B-432D-A4A2-899A088CC9A2}

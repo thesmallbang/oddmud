@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OddMud.BasicGame.Misc
+namespace OddMud.Core.Game
 {
     public class TimeOfDay
     {

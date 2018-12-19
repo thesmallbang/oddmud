@@ -9,13 +9,13 @@ namespace OddMud.Core.Interfaces
     public interface ISpawner
     {
 
-        Task SpawnerTickAsync();
+        Task SpawnerTickAsync(IGame game);
     }
 
-    public interface ISpawner<T> : ISpawner
+    public interface ISpawner<T, TMap> : ISpawner
         where T : ISpawnable
     {
-        event Func<T, Task> Spawned;
+        event Func<T,TMap, Task> Spawned;
 
     }
 

@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace OddMud.Core.Game
 {
-    public abstract class SingletonSpawner : ISpawner<ISpawnable>
+    public abstract class SingletonSpawner : ISpawner<ISpawnable, IMap>
     {
 
-        public virtual event Func<ISpawnable, Task> Spawned;
+        public int MapId { get; set; }
+        public BasicMap Map { get; set; }
+
+        public virtual event Func<ISpawnable,IMap, Task> Spawned;
 
         public virtual ISpawnable SpawnedEntity { get; set; }
         public int EntityId { get; set; }
@@ -20,16 +23,16 @@ namespace OddMud.Core.Game
 
         private DateTime _lastReset = DateTime.MinValue;
 
-        public virtual Task SpawnAsync()
+        public virtual async Task SpawnAsync(IGame game)
         {
 
             if (Spawned != null)
-                return Spawned.Invoke(SpawnedEntity);
+                await Spawned.Invoke(SpawnedEntity, Map);
 
-            return Task.CompletedTask;
+            
         }
 
-        public virtual Task SpawnerTickAsync()
+        public virtual Task SpawnerTickAsync(IGame game)
         {
             if (SpawnedEntity != null)
                 return Task.CompletedTask;
@@ -37,7 +40,7 @@ namespace OddMud.Core.Game
             if (_lastReset.AddMilliseconds(ResetDuration) > DateTime.Now)
                 return Task.CompletedTask;
 
-            return SpawnAsync();
+            return SpawnAsync(game);
         }
 
         public virtual Task Reset(ISpawnable spawnable)

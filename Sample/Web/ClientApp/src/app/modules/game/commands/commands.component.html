@@ -1,4 +1,4 @@
 <form [formGroup]="form">
-  <input autofocus="autofocus" type="text" formControlName="command" style="width: 90%">
+  <input #commandRef autofocus="autofocus" type="text" formControlName="command" style="width: 90%">
   <button mat-button (click)="sendMessage()">Send</button>
 </form>

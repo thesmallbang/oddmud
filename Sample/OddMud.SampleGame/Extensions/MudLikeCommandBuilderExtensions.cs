@@ -16,6 +16,15 @@ namespace OddMud.SampleGame.Extensions
            .AddText(string.Join(",", players.Select(p => p.Name)), TextColor.Gray)
            .EndContainer("playerlist");
         }
+
+        public static MudLikeCommandBuilder AddItems(this MudLikeCommandBuilder builder, IEnumerable<IItem> items)
+        {
+            return builder.StartContainer("itemlist").AddText("ground items: ")
+           .AddText(string.Join(",", items.Select(p => p.Name)), TextColor.Olive)
+           .EndContainer("itemlist");
+        }
+
+
         public static MudLikeCommandBuilder AddWorldDate(this MudLikeCommandBuilder builder, DateTime dateTime)
         {
             return builder

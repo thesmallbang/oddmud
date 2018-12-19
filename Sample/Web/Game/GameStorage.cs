@@ -248,7 +248,6 @@ namespace OddMud.Web.Game
         {
             using (var dbContext = new GameDbContext())
             {
-                _logger.LogInformation("About to load items");
                 var items = await dbContext.Items.Select(db =>
                 new GridItem(
                     db.Id, db.Name, db.Description,
@@ -281,7 +280,7 @@ namespace OddMud.Web.Game
                     }
                 }
 
-                _logger.LogInformation("Loaded items");
+                _logger.LogInformation("Loaded spawners");
                 return result;
             }
         }

@@ -14,7 +14,6 @@ namespace OddMud.Core.Game
 
         public event Func<IItem, IEntity, Task> ItemPickedUp;
         public event Func<IItem, IEntity, Task> ItemDropped;
-        public event Func<ISpawnable, IMap, Task> Spawned;
 
         public virtual IReadOnlyList<IItem> Items => _items;
         private List<IItem> _items = new List<IItem>();
@@ -43,13 +42,9 @@ namespace OddMud.Core.Game
                 await ItemDropped.Invoke(item, this);
         }
 
-        public Task SpawnAsync(IMap map)
+        public virtual Task<ISpawnable> SpawnAsync(IGame game)
         {
-            
-           if (Spawned != null)
-                return Spawned.Invoke(this, map);
-
-            return Task.CompletedTask;
+            throw new Exception("Spawn not implemented");
         }
     }
 }

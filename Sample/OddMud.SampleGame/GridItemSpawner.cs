@@ -2,25 +2,18 @@
 using OddMud.Core.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OddMud.SampleGame
 {
-    public class GridSpawner : SingletonSpawner
-    {
-        public int Id { get; set; }
-
-
-        public int MapId { get; set; }
-        public GridMap Map { get; set; }
-
-
-    }
 
 
     public class GridItemSpawner : GridSpawner
     {
+
+ 
         public GridItemSpawner(int mapId, int itemId)
         {
             MapId = mapId;
@@ -42,19 +35,21 @@ namespace OddMud.SampleGame
             ResetDuration = respawnDelayMilliseconds;
         }
 
-        public override async Task SpawnAsync()
+        public override async Task SpawnAsync(IGame game)
         {
 
             if (Map == null)
                 throw new Exception("Map was created and the map was never set to match the MapId");
 
-            var item = new BasicItem();
+            
+            var storageItem = (GridItem)game.Items.FirstOrDefault(i => i.Id == EntityId);
+            var item = new GridItem(storageItem.Id,storageItem.Name,storageItem.Description,storageItem.ItemTypes.ToList());
             await Map.AddItemAsync(item);
 
             SpawnedEntity = item;
             // we want to know when the item is picked up as our reset flag to know we can spawn again after the delay
             item.PickedUp += ResetSpawner;
-            await base.SpawnAsync();
+            await base.SpawnAsync(game);
         }
 
         private async Task ResetSpawner(IItem item, IEntity whoPickedUp)

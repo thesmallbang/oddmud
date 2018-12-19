@@ -57,6 +57,9 @@ namespace OddMud.SampleGamePlugins.EventPlugins
                  .Build(ViewCommandType.Replace, "playerlist");
             await Game.Network.SendViewCommandsToMapAsync(map, playersUpdate);
 
+            var itemsUpdate = new MudLikeCommandBuilder().AddItems(map.Items)
+                .Build(ViewCommandType.Replace, "itemlist");
+            await Game.Network.SendViewCommandsToMapAsync(map, itemsUpdate);
         }
     }
 }

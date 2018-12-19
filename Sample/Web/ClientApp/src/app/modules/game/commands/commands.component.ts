@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { GameHubService } from 'src/app/communication/signal/game-hub';
 
@@ -8,6 +8,7 @@ import { GameHubService } from 'src/app/communication/signal/game-hub';
   styleUrls: ['./commands.component.css']
 })
 export class CommandsComponent implements OnInit {
+  @ViewChild('commandRef') commandRef: ElementRef;
 
   public form: FormGroup = new FormGroup({
     command: new FormControl()
@@ -28,7 +29,12 @@ export class CommandsComponent implements OnInit {
   sendMessage() {
     const commandControl = this.form.get('command');
     this.hub.AddCommand(commandControl.value);
-    commandControl.setValue('');
+    // commandControl.setValue('');
+
+    // select the text instead of erasing it
+    const inputElem = <HTMLInputElement>this.commandRef.nativeElement;
+    inputElem.select();
+
   }
 
 }

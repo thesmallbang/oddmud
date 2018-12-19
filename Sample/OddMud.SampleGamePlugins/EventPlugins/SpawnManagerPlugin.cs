@@ -8,31 +8,81 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OddMud.Core.Game;
+using Microsoft.Extensions.Logging;
+using OddMud.View.MudLike;
 
 namespace OddMud.SampleGamePlugins.EventPlugins
 {
     public class SpawnManagerPlugin : TickIntervalEventPlugin
     {
         public override string Name => nameof(SpawnManagerPlugin);
-        public override int Interval => 5000;
+        public override int Interval => 1000;
+
+        private List<GridSpawner> _gridSpawners = new List<GridSpawner>();
+        private DateTime _spawnersUpdated = DateTime.Now.AddSeconds(10);
+        private ILogger<SpawnManagerPlugin> _logger;
+
+        private int cacheDuration = 60 * 1000;
 
 
         public override void Configure(IGame game, IServiceProvider serviceProvider)
         {
+            _logger = (ILogger<SpawnManagerPlugin>)serviceProvider.GetService(typeof(ILogger<SpawnManagerPlugin>));
+            _logger.LogInformation("Configure Spawn manager");
             base.Configure(game, serviceProvider);
         }
         
         public override async Task IntervalTick(object sender, EventArgs e)
         {
-            await base.IntervalTick(sender, e);
 
-            Game.World.Spawners.ToList().ForEach(async (spawner) => {
-                await spawner.SpawnerTickAsync();
+            if (_gridSpawners.Count == 0 || _spawnersUpdated.AddMilliseconds(-cacheDuration) > DateTime.Now )
+            {
+                _logger.LogInformation("Updating spawners");
+                _spawnersUpdated = DateTime.Now;
+
+                var inboundSpawners = Game.World.Spawners.Select(o => (GridSpawner)o).ToList();
+                var missingSpawners = _gridSpawners.Except(inboundSpawners).ToList();
+                var newSpawners = inboundSpawners.Except(_gridSpawners).ToList();
+
+                if (missingSpawners.Any())
+                {
+                    foreach (var missingSpawner in missingSpawners)
+                    {
+                        _logger.LogInformation("removing spawner spawn sub");
+                        missingSpawner.Spawned -= SpawnerSpawned;
+                    }
+                }
+
+                if (newSpawners.Any())
+                {
+                    foreach (var newSpawner in newSpawners)
+                    {
+                        _logger.LogInformation("adding spawner spawn sub");
+                        newSpawner.Spawned += SpawnerSpawned;
+                    }
+                    _gridSpawners.AddRange(newSpawners);
+                }
+
+
+                
+            }
+
+            _gridSpawners.ForEach(async (spawner) => {
+                await spawner.SpawnerTickAsync(Game);
             });
+
+            await base.IntervalTick(sender, e);
 
         }
 
+        private Task SpawnerSpawned(ISpawnable arg, IMap map)
+        {
+
+            var itemsUpdate = new MudLikeCommandBuilder().AddItems(map.Items)
+           .Build(ViewCommandType.Replace, "itemlist");
+            return Game.Network.SendViewCommandsToMapAsync(map, itemsUpdate);
 
 
+        }
     }
 }

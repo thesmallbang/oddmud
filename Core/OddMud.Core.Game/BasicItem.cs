@@ -15,9 +15,6 @@ namespace OddMud.Core.Game
 
         public event Func<IItem, IEntity, Task> PickedUp;
         public event Func<IItem, IEntity, Task> Dropped;
-        public event Func<ISpawnable, IMap, Task> Spawned;
-
-
 
 
         public Task MarkAsPickedUpAsync(IEntity entityWhoPickedUp)
@@ -36,14 +33,7 @@ namespace OddMud.Core.Game
             return Task.CompletedTask;
         }
 
-        public virtual Task SpawnAsync(IMap map)
-        {
 
-
-            if (Spawned != null)
-                return Spawned.Invoke(this, map);
-
-            return Task.CompletedTask;
-        }
+      
     }
 }

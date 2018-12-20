@@ -13,6 +13,8 @@ namespace OddMud.Core.Interfaces
         event Func<IItem, IEntity, Task> PickedUp;
         event Func<IItem, IEntity, Task> Dropped;
 
+        IReadOnlyList<IStat> Stats { get; }
+
         Task MarkAsPickedUpAsync(IEntity entityWhoPickedUp);
         Task MarkAsDroppedAsync(IEntity entityWhoDropped);
     }

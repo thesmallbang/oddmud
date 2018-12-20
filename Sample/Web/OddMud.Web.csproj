@@ -23,8 +23,12 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="plugins\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="plugins\**" />
+    <EmbeddedResource Remove="plugins\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="plugins\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
@@ -39,7 +43,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="plugins\" />
   </ItemGroup>
 
   <ItemGroup>

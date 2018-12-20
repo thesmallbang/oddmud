@@ -1,6 +1,5 @@
 import { HubConnection } from '@aspnet/signalr';
 import * as signalR from '@aspnet/signalr';
-import * as msgPack from '@aspnet/signalr-protocol-msgpack';
 
 import { Injectable } from '@angular/core';
 import { CommandModel } from 'src/app/models/CommandModel';
@@ -20,7 +19,7 @@ export class GameHubService {
             return;
         }
         this._hub = new signalR.HubConnectionBuilder()
-          .withUrl('https://localhost:44325/gameHub')
+          .withUrl('http://localhost:49958/gameHub')
        //  .withHubProtocol(new msgPack.MessagePackHubProtocol())
             .configureLogging(signalR.LogLevel.Information)
             .build();

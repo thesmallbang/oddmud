@@ -10,6 +10,8 @@ namespace OddMud.SampleGame
     public class GridItem : BasicItem
     {
 
+
+
         public readonly List<ItemTypes> ItemTypes = new List<ItemTypes>() { Misc.ItemTypes.Normal };
 
 

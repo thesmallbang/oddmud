@@ -442,9 +442,19 @@ namespace OddMud.Web.Game
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<IEntity>> LoadEntitiesAsync(IGame game)
+        public async Task<IEnumerable<IEntity>> LoadEntitiesAsync(IGame game)
         {
-            throw new NotImplementedException();
+
+            using (var dbContext = new GameDbContext())
+            {
+                var dbEntities = await dbContext.Entities
+                    .Include(e => e.EntityTypes)
+                    .Include(e => e.Items)
+                    .Include(e => e.LootTable).ThenInclude(lt => lt.Item).ThenInclude(i => i.ItemTypes)
+                    .Include(e => e.LootTable).ThenInclude(lt => lt.Item).ThenInclude(i => i.Stats)
+                    .ToListAsync();
+                return dbEntities.Select(s => s.ToEntity(game)).ToList();
+            }
         }
     }
 }

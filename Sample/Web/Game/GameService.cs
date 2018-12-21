@@ -47,6 +47,10 @@ namespace OddMud.Web.Game
             var items = await Game.Store.LoadItemsAsync(Game);
             items.ToList().ForEach(async (i) => await Game.AddItemAsync(i));
 
+            _logger.LogInformation("Loading entities from storage");
+            var entities = await Game.Store.LoadEntitiesAsync(Game);
+            entities.ToList().ForEach(async (i) => await Game.AddEntityAsync(i));
+
             _logger.LogInformation("Loading spawners from storage");
             var spawners = await Game.Store.LoadSpawnersAsync(Game);
             spawners.Select(o => (GridSpawner)o).ToList().ForEach(async (i) => {

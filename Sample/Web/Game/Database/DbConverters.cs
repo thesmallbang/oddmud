@@ -53,6 +53,8 @@ namespace OddMud.Web.Game.Database
             {
                 case SpawnType.Item:
                     return new GridItemSpawner(dbSpawner.MapId, dbSpawner.EntityId);
+                case SpawnType.Entity:
+                    return new GridEntitySpawner(dbSpawner.MapId, dbSpawner.EntityId);
                 default:
                     return null;
 

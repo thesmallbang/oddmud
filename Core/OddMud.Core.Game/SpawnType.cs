@@ -5,6 +5,6 @@
     {
         None,
         Item,
-        Npc
+        Entity
     }
 }

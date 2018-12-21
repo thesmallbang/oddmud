@@ -17,12 +17,14 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         public new GridGame Game => (GridGame)base.Game;
 
         public override int Interval => 5 * 60 * 1000;
+
         private ILogger<AutoSavingPlugin> _logger;
 
         public override void Configure(IGame game, IServiceProvider serviceProvider)
         {
             base.Configure(game, serviceProvider);
             _logger = (ILogger<AutoSavingPlugin>)serviceProvider.GetService(typeof(ILogger<AutoSavingPlugin>));
+            LastTick = DateTime.Now.AddMinutes(5).Ticks;
         }
 
         public override async Task IntervalTick(object sender, EventArgs e)
@@ -41,10 +43,6 @@ namespace OddMud.SampleGamePlugins.EventPlugins
 
         }
 
-        public override Task IntervalSkipped(object sender, EventArgs e)
-        {
-            return base.IntervalSkipped(sender, e);
-        }
 
     }
 }

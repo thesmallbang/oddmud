@@ -18,8 +18,9 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         public override string Name => nameof(SpawnManagerPlugin);
         public override int Interval => 1000;
 
+
         private List<GridSpawner> _gridSpawners = new List<GridSpawner>();
-        private DateTime _spawnersUpdated = DateTime.Now.AddSeconds(10);
+        private DateTime _spawnersUpdated = DateTime.Now.AddSeconds(-50);
         private ILogger<SpawnManagerPlugin> _logger;
 
         private int cacheDuration = 60 * 1000;
@@ -28,16 +29,15 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         public override void Configure(IGame game, IServiceProvider serviceProvider)
         {
             _logger = (ILogger<SpawnManagerPlugin>)serviceProvider.GetService(typeof(ILogger<SpawnManagerPlugin>));
-            _logger.LogInformation("Configure Spawn manager");
             base.Configure(game, serviceProvider);
         }
         
         public override async Task IntervalTick(object sender, EventArgs e)
         {
 
-            if (_gridSpawners.Count == 0 || _spawnersUpdated.AddMilliseconds(-cacheDuration) > DateTime.Now )
+            if (_spawnersUpdated.AddMilliseconds(cacheDuration) < DateTime.Now )
             {
-                _logger.LogInformation("Updating spawners");
+                _logger.LogDebug("Updating spawners cache");
                 _spawnersUpdated = DateTime.Now;
 
                 var inboundSpawners = Game.World.Spawners.Select(o => (GridSpawner)o).ToList();
@@ -48,7 +48,7 @@ namespace OddMud.SampleGamePlugins.EventPlugins
                 {
                     foreach (var missingSpawner in missingSpawners)
                     {
-                        _logger.LogInformation("removing spawner spawn sub");
+                        _logger.LogDebug("removing spawner spawn sub");
                         missingSpawner.Spawned -= SpawnerSpawned;
                     }
                 }
@@ -57,7 +57,7 @@ namespace OddMud.SampleGamePlugins.EventPlugins
                 {
                     foreach (var newSpawner in newSpawners)
                     {
-                        _logger.LogInformation("adding spawner spawn sub");
+                        _logger.LogDebug("adding spawner spawn sub");
                         newSpawner.Spawned += SpawnerSpawned;
                     }
                     _gridSpawners.AddRange(newSpawners);

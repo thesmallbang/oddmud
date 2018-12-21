@@ -134,7 +134,15 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
                    parsed.AddExits.ToList().ForEach((exit) =>
                    {
-                       map.AddExit(Enum.Parse<Exits>(exit, ignoreCase: true));
+                       try
+                       {
+                           map.AddExit(Enum.Parse<Exits>(exit, ignoreCase: true));
+                       }
+                       catch (Exception)
+                       {
+                           Game.Log( Microsoft.Extensions.Logging.LogLevel.Information, "invalid exit..");
+                       }
+
                        hasUpdate = true;
                    });
 

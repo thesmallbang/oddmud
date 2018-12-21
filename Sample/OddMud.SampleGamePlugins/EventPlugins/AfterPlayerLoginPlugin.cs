@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace OddMud.SampleGamePlugins.EventPlugins
 {
@@ -25,8 +26,9 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         private async Task AfterPlayerLogin(Object sender, IPlayer player)
         {
 
-
-            var assignedPlayerMap = Game.World.GetStarterMap();
+            var gridPlayer = (GridPlayer)player;
+            
+            var assignedPlayerMap = gridPlayer.Map != null ? gridPlayer.Map :  Game.World.Maps.FirstOrDefault(m => m.Location.X == 0 && m.Location.Y == 0 && m.Location.Z == 0);
             if (assignedPlayerMap == null)
             {
                 assignedPlayerMap = new GridMap(0, "Void Map", "You have entered a world with nothing. use map commands to begin");

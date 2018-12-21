@@ -13,7 +13,7 @@ namespace OddMud.Core.Plugins
 
         // minumum milliseconds elapsed before firing intervaltick()..it may be longer between ticks depending on system configurations and performance etc.
         public virtual int Interval => 0;
-        private long lastTick = 0;
+        public long LastTick = 0;
         private bool _workingTask;
 
 
@@ -25,7 +25,7 @@ namespace OddMud.Core.Plugins
 
         private Task Game_Ticked(object sender, EventArgs e)
         {
-            if (!_workingTask && DateTime.Now.AddMilliseconds(-Interval).Ticks >= lastTick)
+            if (!_workingTask && DateTime.Now.AddMilliseconds(-Interval).Ticks >= LastTick)
             {
                 _workingTask = true;
                 return IntervalTick(sender, e);
@@ -35,7 +35,7 @@ namespace OddMud.Core.Plugins
 
         public virtual Task IntervalTick(object sender, EventArgs e)
         {
-            lastTick = DateTime.Now.Ticks;
+            LastTick = DateTime.Now.Ticks;
             _workingTask = false;
             return Task.CompletedTask;
         }

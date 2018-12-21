@@ -25,11 +25,11 @@ namespace OddMud.SampleGamePlugins.EventPlugins
 
         public override async Task IntervalTick(object sender, EventArgs e)
         {
-            foreach (var module in gameModules)
-            {
-                await module.TickAsync();
-            }
-           // Parallel.ForEach(gameModules, module => module.TickAsync());
+            //foreach (var module in gameModules)
+            //{
+            //    await module.TickAsync();
+            //}
+           Parallel.ForEach(gameModules,async module => await module.TickAsync());
 
 
             await base.IntervalTick(sender, e);

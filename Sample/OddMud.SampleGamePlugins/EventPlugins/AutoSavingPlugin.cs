@@ -24,6 +24,8 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         {
             base.Configure(game, serviceProvider);
             _logger = (ILogger<AutoSavingPlugin>)serviceProvider.GetService(typeof(ILogger<AutoSavingPlugin>));
+
+            // dont fire the first event for at least...
             LastTick = DateTime.Now.AddMinutes(5).Ticks;
         }
 

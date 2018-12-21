@@ -12,7 +12,7 @@ namespace OddMud.Web.Game.Database.Entities
         [ForeignKey("Item")]
         public int ItemId { get; set; }
 
-        public DbPlayerItem Item { get; set; }
+        public DbEntityItem Item { get; set; }
 
         public string Name { get; set; }
         public int Base { get; set; }

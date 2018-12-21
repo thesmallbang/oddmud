@@ -14,9 +14,8 @@ namespace OddMud.Core.Interfaces
 
         IReadOnlyList<IPlayer> Players { get; }
         IReadOnlyList<IItem> Items { get; }
-        IReadOnlyList<IEntity> Npcs { get; }
-
-
+        IReadOnlyList<IEntity> Entities { get; }
+        
 
         Task AddPlayerAsync(IPlayer player);
         Task RemovePlayerAsync(IPlayer player);
@@ -24,8 +23,8 @@ namespace OddMud.Core.Interfaces
         Task AddItemAsync(IItem item);
         Task RemoveItemAsync(IItem item);
 
-        Task AddNpcAsync(IEntity entity);
-        Task RemoveNpcAsync(IEntity entity);
+        Task AddEntityAsync(IEntity entity);
+        Task RemoveEntityAsync(IEntity entity);
 
 
     }

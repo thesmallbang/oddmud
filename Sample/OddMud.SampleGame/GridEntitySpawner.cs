@@ -10,24 +10,24 @@ namespace OddMud.SampleGame
 {
 
 
-    public class GridItemSpawner : GridSpawner
+    public class GridEntitySpawner : GridSpawner
     {
 
  
-        public GridItemSpawner(int mapId, int itemId)
+        public GridEntitySpawner(int mapId, int itemId)
         {
             MapId = mapId;
             EntityId = itemId;
         }
 
-        public GridItemSpawner(GridMap map, int itemId)
+        public GridEntitySpawner(GridMap map, int itemId)
         {
             MapId = map.Id;
             Map = map;
             EntityId = itemId;
         }
 
-        public GridItemSpawner(GridMap map, int itemId, int respawnDelayMilliseconds)
+        public GridEntitySpawner(GridMap map, int itemId, int respawnDelayMilliseconds)
         {
             MapId = map.Id;
             Map = map;
@@ -42,22 +42,25 @@ namespace OddMud.SampleGame
                 throw new Exception("Map was created and the map was never set to match the MapId");
 
             
-            var storageItem = (GridItem)game.Items.FirstOrDefault(i => i.Id == EntityId);
-            var item = new GridItem(storageItem.Id,storageItem.Name,storageItem.Description,storageItem.ItemTypes.ToList(), storageItem.Stats.Select(s => (BasicStat)s).ToList());
-            await Map.AddItemAsync(item);
+            var storageNpc = (GridEntity)game.World.Entities.FirstOrDefault(i => i.Id == EntityId);
+            var entity = new GridEntity(storageNpc.Id, storageNpc.Name, (EntityClasses)storageNpc.Class, storageNpc.EntityTypes,  storageNpc.Items);
+            await game.World.AddEntityAsync(entity);
+            await Map.AddEntityAsync(entity);
 
-            SpawnedEntity = item;
+            SpawnedEntity = entity;
             // we want to know when the item is picked up as our reset flag to know we can spawn again after the delay
-            item.PickedUp += ResetSpawner;
+            entity.Died += ResetSpawner;
             await base.SpawnAsync(game);
         }
 
-        private async Task ResetSpawner(IItem item, IEntity whoPickedUp)
+        private async Task ResetSpawner(IEntity whoDied)
         {
             // we dont care about this item being picked up anymore and it would actually cause issues when the item gets pickedup/dropped again and again later
-            item.PickedUp -= ResetSpawner;
-           
-            await base.Reset(item);
+            whoDied.Died -= ResetSpawner;
+            
+            await Map.RemoveEntityAsync(whoDied);
+
+            await base.Reset(whoDied);
         }
 
 

@@ -28,6 +28,14 @@ namespace OddMud.Core.Interfaces
         Task<IEnumerable<IItem>> LoadItemsAsync(IGame game);
 
 
+
+        Task<IEntity> NewEntityAsync(IGame game, IEntity entity);
+        Task UpdateEntitiesAsync(IGame game, IEnumerable<IEntity> entity);
+        Task DeleteEntitiesAsync(IGame game, IEnumerable<IEntity> entity);
+        Task<IEnumerable<IEntity>> LoadEntitiesAsync(IGame game);
+
+
+
         Task<IEnumerable<ISpawner>> LoadSpawnersAsync(IGame game);
         Task<ISpawner> NewSpawnerAsync(IGame game, ISpawner spawner);
         Task UpdateSpawnersAsync(IGame game, IEnumerable<ISpawner> spawners);

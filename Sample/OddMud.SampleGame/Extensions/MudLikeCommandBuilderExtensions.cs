@@ -1,4 +1,5 @@
 ﻿using OddMud.Core.Interfaces;
+using OddMud.SampleGame.Misc;
 using OddMud.View.MudLike;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,14 @@ namespace OddMud.SampleGame.Extensions
             return builder.StartContainer("itemlist").AddText("ground items: ")
            .AddText(string.Join(",", items.Select(p => p.Name)), TextColor.Olive)
            .EndContainer("itemlist");
+        }
+
+
+        public static MudLikeCommandBuilder AddEntities(this MudLikeCommandBuilder builder, IEnumerable<IEntity> entities)
+        {
+            return builder.StartContainer(MudContainers.EntityList.ToString()).AddText("entities: ")
+           .AddText(string.Join(",", entities.Select(p => p.Name)), TextColor.Red)
+           .EndContainer(MudContainers.EntityList.ToString());
         }
 
 

@@ -16,6 +16,7 @@ namespace OddMud.Core.Interfaces
 
         // database of all items in the game (not their instances)
         IReadOnlyList<IItem> Items { get; }
+        IReadOnlyList<IEntity> Entities { get; }
 
 
         ITransport Network { get; }
@@ -34,6 +35,9 @@ namespace OddMud.Core.Interfaces
         
         Task<bool> AddSpawnerAsync(ISpawner spawner);
         Task<bool> RemoveSpawnerAsync(ISpawner spawner);
+
+        Task<bool> AddEntityAsync(IEntity entity);
+        Task<bool> RemoveEntity(IEntity entity);
 
 
         void Log(LogLevel level, string message);

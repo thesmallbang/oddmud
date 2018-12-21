@@ -78,7 +78,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                    {
                        // double check one last time the item wasn't picked up elsewhere in the time we've been picking up others
                        if (player.Map.Items.Contains(i))
-                           await player.PickupItemAsync(i);
+                           await player.PickupItemAsync(Game, i);
                    }
 
                    var itemView = MudLikeCommandBuilder.Start().AddItems(player.Map.Items).Build(ViewCommandType.Replace, "itemlist");

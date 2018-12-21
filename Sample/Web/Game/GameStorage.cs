@@ -33,10 +33,10 @@ namespace OddMud.Web.Game
             var gridMap = (GridMap)map;
             var dbMap = new DbMap()
             {
-                Name = map.Name,
-                Description = map.Description,
                 RecordBy = "notlinktoausercontextyet",
                 RecordDate = DateTimeOffset.Now,
+                Name = map.Name,
+                Description = map.Description,
                 LocationX = gridMap.Location.X,
                 LocationY = gridMap.Location.Y,
                 LocationZ = gridMap.Location.Z,
@@ -165,7 +165,7 @@ namespace OddMud.Web.Game
                     RecordDate = DateTimeOffset.Now,
                     Name = player.Name,
                     Password = PasswordStorage.CreateHash(pass),
-                    Class = (byte)gridPlayer.Class,
+                    Class = gridPlayer.Class,
                     Items = gridPlayer.Items.Select(i => new DbPlayerItem()
                     {
                         PlayerId = player.Id,
@@ -240,9 +240,11 @@ namespace OddMud.Web.Game
             var gridItem = (GridItem)item;
             var dbItem = new DbItem()
             {
+                RecordBy = "notlinktoausercontextyet",
+                RecordDate = DateTimeOffset.Now,
                 Name = item.Name,
                 Description = item.Description,
-                ItemTypes = gridItem.ItemTypes.Select(it => new DbItemTypes() { ItemType = (byte)it }).ToList()
+                ItemTypes = gridItem.ItemTypes.Select(it => new DbItemTypes() { ItemType = it }).ToList()
             };
 
             using (var context = new GameDbContext())
@@ -278,15 +280,14 @@ namespace OddMud.Web.Game
 
                     if (dbItem.ItemTypes.Any())
                     {
+                        dbItem.ModifiedBy = "nousercontextyet";
+                        dbItem.ModifiedDate = DateTime.Now;
                         dbItem.ItemTypes.Clear();
                         dbItem = context.Items.Update(dbItem).Entity;
                     }
 
-                    dbItem.ItemTypes = gridItem.ItemTypes.Select(it => new DbItemTypes() { ItemType = (byte)it }).ToList();
+                    dbItem.ItemTypes = gridItem.ItemTypes.Select(it => new DbItemTypes() { ItemType = it }).ToList();
                     context.Items.Update(dbItem);
-
-
-
                 }
                 await context.SaveChangesAsync();
             }
@@ -338,6 +339,8 @@ namespace OddMud.Web.Game
             // use some sort of mapper? to clean this up?
             var dbSpawner = new DbSpawner()
             {
+                RecordBy = "notlinktoausercontextyet",
+                RecordDate = DateTimeOffset.Now,
                 Enabled = true,
                 EntityId = sSpawner.EntityId
             };
@@ -370,7 +373,7 @@ namespace OddMud.Web.Game
 
                     dbSpawner.MapId = spawner.MapId;
                     dbSpawner.EntityId = spawner.Id;
-                    dbSpawner.RecordBy = "nousercontextyet";
+                    dbSpawner.ModifiedBy = "nousercontextyet";
                     dbSpawner.ModifiedDate = DateTime.Now;
                     dbSpawner.SpawnType = (byte)spawner.SpawnType;
 
@@ -396,8 +399,52 @@ namespace OddMud.Web.Game
             }
         }
 
+        public async Task<IEntity> NewEntityAsync(IGame game, IEntity entity)
+        {
 
+            try
+            {
+                var gridEntity = (GridEntity)entity;
+                var dbEntity = new DbEntity()
+                {
+                    RecordBy = "notlinktoausercontextyet",
+                    RecordDate = DateTimeOffset.Now,
+                    Name = gridEntity.Name,
+                    Class = gridEntity.Class,
+                    Items = gridEntity.Items.Select(i => new DbEntityItem()
+                    {
+                        BaseItemId = i.Id
+                    }).ToList()
+                };
+                using (var context = new GameDbContext())
+                {
+                    var tracked = context.Entities.Add(dbEntity);
+                    await context.SaveChangesAsync();
+                    return tracked.Entity.ToEntity(game);
+                }
 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("new entity rejected: " + ex.Message);
+                return null;
+            }
 
+        }
+
+        public Task UpdateEntitiesAsync(IGame game, IEnumerable<IEntity> entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteEntitiesAsync(IGame game, IEnumerable<IEntity> entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IEntity>> LoadEntitiesAsync(IGame game)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

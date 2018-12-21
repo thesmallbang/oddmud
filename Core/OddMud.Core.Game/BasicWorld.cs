@@ -11,14 +11,22 @@ namespace OddMud.Core.Game
 {
     public class BasicWorld : IWorld
     {
+
+
         public string Name => nameof(BasicWorld);
         public event Func<object, IMapChangeEvent, Task> PlayerMoved;
         public TimeOfDay Time = new TimeOfDay() { Timescale = 6000 };
         public virtual IEnumerable<IMap> Maps => _maps;
         private List<IMap> _maps = new List<IMap>();
 
+        public virtual IEnumerable<IItem> Items => _items;
         public IEnumerable<ISpawner> Spawners => _spawners;
+        public IEnumerable<IEntity> Entities => _entities;
+
+
+        private List<IItem> _items = new List<IItem>();
         private List<ISpawner> _spawners = new List<ISpawner>();
+        private List<IEntity> _entities = new List<IEntity>();
 
         private readonly ILogger<BasicWorld> _logger;
         private readonly ITransport _network;
@@ -92,6 +100,33 @@ namespace OddMud.Core.Game
         {
             _spawners.Remove(spawner);
             return Task.CompletedTask;
+        }
+
+        public Task AddEntityAsync(IEntity entity)
+        {
+            _entities.Add(entity);
+            return Task.CompletedTask;
+        }
+
+        public Task RemoveEntityAsync(IEntity entity)
+        {
+            if (!Entities.Any(m => m == entity))
+            {
+                return Task.CompletedTask;
+            }
+
+            _entities.Remove(entity);
+            return Task.CompletedTask;
+        }
+
+        public Task AddItemAsync(IItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveItemAsync(IItem item)
+        {
+            throw new NotImplementedException();
         }
     }
 }

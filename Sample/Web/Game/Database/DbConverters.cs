@@ -35,6 +35,17 @@ namespace OddMud.Web.Game.Database
                     );
         }
 
+        public static GridEntity ToEntity(this DbEntity dbEntity, IGame game)
+        {
+            return new GridEntity(
+                    dbEntity.Id,
+                    dbEntity.Name,
+                    (EntityClasses)dbEntity.Class,
+                    dbEntity.EntityTypes.Select(et => et.EntityType).ToList(),
+                    dbEntity.Items.Select(dbItem => dbItem.BaseItem.ToItem()).ToList()
+                    );
+        }
+
         public static GridSpawner ToSpawner(this DbSpawner dbSpawner)
         {
             var spawnType = (SpawnType)dbSpawner.SpawnType;
@@ -52,7 +63,7 @@ namespace OddMud.Web.Game.Database
         {
             return new GridItem(
                    dbItem.Id, dbItem.Name, dbItem.Description,
-                   dbItem.ItemTypes.Select(it => (ItemTypes)it.ItemType).ToList(),
+                   dbItem.ItemTypes.Select(it => it.ItemType).ToList(),
                    overrideStats != null ? overrideStats.ToList() : dbItem.Stats.Select(istat => new BasicStat(istat.Name, istat.Base, istat.Current)).ToList()
                    );
         }

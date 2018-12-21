@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OddMud.SampleGame.Misc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,7 +18,7 @@ namespace OddMud.Web.Game.Database.Entities
 
         public DbItem Item { get; set; }
  
-        public byte ItemType { get; set; }
+        public ItemTypes ItemType { get; set; }
 
     }
 }

@@ -17,12 +17,17 @@ namespace OddMud.Core.Game
 
         public IWorld World { get; }
 
+        // really need to think about adding players to World and making this have all player accounts instead of logged in accounts
         public IReadOnlyList<IPlayer> Players { get { return _players; } }
 
         public IReadOnlyList<IItem> Items => _items;
 
+        public IReadOnlyList<IEntity> Entities => _entities;
+
+
         private readonly List<IItem> _items = new List<IItem>();
         private readonly List<IPlayer> _players = new List<IPlayer>();
+        private readonly List<IEntity> _entities = new List<IEntity>();
 
         public event Func<object, EventArgs, Task> Ticked;
         public event Func<object, IPlayer, Task> PlayerAdded;
@@ -104,6 +109,18 @@ namespace OddMud.Core.Game
         {
             await World.RemoveSpawnerAsync(spawner);
 
+            return true;
+        }
+
+        public async Task<bool> AddEntityAsync(IEntity entity)
+        {
+            await World.AddEntityAsync(entity);
+            return true;
+        }
+
+        public async Task<bool> RemoveEntity(IEntity entity)
+        {
+            await World.RemoveEntityAsync(entity);
             return true;
         }
     }

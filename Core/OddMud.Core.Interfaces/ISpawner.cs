@@ -14,7 +14,6 @@ namespace OddMud.Core.Interfaces
 
     public interface ISpawner<T, TMap> : ISpawner
         where T : ISpawnable
-        where TMap : IMap
     {
         event Func<T,TMap, Task> Spawned;
 

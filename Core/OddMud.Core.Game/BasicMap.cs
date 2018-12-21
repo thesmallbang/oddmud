@@ -20,9 +20,9 @@ namespace OddMud.Core.Game
 
         public IReadOnlyList<IItem> Items => _items;
         private List<IItem> _items = new List<IItem>();
-        public IReadOnlyList<IEntity> Npcs => _npcs;
-        private List<IEntity> _npcs { get; set; }
-
+        public IReadOnlyList<IEntity> Entities => _entities;
+        private List<IEntity> _entities = new List<IEntity>();
+        
 
         private List<IPlayer> _players = new List<IPlayer>();
 
@@ -56,14 +56,14 @@ namespace OddMud.Core.Game
         }
 
 
-        public virtual Task AddNpcAsync(IEntity npc)
+        public virtual Task AddEntityAsync(IEntity entity)
         {
-            _npcs.Add(npc);
+            _entities.Add(entity);
             return Task.CompletedTask;
         }
-        public virtual Task RemoveNpcAsync(IEntity npc)
+        public virtual Task RemoveEntityAsync(IEntity entity)
         {
-            _npcs.Remove(npc);
+            _entities.Remove(entity);
             return Task.CompletedTask;
         }
 

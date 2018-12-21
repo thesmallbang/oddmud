@@ -2,6 +2,6 @@
 {
     public class GameServiceSettings
     {
-        public int LoopDelay { get; set; } = 1000;
+        public int LoopDelay { get; set; } = 100;
     }
 }

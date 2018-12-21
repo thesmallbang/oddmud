@@ -25,10 +25,9 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         
         public override async Task IntervalTick(object sender, EventArgs e)
         {
-            await base.IntervalTick(sender, e);
-
             var disconnectedPlayers = Game.Players.Where(o=> !Game.Network.Connections.Contains(o.TransportId)).ToList();
             disconnectedPlayers.ForEach(async (p) => await Game.RemovePlayerAsync(p));
+            await base.IntervalTick(sender, e);
         }
 
         private Task Network_Disconnected(object sender, string transportId)

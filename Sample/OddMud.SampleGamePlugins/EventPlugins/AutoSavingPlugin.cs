@@ -4,6 +4,7 @@ using OddMud.Core.Plugins;
 using OddMud.SampleGame;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,11 +27,23 @@ namespace OddMud.SampleGamePlugins.EventPlugins
 
         public override async Task IntervalTick(object sender, EventArgs e)
         {
+            _logger.LogInformation($"Saving...");
+             var stopwatch = new Stopwatch();
+            stopwatch.Start();            
             await Game.Store.UpdatePlayersAsync(Game, Game.Players);
             await Game.Store.UpdateItemsAsync(Game, Game.Items);
             await Game.Store.UpdateMapsAsync(Game, Game.World.Maps);
 
+            stopwatch.Stop();
+            
+            _logger.LogInformation($"Saved. Took {stopwatch.ElapsedMilliseconds} mmilliseconds");
             await base.IntervalTick(sender, e);
+
+        }
+
+        public override Task IntervalSkipped(object sender, EventArgs e)
+        {
+            return base.IntervalSkipped(sender, e);
         }
 
     }

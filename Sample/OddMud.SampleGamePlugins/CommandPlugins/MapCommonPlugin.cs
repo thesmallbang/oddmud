@@ -17,11 +17,14 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
     public class ItemPickupParserOptions
     {
-        [Option('n', "name", Required = true, HelpText = "Name of the item.")]
+        [Option('n', "name", Required = false, HelpText = "Name of the item.")]
         public IEnumerable<string> Name { get; set; }
 
         [Option('q', "quantity", Required = false, HelpText = "how many to pickup", Default = 1)]
         public int Quantity { get; set; }
+
+        [Option('a', "any", Required = false, HelpText = "pickup anything?", Default = false)]
+        public bool PickupAny { get; set; }
 
     }
 
@@ -55,7 +58,11 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                    var itemName = string.Join(" ", parsed.Name);
 
                    // take each matching item up to the quantity we requested
-                   var mapItems = player.Map.Items.Where(mi => mi.Name.IndexOf(itemName, StringComparison.OrdinalIgnoreCase) >= 0).Take(parsed.Quantity)
+                   var mapItems = (
+                        parsed.PickupAny ? 
+                            player.Map.Items :
+                            player.Map.Items.Where(mi => mi.Name.IndexOf(itemName, StringComparison.OrdinalIgnoreCase) >= 0))
+                   .Take(parsed.Quantity)
                    .ToList();
 
                    if (mapItems.Count == 0)
@@ -71,10 +78,10 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                    {
                        // double check one last time the item wasn't picked up elsewhere in the time we've been picking up others
                        if (player.Map.Items.Contains(i))
-                        await player.PickupItemAsync(i);
+                           await player.PickupItemAsync(i);
                    }
 
-                   var itemView = MudLikeCommandBuilder.Start().AddItems(player.Map.Items).Build(ViewCommandType.Replace,"itemlist");
+                   var itemView = MudLikeCommandBuilder.Start().AddItems(player.Map.Items).Build(ViewCommandType.Replace, "itemlist");
                    await Game.Network.SendViewCommandsToMapAsync(player.Map, itemView);
 
                })

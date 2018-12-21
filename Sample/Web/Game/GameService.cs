@@ -40,15 +40,15 @@ namespace OddMud.Web.Game
                     _logger.LogDebug($"GameService background task is stopping."));
 
             _logger.LogInformation("Loading maps from storage");
-            var maps = await Game.Store.LoadMapsAsync();
+            var maps = await Game.Store.LoadMapsAsync(Game);
             maps.ToList().ForEach(async (m) => await Game.World.AddMapAsync(m));
 
             _logger.LogInformation("Loading items from storage");
-            var items = await Game.Store.LoadItemsAsync();
+            var items = await Game.Store.LoadItemsAsync(Game);
             items.ToList().ForEach(async (i) => await Game.AddItemAsync(i));
 
             _logger.LogInformation("Loading spawners from storage");
-            var spawners = await Game.Store.LoadSpawnersAsync();
+            var spawners = await Game.Store.LoadSpawnersAsync(Game);
             spawners.Select(o => (GridSpawner)o).ToList().ForEach(async (i) => {
                 await Game.AddSpawnerAsync((ISpawner)i);
                 // set the map object on each spawner loaded from db

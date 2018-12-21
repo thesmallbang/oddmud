@@ -5,17 +5,23 @@ using System.Threading.Tasks;
 
 namespace OddMud.Core.Interfaces
 {
+
     public interface IItem : ISpawnable
     {
         int Id { get; }
         string Name { get; }
         string Description { get; }
+
         event Func<IItem, IEntity, Task> PickedUp;
         event Func<IItem, IEntity, Task> Dropped;
 
-        IReadOnlyList<IStat> Stats { get; }
-
         Task MarkAsPickedUpAsync(IEntity entityWhoPickedUp);
         Task MarkAsDroppedAsync(IEntity entityWhoDropped);
+
+        IReadOnlyList<IStat> Stats { get; }
+
+
+
+
     }
 }

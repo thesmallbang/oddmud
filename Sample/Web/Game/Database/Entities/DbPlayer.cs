@@ -13,6 +13,10 @@ namespace OddMud.Web.Game.Database.Entities
         public string Name { get; set; }
         public string Password { get; set; }
         public int LastMap { get; set; }
+        public int Class { get; set; }
+
+
+        public ICollection<DbPlayerItem> Items { get; set; }
 
     }
 }

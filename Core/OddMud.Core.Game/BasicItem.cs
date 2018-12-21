@@ -8,10 +8,14 @@ namespace OddMud.Core.Game
 {
     public class BasicItem : IItem
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public virtual string Name { get; set; }
+        public virtual string Description { get; set; }
 
-        public int Id { get; set; }
+        public virtual int Id { get; set; }
+
+        public IReadOnlyList<IStat> Stats => _stats;
+        private List<BasicStat> _stats = new List<BasicStat>();
+
 
         public event Func<IItem, IEntity, Task> PickedUp;
         public event Func<IItem, IEntity, Task> Dropped;
@@ -34,6 +38,10 @@ namespace OddMud.Core.Game
         }
 
 
-      
+        public BasicItem(IEnumerable<BasicStat> stats)
+        {
+            _stats.AddRange(stats);
+        }
+
     }
 }

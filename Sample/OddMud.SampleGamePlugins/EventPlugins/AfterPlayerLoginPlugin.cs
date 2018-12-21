@@ -30,8 +30,8 @@ namespace OddMud.SampleGamePlugins.EventPlugins
             if (assignedPlayerMap == null)
             {
                 assignedPlayerMap = new GridMap(0, "Void Map", "You have entered a world with nothing. use map commands to begin");
-                await Game.Store.NewMapAsync(assignedPlayerMap);
-                await Game.World.AddMapAsync(assignedPlayerMap);
+                var map = await Game.Store.NewMapAsync(Game, assignedPlayerMap);
+                await Game.World.AddMapAsync(map);
             }
 
             await Game.World.MovePlayerAsync(player, assignedPlayerMap);

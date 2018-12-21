@@ -15,6 +15,7 @@ namespace OddMud.Web.Game.Database.Entities
         public string Description { get; set; }
 
         public ICollection<DbItemTypes> ItemTypes { get; set; }
+        public ICollection<DbItemStat> Stats { get; set; }
 
 
 

@@ -8,6 +8,7 @@ namespace OddMud.Core.Game
 {
     public abstract class BasicEntity : IEntity
     {
+        public virtual int Id { get; set; }
         public virtual string Name { get; set; }
 
         public virtual IMap Map { get; set; }
@@ -16,9 +17,20 @@ namespace OddMud.Core.Game
         public event Func<IItem, IEntity, Task> ItemDropped;
 
         public virtual IReadOnlyList<IItem> Items => _items;
+
+
+
         private List<IItem> _items = new List<IItem>();
 
-        
+        public BasicEntity(int id, string name, IEnumerable<IItem> items)
+        {
+            Id = id;
+            Name = name;
+            _items.AddRange(items);
+        }
+
+
+
         public virtual async Task PickupItemAsync(IItem item)
         {
 

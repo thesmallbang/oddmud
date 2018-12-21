@@ -27,6 +27,7 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         {
 
             await player.Map.RemovePlayerAsync(player);
+            await Game.Store.UpdatePlayersAsync(Game,new List<IPlayer>() { player });
 
             var playersLeftBehind = player.Map.Players;
             var leftBehindNotification = new MudLikeCommandBuilder().AddPlayers(playersLeftBehind).Build(ViewCommandType.Replace, "playerlist");

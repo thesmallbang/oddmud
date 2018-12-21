@@ -7,15 +7,21 @@ using System.Threading.Tasks;
 
 namespace OddMud.Web.Game.Database.Entities
 {
-    public class DbPlayerItems : BaseEntity
+    public class DbPlayerItem : BaseEntity
     {
 
-        [ForeignKey("Item")]
-        public int ItemId { get; set; }
+        [ForeignKey("Player")]
+        public int PlayerId { get; set; }
+        public DbPlayer Player { get; set; }
 
-        public DbItem Item { get; set; }
- 
-        
+
+        [ForeignKey("BaseItem")]
+        public int BaseItemId { get; set; }
+
+        public DbItem BaseItem { get; set; }
+         
+        // stats that override the base item stats
+        public ICollection<DbPlayerItemStat> Stats { get; set; }
 
 
     }

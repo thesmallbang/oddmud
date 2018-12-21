@@ -20,6 +20,7 @@ namespace OddMud.Core.Game
         public virtual SpawnType SpawnType { get; set; }
 
         public int ResetDuration { get; set; } = 10 * 1000;
+        public int Id { get; set; }
 
         private DateTime _lastReset = DateTime.MinValue;
 

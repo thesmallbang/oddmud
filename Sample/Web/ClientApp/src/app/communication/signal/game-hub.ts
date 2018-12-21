@@ -19,7 +19,7 @@ export class GameHubService {
             return;
         }
         this._hub = new signalR.HubConnectionBuilder()
-          .withUrl('http://localhost:49958/gameHub')
+          .withUrl('/gameHub')
        //  .withHubProtocol(new msgPack.MessagePackHubProtocol())
             .configureLogging(signalR.LogLevel.Information)
             .build();

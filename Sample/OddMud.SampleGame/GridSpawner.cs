@@ -9,10 +9,6 @@ namespace OddMud.SampleGame
 {
     public class GridSpawner : SingletonSpawner
     {
-        public int Id { get; set; }
-
-
-
 
 
     }

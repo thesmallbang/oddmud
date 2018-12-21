@@ -1,6 +1,7 @@
 ﻿using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
+using OddMud.SampleGame;
 using OddMud.SampleGame.Commands;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,8 +26,11 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                     return;
                 }
 
-                var created = await Game.Store.NewPlayerAsync((IPlayer)new BasicPlayer() { Name = request.Data.SecondPart }, request.Data.ThirdPart);
-                if (created)
+                var startingInventory = new List<IItem>();
+                var username = request.Data.SecondPart;
+                
+                var created = await Game.Store.NewPlayerAsync(Game, new GridPlayer(0, username , startingInventory), pass: request.Data.ThirdPart);
+                if (created != null)
                     await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Character {request.Data.SecondPart} created");
                 else
                     await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Registration rejected");
@@ -56,7 +60,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         private async Task HandleBasicLoginAsync(IProcessorData<CommandModel> request)
         {
 
-            var player = (BasicPlayer)await Game.Store.LoadPlayerAsync(request.Data.SecondPart, request.Data.ThirdPart);
+            var player = (GridPlayer)await Game.Store.LoadPlayerAsync(Game, request.Data.SecondPart, request.Data.ThirdPart);
             if (player == null)
             {
                 await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Login was rejected");

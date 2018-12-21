@@ -132,19 +132,21 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                        }
                    }
 
-                   parsed.AddExits.ToList().ForEach((exit) => {
-                       map.AddExit(Enum.Parse<Exits>(exit,ignoreCase: true));
+                   parsed.AddExits.ToList().ForEach((exit) =>
+                   {
+                       map.AddExit(Enum.Parse<Exits>(exit, ignoreCase: true));
                        hasUpdate = true;
                    });
 
-                   parsed.RemoveExits.ToList().ForEach((exit) => {
+                   parsed.RemoveExits.ToList().ForEach((exit) =>
+                   {
                        map.RemoveExit(Enum.Parse<Exits>(exit, ignoreCase: true));
                        hasUpdate = true;
                    });
 
                    if (hasUpdate)
                    {
-                       await Game.Store.UpdateMapAsync(map);
+                       await Game.Store.UpdateMapsAsync(Game,new List<IMap>() { map });
 
                        var mapView = MudLikeCommandBuilder.Start().AddMap(map).Build(ViewCommandType.Replace, "mapdata");
                        await Game.Network.SendViewCommandsToMapAsync(map, mapView);
@@ -246,7 +248,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                         {
                             Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, "Adding exit to current map");
                             gridMap.AddExit(parsedExit);
-                            await Game.Store.UpdateMapAsync(gridMap);
+                            await Game.Store.UpdateMapsAsync(Game, new List<IMap>() { gridMap });
 
                             //var mapView = MudLikeCommandBuilder.Start()
                             //    .AddMap((GridMap)player.Map)
@@ -282,8 +284,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
                     Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, "saving new map");
                     var map = new GridMap(0, string.Join(" ", parsed.Name), string.Join(" ", parsed.Description), newMapLocation, newMapExits);
-                    var newMapId = await Game.Store.NewMapAsync(map);
-                    map = (GridMap)await Game.Store.LoadMapAsync(newMapId);
+                    map = (GridMap)await Game.Store.NewMapAsync(Game, (IMap)map);
                     Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, "adding to active world");
                     await Game.World.AddMapAsync(map);
 
@@ -356,14 +357,14 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
                                 }
 
-                                await Game.Store.UpdateMapAsync(cleanupMap);
+                                await Game.Store.UpdateMapsAsync(Game,new List<IMap>() { cleanupMap });
 
                             }
 
                         }
 
                         await Game.World.RemoveMapAsync(map);
-                        await Game.Store.DeleteMapAsync(map);
+                        await Game.Store.DeleteMapsAsync(Game,new List<IMap>() { map });
                         await Game.Network.SendMessageToPlayerAsync(player, $"Removed map. HadExits[{map.Exits.Count > 0}]");
 
                     }

@@ -34,7 +34,6 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         public override async Task LoggedInProcessAsync(IProcessorData<CommandModel> request, IPlayer player)
         {
 
-
             var currentMap = (GridMap)player.Map;
             var currentGridLocation = currentMap.Location;
 

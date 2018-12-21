@@ -7,7 +7,7 @@ namespace OddMud.Core.Interfaces
 {
     public interface IEntity : ISpawnable
     {
-
+        int Id { get; set; }
         string Name { get; }
         IMap Map { get; set; }
 

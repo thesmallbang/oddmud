@@ -8,29 +8,30 @@ namespace OddMud.Core.Interfaces
     public interface IStorage
     {
 
-        Task<IPlayer> LoadPlayerAsync(string name, string pass);
-        Task<IEnumerable<IMap>> LoadMapsAsync();
+
+        Task<IMap> NewMapAsync(IGame game,IMap map);
+        Task UpdateMapsAsync(IGame game, IEnumerable<IMap> maps);
+        Task DeleteMapsAsync(IGame game, IEnumerable<IMap> maps);
+        Task<IEnumerable<IMap>> LoadMapsAsync(IGame game);
 
 
-        Task<IMap> LoadMapAsync(int id);
-        Task<int> NewMapAsync(IMap map);
-        Task DeleteMapAsync(IMap map);
-        Task UpdateMapAsync(IMap map);
-
-        Task<bool> NewPlayerAsync(IPlayer player, string pass);
-        Task UpdatePlayerAsync(IPlayer player);
-        Task UpdatePlayersAsync(IEnumerable<IPlayer> players);
+        Task<IPlayer> NewPlayerAsync(IGame game, IPlayer player, string pass);
+        Task UpdatePlayersAsync(IGame game, IEnumerable<IPlayer> players);
+        Task DeletePlayersAsync(IGame game, IEnumerable<IPlayer> players);
+        Task<IPlayer> LoadPlayerAsync(IGame game, string name, string pass);
 
 
-        Task<IEnumerable<IItem>> LoadItemsAsync();
-        Task NewItemAsync(IItem item);
-        Task UpdateItemAsync(IItem item);
-        Task DelteItemAsync(IItem item);
 
-        Task<IEnumerable<ISpawner>> LoadSpawnersAsync();
-        Task NewSpawnerAsync(ISpawner spawner);
-        Task UpdateSpawnerAsync(ISpawner spawner);
-        Task DelteSpawnerAsync(ISpawner spawner);
+        Task<IItem> NewItemAsync(IGame game, IItem item);
+        Task UpdateItemsAsync(IGame game, IEnumerable<IItem> items);
+        Task DeleteItemsAsync(IGame game, IEnumerable<IItem> items);
+        Task<IEnumerable<IItem>> LoadItemsAsync(IGame game);
+
+
+        Task<IEnumerable<ISpawner>> LoadSpawnersAsync(IGame game);
+        Task<ISpawner> NewSpawnerAsync(IGame game, ISpawner spawner);
+        Task UpdateSpawnersAsync(IGame game, IEnumerable<ISpawner> spawners);
+        Task DeleteSpawnersAsync(IGame game, IEnumerable<ISpawner> spawners);
 
 
     }

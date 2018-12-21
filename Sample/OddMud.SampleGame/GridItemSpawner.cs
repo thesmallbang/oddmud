@@ -43,7 +43,7 @@ namespace OddMud.SampleGame
 
             
             var storageItem = (GridItem)game.Items.FirstOrDefault(i => i.Id == EntityId);
-            var item = new GridItem(storageItem.Id,storageItem.Name,storageItem.Description,storageItem.ItemTypes.ToList());
+            var item = new GridItem(storageItem.Id,storageItem.Name,storageItem.Description,storageItem.ItemTypes.ToList(), storageItem.Stats.Select(s => (BasicStat)s).ToList());
             await Map.AddItemAsync(item);
 
             SpawnedEntity = item;

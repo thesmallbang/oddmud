@@ -14,6 +14,9 @@ namespace OddMud.Web.Game.Database
 
         public DbSet<DbMap> Maps { get; set; }
         public DbSet<DbMapExit> MapExits { get; set; }
+
+        public DbSet<DbLootTable> LootTables { get; set; }
+
         public DbSet<DbItem> Items { get; set; }
         public DbSet<DbItemStat> ItemStats { get; set; }
         public DbSet<DbItemTypes> ItemsAssignedTypes { get; set; }
@@ -57,6 +60,8 @@ namespace OddMud.Web.Game.Database
             modelBuilder.ForSqlServerUseIdentityColumns();
 
             modelBuilder.Entity<DbPlayer>().HasIndex(p => p.Name).IsUnique();
+            
+
 
         }
 

@@ -1,6 +1,7 @@
 ﻿using OddMud.SampleGame;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,9 +15,13 @@ namespace OddMud.Web.Game.Database.Entities
 
         public string Name { get; set; }
         public string Password { get; set; }
-        public int LastMap { get; set; }
         public EntityClasses Class { get; set; }
 
+
+        [ForeignKey("LootTable")]
+        public int? LootTableId { get; set; }
+
+        public DbLootTable LootTable { get; set; }
 
         public ICollection<DbEntityItem> Items { get; set; }
         public ICollection<DbEntityType> EntityTypes { get; set; }

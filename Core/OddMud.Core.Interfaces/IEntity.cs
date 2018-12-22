@@ -11,6 +11,8 @@ namespace OddMud.Core.Interfaces
         string Name { get; }
         IMap Map { get; set; }
 
+        bool IsAlive { get;  }
+
         IReadOnlyList<IStat> Stats { get; }
 
 

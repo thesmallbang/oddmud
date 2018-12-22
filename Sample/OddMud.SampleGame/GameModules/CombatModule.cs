@@ -101,7 +101,7 @@ namespace OddMud.SampleGame.GameModules
                     currentEncounter.Combatants.Add(initiated, (ICombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
 
                 if (!currentEncounter.Combatants.ContainsKey(target))
-                    currentEncounter.Combatants.Add(target, (ICombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
+                    currentEncounter.Combatants.Add(target, (ICombatant)target.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
 
 
 

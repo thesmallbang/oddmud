@@ -44,6 +44,7 @@ namespace OddMud.SampleGame
 
             var storageNpc = (GridEntity)game.World.Entities.FirstOrDefault(i => i.Id == EntityId);
             var entity = new GridEntity(storageNpc.Id, storageNpc.Name, (EntityClasses)storageNpc.Class, storageNpc.EntityTypes, storageNpc.EntityComponents, storageNpc.Items);
+            entity.Map = Map;
             await game.World.AddEntityAsync(entity);
             await Map.AddEntityAsync(entity);
 

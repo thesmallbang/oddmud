@@ -25,7 +25,6 @@ bld/
 [Ll]og/
 Migrations/
 dist/
-.vscode/
 plugins/
 
 # Visual Studio 2015 cache/options directory

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OddMud.SampleGame.GameModules
 {
-    public class SpitCombatant : ICombatant
+    public class SpitCombatant : ICombatant, IEntityComponent
     {
         public ICombatAction GetDefaultAction => throw new NotImplementedException();
 

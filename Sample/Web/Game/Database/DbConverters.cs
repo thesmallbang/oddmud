@@ -1,6 +1,7 @@
 ﻿using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
 using OddMud.SampleGame;
+using OddMud.SampleGame.GameModules;
 using OddMud.SampleGame.Misc;
 using OddMud.Web.Game.Database.Entities;
 using System;
@@ -37,13 +38,24 @@ namespace OddMud.Web.Game.Database
 
         public static GridEntity ToEntity(this DbEntity dbEntity, IGame game)
         {
-            return new GridEntity(
+            var entity = new GridEntity(
                     dbEntity.Id,
                     dbEntity.Name,
                     (EntityClasses)dbEntity.Class,
                     dbEntity.EntityTypes.Select(et => et.EntityType).ToList(),
                     dbEntity.Items.Select(dbItem => dbItem.BaseItem.ToItem()).ToList()
                     );
+
+            entity.EntityTypes.ForEach(e =>
+            {
+                switch (e)
+                {
+                    case EntityTypes.Combat:
+                        entity.EntityComponents.Add(new SpitCombatant());
+                        break;
+                }
+            });
+            return entity;
         }
 
         public static GridSpawner ToSpawner(this DbSpawner dbSpawner)

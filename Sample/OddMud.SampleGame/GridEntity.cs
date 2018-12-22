@@ -20,6 +20,7 @@ namespace OddMud.SampleGame
         public EntityClasses Class { get; private set; } = EntityClasses.Spitter;
 
         public List<EntityTypes> EntityTypes = new List<EntityTypes>();
+        public List<IEntityComponent> EntityComponents = new List<IEntityComponent>();
                 
     }
 }

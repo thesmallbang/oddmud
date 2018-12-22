@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [{
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Sample/OddMud.SampleGamePlugins/OddMud.SampleGamePlugins.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Sample/Web/OddMud.Web.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

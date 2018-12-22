@@ -5,13 +5,13 @@ using System.Text;
 
 namespace OddMud.ViewBuilders.MudLikeHtml
 {
-    public class MudLikeHtmlBuilder : IViewBuilder<string>
+    public class MudLikeHtmlConverter : IViewConverter<string>
     {
 
 
-        private readonly ILogger<MudLikeHtmlBuilder> _logger;
+        private readonly ILogger<MudLikeHtmlConverter> _logger;
 
-        public MudLikeHtmlBuilder(ILogger<MudLikeHtmlBuilder> logger)
+        public MudLikeHtmlConverter(ILogger<MudLikeHtmlConverter> logger)
         {
             _logger = logger;
             _logger.LogDebug("Injection : IViewBuilder");

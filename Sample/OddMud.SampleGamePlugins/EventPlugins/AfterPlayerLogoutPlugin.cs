@@ -27,13 +27,13 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         {
 
             await player.Map.RemovePlayerAsync(player);
-            await Game.Store.UpdatePlayersAsync(Game,new List<IPlayer>() { player });
+            await Game.Store.UpdatePlayersAsync(Game, new List<IPlayer>() { player });
 
             var playersLeftBehind = player.Map.Players;
-            var leftBehindNotification = new MudLikeCommandBuilder().AddPlayers(playersLeftBehind).Build(ViewCommandType.Replace, "playerlist");
+            var leftBehindNotification = MudLikeOperationBuilder.Start("playerlist").AddPlayers(playersLeftBehind).Build();
 
-            await Game.Network.SendViewCommandsToMapAsync(player.Map, leftBehindNotification);
-            
+            await Game.Network.SendViewCommandsToMapAsync(player.Map, MudLikeViewBuilder.Start().AddOperation(leftBehindNotification).Build());
+
         }
 
     }

@@ -34,10 +34,10 @@ namespace OddMud.SampleGamePlugins.EventPlugins
 
                 var playersLeftBehind = e.OldMap.Players.Except(e.Player);
 
-                var leftBehindNotification = new MudLikeCommandBuilder()
+                var leftBehindNotification = MudLikeOperationBuilder.Start("playerlist")
                     .AddPlayers(playersLeftBehind)
-                        .Build(ViewCommandType.Replace, "playerlist");
-                await Game.Network.SendViewCommandsToMapAsync(e.OldMap, leftBehindNotification);
+                        .Build();
+                await Game.Network.SendViewCommandsToMapAsync(e.OldMap, MudLikeViewBuilder.Start().AddOperation(leftBehindNotification).Build());
             }
 
 
@@ -45,25 +45,28 @@ namespace OddMud.SampleGamePlugins.EventPlugins
             await Game.Network.AddPlayerToMapGroupAsync(e.Player, map);
 
             var player = e.Player;
-            var lookView = MudLikeCommandBuilder.Start()
+            var lookView = MudLikeOperationBuilder.Start()
                 .AddWorldDate(Game.World.Time.WorldTime)
                 .AddMap(map)
-                .Build(ViewCommandType.Set);
-            await Game.Network.SendViewCommandsToPlayerAsync(player, lookView);
+                .Build();
+
+
+            await Game.Network.SendViewCommandsToPlayerAsync(player, MudLikeViewBuilder.Start().AddOperation(lookView).Build());
 
 
             // update the map with a new playerslist
-            var playersUpdate = new MudLikeCommandBuilder().AddPlayers(map.Players)
-                 .Build(ViewCommandType.Replace, "playerlist");
-            await Game.Network.SendViewCommandsToMapAsync(map, playersUpdate);
+            var playersUpdate = MudLikeOperationBuilder.Start("playerlist").AddPlayers(map.Players)
+                 .Build();
 
-            var itemsUpdate = new MudLikeCommandBuilder().AddItems(map.Items)
-                .Build(ViewCommandType.Replace, "itemlist");
-            await Game.Network.SendViewCommandsToMapAsync(map, itemsUpdate);
+            var itemsUpdate = MudLikeOperationBuilder.Start("itemlist").AddItems(map.Items)
+                .Build();
 
-            var entitiesUpdate = new MudLikeCommandBuilder().AddEntities(map.Entities)
-                            .Build(ViewCommandType.Replace, MudContainers.EntityList.ToString());
-            await Game.Network.SendViewCommandsToMapAsync(map, entitiesUpdate);
+            var entitiesUpdate = MudLikeOperationBuilder.Start(MudContainers.EntityList.ToString()).AddEntities(map.Entities)
+                 .Build();
+
+            var update = MudLikeViewBuilder.Start().AddOperation(playersUpdate).AddOperation(itemsUpdate).AddOperation(entitiesUpdate).Build();
+
+            await Game.Network.SendViewCommandsToMapAsync(map, update);
 
 
         }

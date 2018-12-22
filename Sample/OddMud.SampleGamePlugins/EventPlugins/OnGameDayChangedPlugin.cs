@@ -24,11 +24,11 @@ namespace OddMud.SampleGamePlugins.EventPlugins
             if (lastRunWorldDate.Day != worldTime.Day)
             {
                 lastRunWorldDate = worldTime;
-                var viewUpdate = MudLikeCommandBuilder.Start()
+                var viewUpdate = MudLikeOperationBuilder.Start("dateview")
                     .AddWorldDate(worldTime)
-                    .Build(ViewCommandType.Replace, "dateview");
+                    .Build();
 
-                await Game.Network.SendViewCommandsToPlayersAsync(Game.Players, viewUpdate);
+                await Game.Network.SendViewCommandsToPlayersAsync(Game.Players, MudLikeViewBuilder.Start().AddOperation(viewUpdate).Build());
             }
 
 

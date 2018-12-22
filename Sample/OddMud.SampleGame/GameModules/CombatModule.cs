@@ -39,7 +39,7 @@ namespace OddMud.SampleGame.GameModules
 
             _ticking = true;
 
-            foreach (var encounter in _encounters)
+            foreach (var encounter in _encounters.ToList())
             {
                 await encounter.TickAsync(_game);
             }
@@ -91,17 +91,19 @@ namespace OddMud.SampleGame.GameModules
                 {
                     // create 
                     _encounterCounter++;
-                    currentEncounter = new GridEncounter(_encounterCounter, new Dictionary<IEntity, ICombatant>());
+                    currentEncounter = new GridEncounter(_encounterCounter);
                     currentEncounter.Ended += EncounterEnded;
                     await AddEncounterAsync(currentEncounter);
                 }
 
                 // join
                 if (!currentEncounter.Combatants.ContainsKey(initiated))
-                    currentEncounter.Combatants.Add(initiated, (ICombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
+                    await currentEncounter.AddCombatantAsync(initiated, (ICombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
 
                 if (!currentEncounter.Combatants.ContainsKey(target))
-                    currentEncounter.Combatants.Add(target, (ICombatant)target.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
+                    await currentEncounter.AddCombatantAsync(target, (ICombatant)target.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
+
+
 
 
 

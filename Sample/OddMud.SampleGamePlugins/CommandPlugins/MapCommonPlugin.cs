@@ -81,7 +81,12 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                            await player.PickupItemAsync(Game, i);
                    }
 
-                   var itemView = MudLikeCommandBuilder.Start().AddItems(player.Map.Items).Build(ViewCommandType.Replace, "itemlist");
+                   var itemView = MudLikeViewBuilder.Start()
+                    .AddOperation(
+                        MudLikeOperationBuilder.Start("itemlist").AddItems(player.Map.Items).Build())
+                    .Build();
+
+
                    await Game.Network.SendViewCommandsToMapAsync(player.Map, itemView);
 
                })

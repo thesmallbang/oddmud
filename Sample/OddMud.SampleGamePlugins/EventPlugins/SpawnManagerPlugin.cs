@@ -31,11 +31,11 @@ namespace OddMud.SampleGamePlugins.EventPlugins
             _logger = (ILogger<SpawnManagerPlugin>)serviceProvider.GetService(typeof(ILogger<SpawnManagerPlugin>));
             base.Configure(game, serviceProvider);
         }
-        
+
         public override async Task IntervalTick(object sender, EventArgs e)
         {
 
-            if (_spawnersUpdated.AddMilliseconds(cacheDuration) < DateTime.Now )
+            if (_spawnersUpdated.AddMilliseconds(cacheDuration) < DateTime.Now)
             {
                 _logger.LogDebug("Updating spawners cache");
                 _spawnersUpdated = DateTime.Now;
@@ -64,10 +64,11 @@ namespace OddMud.SampleGamePlugins.EventPlugins
                 }
 
 
-                
+
             }
 
-            _gridSpawners.ForEach(async (spawner) => {
+            _gridSpawners.ForEach(async (spawner) =>
+            {
                 await spawner.SpawnerTickAsync(Game);
             });
 
@@ -78,9 +79,9 @@ namespace OddMud.SampleGamePlugins.EventPlugins
         private Task SpawnerSpawned(ISpawnable arg, IMap map)
         {
 
-            var itemsUpdate = new MudLikeCommandBuilder().AddItems(map.Items)
-           .Build(ViewCommandType.Replace, "itemlist");
-            return Game.Network.SendViewCommandsToMapAsync(map, itemsUpdate);
+            var itemsUpdate = MudLikeOperationBuilder.Start("itemlist").AddItems(map.Items)
+           .Build();
+            return Game.Network.SendViewCommandsToMapAsync(map, MudLikeViewBuilder.Start().AddOperation(itemsUpdate).Build());
 
 
         }

@@ -22,41 +22,77 @@ export class WorldComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.hub.Subscribe(InboundChannels.WorldStream, (data: any) => {
+    this.hub.Subscribe(InboundChannels.WorldStream, (dataList: any[]) => {
 
 
-      const received = `${data.output}`
-      // set
-      if (data.commandType === 0) {
-        this.messages.length = 0;
-      }
+      dataList.forEach((data) => {
 
-      // set or append
-      if (data.commandType === 0 || data.commandType === 1)
-        this.messages.push(received);
+        const received = `${data.output}`
+        var relatedId = data.relatedId;
 
-      // replace
-      if (data.commandType === 2) {
 
-        var tofind = data.replaceId;
-        var messageIndex = this.messages.findIndex((m) => m.includes(`id='${tofind}'`)) ;
+        // a set command with no id is meant to clear the map
+        if (data.operationType === 0 && !relatedId) {
+          this.messages.length = 0;
+          console.log("clearing all .. set command with no id messages");
+        }
 
-        // if we cant find a match just push it as a new message, otherwise replace the current one.
-        if (messageIndex < 0)
-          this.messages.push(received);
-        else {
-          // we need to replace the specific container/div with the inbound one in our message
+        // set or appennd
+        if (data.operationType === 0) {
+
+          if (!relatedId) {
+            console.log("pushing message set command with no id");
+            this.messages.push(received);
+            return;
+          }
+
+          // find the related message
+          var messageIndex = this.messages.findIndex((m) => m.includes(`id='${relatedId}'`));
+
+          // if we cant find a match just push it as a new message, otherwise replace the current one.
+          if (messageIndex < 0) {
+            this.messages.push(received);
+            return;
+          }
 
           var message = this.messages[messageIndex];
-          var endTag = `</div><!-- ${tofind} -->`;
-          var divStart = message.indexOf(`<div id='${tofind}'`);
+          var endTag = `</div><!-- ${relatedId} -->`;
+          var divStart = message.indexOf(`<div id='${relatedId}'`);
           var divEnd = message.indexOf(endTag, divStart);
           var newMessage = `${message.substring(0, divStart)}${received}${message.substring(divEnd + endTag.length)}`;
-          this.messages[messageIndex] =  newMessage;
-        }
-          
+          this.messages[messageIndex] = newMessage;
 
-      }
+        }
+
+        if (data.operationType == 1) {
+
+          if (!relatedId) {
+            this.messages.push(received);
+            return;
+          }
+
+          // find the related message
+          var messageIndex = this.messages.findIndex((m) => m.includes(`id='${relatedId}'`));
+
+          // if we cant find a match just push it as a new message, otherwise replace the current one.
+          if (messageIndex < 0) {
+            this.messages.push(received);
+            return;
+          }
+
+          var message = this.messages[messageIndex];
+          var endTag = `</div><!-- ${relatedId} -->`;
+          var divStart = message.indexOf(`<div id='${relatedId}'`);
+          var divEnd = message.indexOf(endTag, divStart);
+          var newMessage = `${message.substring(0, divEnd)}${received}${endTag}`;
+          this.messages[messageIndex] = newMessage;
+
+        }
+
+
+      });
+
+
 
       this.worldHtml = this.messages.join('');
       this.scrollToBottom();

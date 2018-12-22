@@ -105,13 +105,22 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
                    // sub to encounter ending
                    encounter.Ended += Encounter_Ended;
+
                    var map = ((GridPlayer)encounter.Combatants.First().Key).Map;
+
                    await Game.Network.SendViewCommandsToMapAsync(map,
-                       MudLikeCommandBuilder.Start().
-                       StartContainer($"combat_{encounter.Id}")
-                       .AddTextLine("Result : In Progress")
-                       .EndContainer($"combat_{encounter.Id}")
-                       .Build(ViewCommandType.Replace, $"combat_{encounter.Id}"));
+                      MudLikeViewBuilder.Start()
+                      .AddOperation(
+                          MudLikeOperationBuilder.Start($"combat_{encounter.Id}")
+                               .StartContainer($"combat_{encounter.Id}")
+                               .AddTextLine("Result : In Progress")
+                               .EndContainer($"combat_{encounter.Id}")
+                               .Build()
+                          )
+                      .Build());
+
+
+
 
 
                })
@@ -129,12 +138,22 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         private async Task Encounter_Ended(IEncounter encounter, EncounterEndings arg2)
         {
             var map = ((GridPlayer)encounter.Combatants.First().Key).Map;
-            await Game.Network.SendViewCommandsToMapAsync(map,
-                MudLikeCommandBuilder.Start().
-                StartContainer($"combat_{encounter.Id}")
-                .AddTextLine("Result : Completed")
-                .EndContainer($"combat_{encounter.Id}")
-                .Build(ViewCommandType.Replace, $"combat_{encounter.Id}"));
+
+
+            var view = MudLikeViewBuilder.Start()
+             .AddOperation(
+                      MudLikeOperationBuilder.Start()
+                            .StartContainer($"combat_{encounter.Id}")
+                            .AddTextLine("Result : Completed")
+                            .EndContainer($"combat_{encounter.Id}").Build())
+             .Build();
+
+
+            await Game.Network.SendViewCommandsToMapAsync(map, view);
+
+
+
+
 
         }
 

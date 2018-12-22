@@ -24,7 +24,7 @@ namespace OddMud.Core.Game
 
         public bool IsAlive { get
             {
-                var hpstat = Stats.FirstOrDefault();
+                var hpstat = Stats.FirstOrDefault(s => s.Name == "health");
                 if (hpstat == null)
                 {
                     return true;

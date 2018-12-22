@@ -140,7 +140,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                        }
                        catch (Exception)
                        {
-                           Game.Log( Microsoft.Extensions.Logging.LogLevel.Information, "invalid exit..");
+                           Game.Log(Microsoft.Extensions.Logging.LogLevel.Information, "invalid exit..");
                        }
 
                        hasUpdate = true;
@@ -154,10 +154,11 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
                    if (hasUpdate)
                    {
-                       await Game.Store.UpdateMapsAsync(Game,new List<IMap>() { map });
+                       await Game.Store.UpdateMapsAsync(Game, new List<IMap>() { map });
 
-                       var mapView = MudLikeCommandBuilder.Start().AddMap(map).Build(ViewCommandType.Replace, "mapdata");
-                       await Game.Network.SendViewCommandsToMapAsync(map, mapView);
+                       var mapView = MudLikeOperationBuilder.Start("mapdata").AddMap(map).Build();
+
+                       await Game.Network.SendViewCommandsToMapAsync(map, MudLikeViewBuilder.Start().AddOperation(mapView).Build());
 
                    }
 
@@ -365,14 +366,14 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
                                 }
 
-                                await Game.Store.UpdateMapsAsync(Game,new List<IMap>() { cleanupMap });
+                                await Game.Store.UpdateMapsAsync(Game, new List<IMap>() { cleanupMap });
 
                             }
 
                         }
 
                         await Game.World.RemoveMapAsync(map);
-                        await Game.Store.DeleteMapsAsync(Game,new List<IMap>() { map });
+                        await Game.Store.DeleteMapsAsync(Game, new List<IMap>() { map });
                         await Game.Network.SendMessageToPlayerAsync(player, $"Removed map. HadExits[{map.Exits.Count > 0}]");
 
                     }

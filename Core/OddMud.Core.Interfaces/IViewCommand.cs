@@ -6,16 +6,25 @@ namespace OddMud.Core.Interfaces
 {
     public interface IViewCommand<TData>
     {
-        ViewCommandType CommandType { get; }
-        IEnumerable<TData> Data { get; }
 
-        string ReplaceId { get; }
+        IEnumerable<IViewOperation<TData>> Operations { get;  }
+     
     }
 
-    public enum ViewCommandType
+    public enum ViewOperationType
     {
         Set,
         Append,
-        Replace
     }
+
+
+    public interface IViewOperation<TData>
+    {
+        ViewOperationType OperationType { get; }
+        IEnumerable<TData> Data { get; }
+        string RelatedId { get; }
+    }
+
+
+
 }

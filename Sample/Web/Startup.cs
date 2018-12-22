@@ -46,7 +46,7 @@ namespace OddMud.Web
             services.AddSingleton(typeof(FilePluginLoader<>));
             services.AddSingleton(typeof(GameHubProcessor));
             services.AddSingleton<IWorld, GridWorld>();
-            services.AddSingleton<IViewBuilder<string>, MudLikeHtmlBuilder>();
+            services.AddSingleton<IViewConverter<string>, MudLikeHtmlConverter>();
             services.AddSingleton<IHostedService, GameService>();
             services.AddSingleton<ITransport, SignalRHubTransport<GameHub>>();
             services.AddSingleton<IGameModule<CombatModule>, CombatModule>();

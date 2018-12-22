@@ -5,8 +5,8 @@ using System.Text;
 namespace OddMud.Core.Interfaces
 {
 
-    public interface IViewBuilder
+    public interface IViewConverter<TOutput>
     {
-
+        TOutput Build(IViewItem viewItem);
     }
 }

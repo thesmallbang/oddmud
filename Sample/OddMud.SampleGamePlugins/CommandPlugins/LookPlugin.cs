@@ -43,16 +43,16 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                 await Game.Network.SendMessageToPlayerAsync(player, "Complex look not yet supported. Processing without arguments.");
             }
 
-            var mapView = MudLikeCommandBuilder.Start()
+            var mapView = MudLikeOperationBuilder.Start()
                 .AddWorldDate(Game.World.Time.WorldTime)
                 .AddMap((GridMap)player.Map, includePlayers: true)
-                .Build(ViewCommandType.Set);
+                .Build();
 
-            await Game.Network.SendViewCommandsToPlayerAsync(player, mapView);
+            var itemsView = MudLikeOperationBuilder.Start("itemlist").AddItems(player.Map.Items)
+             .Build();
 
-            var itemsUpdate = new MudLikeCommandBuilder().AddItems(player.Map.Items)
-             .Build(ViewCommandType.Replace, "itemlist");
-            await Game.Network.SendViewCommandsToPlayerAsync(player, itemsUpdate);
+
+            await Game.Network.SendViewCommandsToPlayerAsync(player, MudLikeViewBuilder.Start().AddOperation(mapView).AddOperation(itemsView).Build());
 
 
         }

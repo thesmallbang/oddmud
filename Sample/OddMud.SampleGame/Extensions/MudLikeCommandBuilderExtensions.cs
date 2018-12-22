@@ -11,14 +11,14 @@ namespace OddMud.SampleGame.Extensions
     public static class MudLikeCommandBuilderExtensions
     {
 
-        public static MudLikeCommandBuilder AddPlayers(this MudLikeCommandBuilder builder, IEnumerable<IPlayer> players)
+        public static MudLikeOperationBuilder AddPlayers(this MudLikeOperationBuilder builder, IEnumerable<IPlayer> players)
         {
             return builder.StartContainer("playerlist").AddText("players: ")
            .AddText(string.Join(",", players.Select(p => p.Name)), TextColor.Gray)
            .EndContainer("playerlist");
         }
 
-        public static MudLikeCommandBuilder AddItems(this MudLikeCommandBuilder builder, IEnumerable<IItem> items)
+        public static MudLikeOperationBuilder AddItems(this MudLikeOperationBuilder builder, IEnumerable<IItem> items)
         {
             return builder.StartContainer("itemlist").AddText("ground items: ")
            .AddText(string.Join(",", items.Select(p => p.Name)), TextColor.Olive)
@@ -26,7 +26,7 @@ namespace OddMud.SampleGame.Extensions
         }
 
 
-        public static MudLikeCommandBuilder AddEntities(this MudLikeCommandBuilder builder, IEnumerable<IEntity> entities)
+        public static MudLikeOperationBuilder AddEntities(this MudLikeOperationBuilder builder, IEnumerable<IEntity> entities)
         {
             return builder.StartContainer(MudContainers.EntityList.ToString()).AddText("entities: ")
            .AddText(string.Join(",", entities.Select(p => p.Name)), TextColor.Red)
@@ -34,7 +34,7 @@ namespace OddMud.SampleGame.Extensions
         }
 
 
-        public static MudLikeCommandBuilder AddWorldDate(this MudLikeCommandBuilder builder, DateTime dateTime)
+        public static MudLikeOperationBuilder AddWorldDate(this MudLikeOperationBuilder builder, DateTime dateTime)
         {
             return builder
                 .StartContainer("dateview")
@@ -43,7 +43,7 @@ namespace OddMud.SampleGame.Extensions
 
         }
 
-        public static MudLikeCommandBuilder AddMap(this MudLikeCommandBuilder builder, GridMap map, bool includePlayers = false)
+        public static MudLikeOperationBuilder AddMap(this MudLikeOperationBuilder builder, GridMap map, bool includePlayers = false)
         {
             builder
                 .StartContainer("mapdata")

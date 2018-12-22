@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,17 @@ namespace OddMud.SampleGame.GameModules
                 throw new Exception("SpitAction requires a target");
             }
 
-            var dmg = _randomizer.Next(1, 3);
+            var dmg = _randomizer.Next(1, 4);
+            Debug.WriteLine($"dmg roll: {dmg}");
+            // test killing without stats yet
+            if (dmg == 3)
+            {
+                _damageDone = dmg;
+                Debug.WriteLine($"killing entity {TargetEntity.Name}");
+                await TargetEntity.KillAsync();
+                return;
+            }
+
 
             // apply the dmg ..stats missing
             var hpstat = TargetEntity.Stats.FirstOrDefault(s => s.Name == "health");
@@ -66,9 +77,11 @@ namespace OddMud.SampleGame.GameModules
             return Task.CompletedTask;
         }
 
-        public IViewCommand<IViewItem> ToView()
+        public void AppendToOperation(IOperationBuilder operationBuilder)
         {
-            return MudLikeCommandBuilder.Start()
+            var builder = (MudLikeOperationBuilder)operationBuilder;
+
+            builder
                 .StartContainer("action")
                 .AddText($"{SourceEntity.Name} ")
                 .AddText("spits", TextColor.Aqua)
@@ -76,8 +89,7 @@ namespace OddMud.SampleGame.GameModules
                 .AddText($"{TargetEntity.Name} for ")
                 .AddText($"{_damageDone}", TextColor.Red)
                 .AddTextLine(" damage")
-                .EndContainer("action")
-                .Build(ViewCommandType.Append);
+                .EndContainer("action");
 
             //return $"{SourceEntity?.Name} spit on {TargetEntity?.Name} for {_damageDone}";
         }

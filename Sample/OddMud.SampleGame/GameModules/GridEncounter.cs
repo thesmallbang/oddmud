@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
+using OddMud.View.MudLike;
 
 namespace OddMud.SampleGame.GameModules
 {
@@ -15,19 +16,14 @@ namespace OddMud.SampleGame.GameModules
         public Dictionary<IEntity, ICombatant> Combatants { get; } = new Dictionary<IEntity, ICombatant>();
 
         public int Id { get; }
-
         public event Func<IEncounter, EncounterEndings, Task> Ended;
+        private bool _started;
 
 
-        public GridEncounter(int id, Dictionary<IEntity, ICombatant> combatants)
+        public GridEncounter(int id)
         {
             Id = id;
-            Combatants = combatants;
-            foreach (var entity in combatants.Keys)
-            {
-                var combatant = combatants[entity];
-                entity.Died += Combatant_Death;
-            }
+        
         }
 
         private async Task Combatant_Death(IEntity deadCombatant)
@@ -46,7 +42,14 @@ namespace OddMud.SampleGame.GameModules
 
 
         }
+        public Task AddCombatantAsync(GridEntity entity, ICombatant combatant)
+        {
+            Combatants.Add(entity, combatant);
+            entity.Died += Combatant_Death;
+            return Task.CompletedTask;
+        }
 
+      
         public Task TerminateAsync()
         {
             if (Ended != null)
@@ -58,6 +61,9 @@ namespace OddMud.SampleGame.GameModules
         public async Task TickAsync(IGame game)
         {
 
+            if (!_started)
+                await Start(game);
+
             // any pending actions from either combatant?
             foreach (var entity in Combatants.Keys.Select(o => o).ToList())
             {
@@ -65,7 +71,6 @@ namespace OddMud.SampleGame.GameModules
                 var combatant = (ICombatant<ICombatAction<GridEntity>>)Combatants[entity];
                 if (combatant.CanAttack)
                 {
-                    Debug.WriteLine($"Can Attack True.. {entity.Name}");
                     var nextAction = await combatant.GetNextActionAsync();
                     if (nextAction == null)
                         continue;
@@ -82,16 +87,35 @@ namespace OddMud.SampleGame.GameModules
                     }
 
                     await nextAction.Execute();
-                    Debug.WriteLine("Executed");
-                    await game.Network.SendViewCommandsToMapAsync(entity.Map, nextAction.ToView());
-                    await game.Network.SendMessageToMapAsync(entity.Map, nextAction.ToMessage());
 
-                } else
+                    var actionView = MudLikeOperationBuilder.Start(ViewOperationType.Append, $"enc_{Id}");
+
+                    nextAction.AppendToOperation(actionView);
+
+
+                    await game.Network.SendViewCommandsToMapAsync(entity.Map, MudLikeViewBuilder.Start().AddOperation(actionView.Build()).Build());
+                }
+                else
                 {
                 }
 
             }
 
         }
+
+        private Task Start(IGame game)
+        {
+            _started = true;
+            var actionView = MudLikeOperationBuilder.Start(ViewOperationType.Set, $"enc_{Id}")
+                      .StartContainer($"enc_{Id}")
+                      .EndContainer($"enc_{Id}")
+                      .Build();
+
+            return game.Network.SendViewCommandsToMapAsync(Combatants.FirstOrDefault().Key.Map, MudLikeViewBuilder.Start().AddOperation(actionView).Build());
+
+
+        }
+
+
     }
 }

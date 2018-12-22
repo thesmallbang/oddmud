@@ -1,4 +1,5 @@
 ﻿using OddMud.Core.Interfaces;
+using OddMud.View.MudLike;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,7 +11,7 @@ namespace OddMud.SampleGame.GameModules
 
     public interface ICombatAction
     {
-        IViewCommand<IViewItem> ToView();
+        void AppendToOperation(IOperationBuilder builder);
         string ToMessage();
 
     }

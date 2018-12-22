@@ -1,9 +1,10 @@
-﻿using OddMud.SampleGame.Misc;
+﻿using OddMud.Core.Game;
+using OddMud.SampleGame.Misc;
 
 namespace OddMud.Web.Game.Database.Entities
 {
     public class DbEntityType : BaseEntity
     {
-        public EntityTypes EntityType { get; internal set; }
+        public EntityType EntityType { get; internal set; }
     }
 }

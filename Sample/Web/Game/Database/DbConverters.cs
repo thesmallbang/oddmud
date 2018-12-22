@@ -24,7 +24,7 @@ namespace OddMud.Web.Game.Database
 
         public static GridPlayer ToPlayer(this DbPlayer dbPlayer, IGame game)
         {
-            return new GridPlayer(
+            var player = new GridPlayer(
                     dbPlayer.Id,
                     dbPlayer.Name,
                     (EntityClasses)dbPlayer.Class,
@@ -34,27 +34,46 @@ namespace OddMud.Web.Game.Database
                             new BasicStat(s.Name, s.Base, s.Current)).ToList()
                         )).ToList()
                     );
+
+            player.EntityTypes.ForEach(e =>
+                        {
+                            switch (e)
+                            {
+                                case EntityType.Combat:
+                                    player.EntityComponents.Add(new SpitCombatant());
+                                    break;
+                            }
+                        });
+            return player;
+
         }
 
         public static GridEntity ToEntity(this DbEntity dbEntity, IGame game)
         {
+            var entityTypes = dbEntity.EntityTypes.Select(et => et.EntityType).ToList();
+
+            var components = new List<IEntityComponent>();
+            entityTypes.ForEach(e =>
+            {
+                switch (e)
+                {
+                    case EntityType.Combat:
+                        components.Add(new SpitCombatant());
+                        break;
+                }
+            });
+
+
             var entity = new GridEntity(
                     dbEntity.Id,
                     dbEntity.Name,
                     (EntityClasses)dbEntity.Class,
-                    dbEntity.EntityTypes.Select(et => et.EntityType).ToList(),
+                    entityTypes,
+                    components,
                     dbEntity.Items.Select(dbItem => dbItem.BaseItem.ToItem()).ToList()
                     );
 
-            entity.EntityTypes.ForEach(e =>
-            {
-                switch (e)
-                {
-                    case EntityTypes.Combat:
-                        entity.EntityComponents.Add(new SpitCombatant());
-                        break;
-                }
-            });
+
             return entity;
         }
 

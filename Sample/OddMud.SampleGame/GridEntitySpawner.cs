@@ -13,7 +13,7 @@ namespace OddMud.SampleGame
     public class GridEntitySpawner : GridSpawner
     {
 
- 
+
         public GridEntitySpawner(int mapId, int itemId)
         {
             MapId = mapId;
@@ -41,9 +41,9 @@ namespace OddMud.SampleGame
             if (Map == null)
                 throw new Exception("Map was created and the map was never set to match the MapId");
 
-            
+
             var storageNpc = (GridEntity)game.World.Entities.FirstOrDefault(i => i.Id == EntityId);
-            var entity = new GridEntity(storageNpc.Id, storageNpc.Name, (EntityClasses)storageNpc.Class, storageNpc.EntityTypes,  storageNpc.Items);
+            var entity = new GridEntity(storageNpc.Id, storageNpc.Name, (EntityClasses)storageNpc.Class, storageNpc.EntityTypes, storageNpc.EntityComponents, storageNpc.Items);
             await game.World.AddEntityAsync(entity);
             await Map.AddEntityAsync(entity);
 
@@ -57,7 +57,7 @@ namespace OddMud.SampleGame
         {
             // we dont care about this item being picked up anymore and it would actually cause issues when the item gets pickedup/dropped again and again later
             whoDied.Died -= ResetSpawner;
-            
+
             await Map.RemoveEntityAsync(whoDied);
 
             await base.Reset(whoDied);

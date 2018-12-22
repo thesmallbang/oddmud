@@ -1,7 +1,11 @@
-﻿namespace OddMud.SampleGame
+
+namespace OddMud.Core.Game
 {
+
     public interface IEntityComponent
     {
 
     }
+
+
 }

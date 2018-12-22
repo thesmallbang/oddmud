@@ -2,6 +2,7 @@
 using OddMud.Core.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,8 +14,8 @@ namespace OddMud.SampleGame.GameModules
         private readonly IGame _game;
         private readonly CombatModuleSettings _settings;
 
-        public IReadOnlyList<IEncounter> Encounters => _encounters;
-        private List<IEncounter> _encounters = new List<IEncounter>();
+        public IReadOnlyList<GridEncounter> Encounters => _encounters;
+        private List<GridEncounter> _encounters = new List<GridEncounter>();
 
         public CombatModule(
             ILogger<CombatModule> logger,
@@ -35,20 +36,32 @@ namespace OddMud.SampleGame.GameModules
 
         public Task<bool> IsPlayerInCombatAsync(IPlayer player)
         {
-            return Task.FromResult<bool>(false);
+            var inEncounter = _encounters.Any(e => e.Combatants.ContainsKey(player));
+            return Task.FromResult<bool>(inEncounter);
         }
 
-        private Task AddEncounterAsync(IEncounter encounter)
+        private Task AddEncounterAsync(GridEncounter encounter)
         {
             _encounters.Add(encounter);
             return Task.CompletedTask;
         }
-        private Task RemoveEncounterAsync(IEncounter encounter)
+        private Task RemoveEncounterAsync(GridEncounter encounter)
         {
             _encounters.Add(encounter);
             return Task.CompletedTask;
         }
 
+        private Task MergeEncounters(GridEncounter keepEncounter, GridEncounter mergedEncounter)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task<GridEncounter> FindOrNewEncounter(IEntity initiated, IEntity target, out string issue)
+        {
+            issue = string.Empty;
+
+            return Task.FromResult<GridEncounter>(null);
+        }
 
     }
 }

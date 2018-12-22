@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using OddMud.Core.Game;
 
 namespace OddMud.SampleGame.GameModules
 {
@@ -12,6 +13,7 @@ namespace OddMud.SampleGame.GameModules
         public bool CanAttack => throw new NotImplementedException();
 
         public Queue<ICombatAction> Actions => throw new NotImplementedException();
+
 
         public event Func<IEncounter, Task> Death;
 

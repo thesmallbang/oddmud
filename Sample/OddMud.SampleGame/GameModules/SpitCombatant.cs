@@ -6,20 +6,20 @@ using OddMud.Core.Game;
 
 namespace OddMud.SampleGame.GameModules
 {
-    public class SpitCombatant : ICombatant, IEntityComponent
+    public class SpitCombatant : ICombatant<ICombatAction<GridEntity>>, IEntityComponent
     {
-        public ICombatAction GetDefaultAction => throw new NotImplementedException();
 
-        public bool CanAttack => throw new NotImplementedException();
+        public bool CanAttack => true;
 
-        public Queue<ICombatAction> Actions => throw new NotImplementedException();
+        public Queue<ICombatAction<GridEntity>> Actions => throw new NotImplementedException();
 
+        public ICombatAction DefaultAction => new SpitAction();
 
-        public event Func<ICombatant, IEncounter, Task> Death;
-
-        public ICombatAction GetNextAction()
+        public Task<ICombatAction<GridEntity>> GetNextActionAsync()
         {
-            throw new NotImplementedException();
+
+            return Task.FromResult<ICombatAction<GridEntity>>(null);
+
         }
     }
 }

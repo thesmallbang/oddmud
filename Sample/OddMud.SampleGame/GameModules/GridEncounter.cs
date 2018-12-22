@@ -24,21 +24,28 @@ namespace OddMud.SampleGame.GameModules
             Id = id;
             Combatants = combatants;
 
-            combatants.Values.ToList().ForEach((combatant) => {
-                combatant.Death += Combatant_Death;
-            });
+            foreach (var entity in combatants.Keys)
+            {
+                var combatant = combatants[entity];
+                entity.Died += Combatant_Death;
+            }
+
+           
 
         }
 
-        private async Task Combatant_Death(ICombatant deadCombatant, IEncounter encounter)
+        private async Task Combatant_Death(IEntity deadCombatant)
         {
-            deadCombatant.Death -= Combatant_Death;
+            deadCombatant.Died -= Combatant_Death;
 
-            if (Ended != null)
-                await Ended.Invoke(this, EncounterEndings.Death);
 
             //var aliveNonPlayers = Combatants.Count(c => typeof(GridPlayer) != c.Key.GetType());
             //if (deadNonPlayers == 0)
+
+            // expand here when ready to support more than 2 entities in an encounter
+            if (Ended != null)
+                await Ended.Invoke(this, EncounterEndings.Death);
+
 
     
         }
@@ -51,9 +58,20 @@ namespace OddMud.SampleGame.GameModules
             return Task.CompletedTask;
         }
 
-        public Task TickAsync()
+        public async Task TickAsync(IGame game)
         {
-            return Task.CompletedTask;
+
+            // any pending actions from either combatant?
+            foreach (var entity in Combatants.Keys)
+            {
+                
+                var combatant = Combatants[entity];
+                if (combatant.CanAttack)
+                {
+                    game.Log(Microsoft.Extensions.Logging.LogLevel.Information, $"{entity.Name} is ready to attack but does nothing..");
+                }
+
+            }
         }
     }
 }

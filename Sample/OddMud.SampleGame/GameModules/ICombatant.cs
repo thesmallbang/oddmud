@@ -8,16 +8,19 @@ namespace OddMud.SampleGame.GameModules
 {
     public interface ICombatant
     {
-        ICombatAction GetDefaultAction { get; }
+        ICombatAction DefaultAction { get; }
         bool CanAttack { get; }
 
-        Queue<ICombatAction> Actions { get;  }
-
-        ICombatAction GetNextAction();
-
-        event Func<ICombatant, IEncounter, Task> Death;
 
 
+    }
 
+    public interface ICombatant<TAction> : ICombatant
+        where TAction : ICombatAction
+    {
+
+        Queue<TAction> Actions { get; }
+
+        Task<TAction> GetNextActionAsync();
     }
 }

@@ -19,6 +19,8 @@ namespace OddMud.Core.Game
 
         public virtual IReadOnlyList<IItem> Items => _items;
 
+        public IReadOnlyList<IStat> Stats => _stats;
+        private List<IStat> _stats = new List<IStat>();
 
         public List<EntityType> EntityTypes = new List<EntityType>();
         public List<IEntityComponent> EntityComponents = new List<IEntityComponent>();

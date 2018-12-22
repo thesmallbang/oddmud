@@ -18,7 +18,7 @@ namespace OddMud.SampleGame.GameModules
         private List<GridEncounter> _encounters = new List<GridEncounter>();
 
         private int _encounterCounter;
-
+        private bool _ticking;
 
         public CombatModule(
             ILogger<CombatModule> logger,
@@ -32,9 +32,19 @@ namespace OddMud.SampleGame.GameModules
         }
 
 
-        public Task TickAsync()
+        public async Task TickAsync()
         {
-            return Task.CompletedTask;
+            if (_ticking)
+                return;
+
+            _ticking = true;
+
+            foreach (var encounter in _encounters)
+            {
+                await encounter.TickAsync(_game);
+            }
+
+            _ticking = false;
         }
 
         public Task<bool> IsPlayerInCombatAsync(IPlayer player)
@@ -97,7 +107,7 @@ namespace OddMud.SampleGame.GameModules
 
             }
 
-            
+
             return currentEncounter;
 
 

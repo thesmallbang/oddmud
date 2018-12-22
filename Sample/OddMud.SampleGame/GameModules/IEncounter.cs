@@ -13,7 +13,7 @@ namespace OddMud.SampleGame.GameModules
 
         Dictionary<IEntity, ICombatant> Combatants { get; }
 
-        Task TickAsync();
+        Task TickAsync(IGame game);
 
         Task TerminateAsync();
 

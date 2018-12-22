@@ -26,10 +26,7 @@ namespace OddMud.SampleGame
 
         public bool IsAttackable()
         {
-            if (_attackableCache == null)
-                _attackableCache =  EntityComponents.Any(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant)));
-
-            return _attackableCache.GetValueOrDefault();
+               return EntityComponents.Any(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant)));
         }
 
     }

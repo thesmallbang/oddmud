@@ -7,20 +7,18 @@ using System.Text;
 
 namespace OddMud.SampleGame
 {
-    public class GridPlayer : BasicPlayer
+    public class GridPlayer : GridEntity, IPlayer
     {
-        public EntityClasses Class { get; private set; } = EntityClasses.Spitter;
-
-
-        public GridPlayer(int id, string name, IEnumerable<IItem> items) : base(id, name, items)
+        public GridPlayer(int id, string name, EntityClasses entityClass, IEnumerable<EntityType> entityTypes, IEnumerable<IEntityComponent> entityComponents, IEnumerable<IItem> items, IMap map)
+            : base(id, name, entityClass, entityTypes, entityComponents, items)
         {
-        }
-
-        public GridPlayer(int id, string name, EntityClasses playerClass, IMap map, IEnumerable<IItem> items) : base(id, name, items)
-        {
-            Class = playerClass;
             Map = map;
         }
+
+        public string TransportId { get; set; }
+
+
+
 
 
 

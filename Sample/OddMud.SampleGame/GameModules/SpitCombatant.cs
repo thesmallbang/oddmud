@@ -15,7 +15,7 @@ namespace OddMud.SampleGame.GameModules
         public Queue<ICombatAction> Actions => throw new NotImplementedException();
 
 
-        public event Func<IEncounter, Task> Death;
+        public event Func<ICombatant, IEncounter, Task> Death;
 
         public ICombatAction GetNextAction()
         {

@@ -8,6 +8,7 @@ namespace OddMud.SampleGame.GameModules
     public interface IEncounter
     {
 
+        int Id { get; }
         event Func<IEncounter, EncounterEndings, Task> Ended;
 
         Dictionary<IEntity, ICombatant> Combatants { get; }

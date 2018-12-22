@@ -14,8 +14,6 @@ namespace OddMud.SampleGame
     {
 
         public EntityClasses Class { get; private set; } = EntityClasses.Spitter;
-        private bool? _attackableCache;
-
 
         public GridEntity(int id, string name, EntityClasses entityClass, IEnumerable<EntityType> entityTypes, IEnumerable<IEntityComponent> entityComponents, IEnumerable<IItem> items) : base(id, name, items)
         {

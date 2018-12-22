@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OddMud.Core.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace OddMud.SampleGame.GameModules
 
         ICombatAction GetNextAction();
 
-        event Func<IEncounter, Task> Death;
+        event Func<ICombatant, IEncounter, Task> Death;
 
 
 

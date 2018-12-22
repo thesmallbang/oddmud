@@ -3,6 +3,7 @@ using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using OddMud.SampleGame;
 using OddMud.SampleGame.Commands;
+using OddMud.SampleGame.GameModules;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -28,8 +29,9 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
                 var startingInventory = new List<IItem>();
                 var username = request.Data.SecondPart;
-                
-                var created = await Game.Store.NewPlayerAsync(Game, new GridPlayer(0, username , startingInventory), pass: request.Data.ThirdPart);
+
+
+                var created = await Game.Store.NewPlayerAsync(Game, new GridPlayer(0, username, EntityClasses.Spitter, new List<EntityType>() { EntityType.Normal, EntityType.Combat }, new List<IEntityComponent>() {new SpitCombatant() }, startingInventory, null), pass: request.Data.ThirdPart);
                 if (created != null)
                     await Game.Network.SendMessageToPlayerAsync(request.TransportId, $"Character {request.Data.SecondPart} created");
                 else

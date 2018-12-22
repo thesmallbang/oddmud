@@ -61,9 +61,6 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         {
             request.Handled = true;
 
-
-
-
             Parser.Default.ParseArguments<InitiateCombatParserOptions>(request.Data.StringFrom(1).Split(' '))
                .WithParsed(async (parsed) =>
                {
@@ -90,18 +87,31 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                    }
 
                    entityName = target.Name;
-                   
+
                    if (!target.IsAttackable())
                    {
                        await Game.Network.SendMessageToPlayerAsync(player, $"{entityName} is not attackable");
                        return;
                    }
 
+                   var issues = string.Empty;
 
-                   await Game.Network.SendMessageToPlayerAsync(player, $"Attacking {entityName}");
+                   var encounter = await _combatModule.AppendOrNewEncounterAsync((GridEntity)player, target);
 
-                   var itemView = MudLikeCommandBuilder.Start().AddItems(player.Map.Items).Build(ViewCommandType.Replace, "itemlist");
-                   await Game.Network.SendViewCommandsToMapAsync(player.Map, itemView);
+                   if (encounter == null)
+                   {
+                       return;
+                   }
+
+                   // sub to encounter ending
+                   encounter.Ended += Encounter_Ended;
+                   var map = ((GridPlayer)encounter.Combatants.First().Key).Map;
+                   await Game.Network.SendViewCommandsToMapAsync(map,
+                       MudLikeCommandBuilder.Start().
+                       StartContainer($"combat_{encounter.Id}")
+                       .AddTextLine("Result : In Progress")
+                       .EndContainer($"combat_{encounter.Id}")
+                       .Build(ViewCommandType.Replace, $"combat_{encounter.Id}"));
 
 
                })
@@ -113,6 +123,18 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                ;
 
             return Task.CompletedTask;
+
+        }
+
+        private async Task Encounter_Ended(IEncounter encounter, EncounterEndings arg2)
+        {
+            var map = ((GridPlayer)encounter.Combatants.First().Key).Map;
+            await Game.Network.SendViewCommandsToMapAsync(map,
+                MudLikeCommandBuilder.Start().
+                StartContainer($"combat_{encounter.Id}")
+                .AddTextLine("Result : Completed")
+                .EndContainer($"combat_{encounter.Id}")
+                .Build(ViewCommandType.Replace, $"combat_{encounter.Id}"));
 
         }
 
@@ -128,9 +150,9 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
             }
             _logger.LogInformation($"Output: {output}");
             // cleanup the output which includes too much
-              var starter = output.IndexOf('-');
+            var starter = output.IndexOf('-');
             var ender = output.IndexOf("--help");
-            return output.Substring(starter,ender-starter);
+            return output.Substring(starter, ender - starter);
         }
     }
 }

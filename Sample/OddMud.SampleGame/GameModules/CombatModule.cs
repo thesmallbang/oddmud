@@ -17,6 +17,9 @@ namespace OddMud.SampleGame.GameModules
         public IReadOnlyList<GridEncounter> Encounters => _encounters;
         private List<GridEncounter> _encounters = new List<GridEncounter>();
 
+        private int _encounterCounter;
+
+
         public CombatModule(
             ILogger<CombatModule> logger,
             CombatModuleSettings settings,
@@ -56,12 +59,54 @@ namespace OddMud.SampleGame.GameModules
             return Task.CompletedTask;
         }
 
-        public Task<GridEncounter> FindOrNewEncounter(IEntity initiated, IEntity target, out string issue)
+        public async Task<GridEncounter> AppendOrNewEncounterAsync(GridEntity initiated, GridEntity target)
         {
-            issue = string.Empty;
 
-            return Task.FromResult<GridEncounter>(null);
+            GridEncounter currentEncounter = null;
+
+            // we need to see if the 2 entities are already in other encounters.. of so we will merge.. otherwise we join or create one
+            var encounterForInitated = _encounters.FirstOrDefault(e => e.Combatants.Any(c => c.Key == initiated));
+            var encounterForTarget = _encounters.FirstOrDefault(e => e.Combatants.Any(c => c.Key == target));
+            if (encounterForInitated != null
+                && encounterForTarget != null
+                && encounterForInitated != encounterForTarget)
+            {
+                // merge
+
+            }
+            else
+            {
+                currentEncounter = encounterForTarget == null ? encounterForInitated : encounterForTarget;
+                if (currentEncounter == null)
+                {
+                    // create 
+                    _encounterCounter++;
+                    currentEncounter = new GridEncounter(_encounterCounter, new Dictionary<IEntity, ICombatant>());
+                    currentEncounter.Ended += EncounterEnded;
+                    await AddEncounterAsync(currentEncounter);
+                }
+
+                // join
+                if (!currentEncounter.Combatants.ContainsKey(initiated))
+                    currentEncounter.Combatants.Add(initiated, (ICombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
+
+                if (!currentEncounter.Combatants.ContainsKey(target))
+                    currentEncounter.Combatants.Add(target, (ICombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
+
+
+
+            }
+
+            
+            return currentEncounter;
+
+
         }
 
+        private Task EncounterEnded(IEncounter encounter, EncounterEndings endingType)
+        {
+            _encounters.Remove((GridEncounter)encounter);
+            return Task.CompletedTask;
+        }
     }
 }

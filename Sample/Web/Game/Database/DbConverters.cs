@@ -24,15 +24,19 @@ namespace OddMud.Web.Game.Database
 
         public static GridPlayer ToPlayer(this DbPlayer dbPlayer, IGame game)
         {
+
+
             var player = new GridPlayer(
                     dbPlayer.Id,
                     dbPlayer.Name,
                     (EntityClasses)dbPlayer.Class,
-                    game.World.Maps.FirstOrDefault(m => m.Id == dbPlayer.LastMap),
+                    new List<EntityType>() { EntityType.Normal, EntityType.Combat },
+                    new List<IEntityComponent>() { },
                     dbPlayer.Items.Select(dbItem => dbItem.BaseItem.ToItem(
                         dbItem.Stats.Select(s =>
                             new BasicStat(s.Name, s.Base, s.Current)).ToList()
-                        )).ToList()
+                        )).ToList(),
+                    game.World.Maps.FirstOrDefault(m => m.Id == dbPlayer.LastMap)
                     );
 
             player.EntityTypes.ForEach(e =>

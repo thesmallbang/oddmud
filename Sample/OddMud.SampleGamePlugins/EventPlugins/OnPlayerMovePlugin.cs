@@ -32,6 +32,11 @@ namespace OddMud.SampleGamePlugins.EventPlugins
                 await e.OldMap.RemovePlayerAsync(e.Player);
                 await Game.Network.RemovePlayerFromMapGroupAsync(e.Player, e.OldMap);
 
+                e.OldMap.PlayersChanged -= MapPlayersChanged;
+                e.OldMap.ItemsChanged -= MapItemsChanged;
+                e.OldMap.EntitiesChanged -= MapEntitiesChanged;
+
+
                 var playersLeftBehind = e.OldMap.Players.Except(e.Player);
 
                 var leftBehindNotification = MudLikeOperationBuilder.Start("playerlist")
@@ -40,9 +45,13 @@ namespace OddMud.SampleGamePlugins.EventPlugins
                 await Game.Network.SendViewCommandsToMapAsync(e.OldMap, MudLikeViewBuilder.Start().AddOperation(leftBehindNotification).Build());
             }
 
-
             var map = (GridMap)e.NewMap;
             await Game.Network.AddPlayerToMapGroupAsync(e.Player, map);
+
+            map.PlayersChanged += MapPlayersChanged;
+            map.ItemsChanged += MapItemsChanged; ;
+            map.EntitiesChanged += MapEntitiesChanged; ;
+
 
             var player = e.Player;
             var lookView = MudLikeOperationBuilder.Start()
@@ -52,7 +61,6 @@ namespace OddMud.SampleGamePlugins.EventPlugins
 
 
             await Game.Network.SendViewCommandsToPlayerAsync(player, MudLikeViewBuilder.Start().AddOperation(lookView).Build());
-
 
             // update the map with a new playerslist
             var playersUpdate = MudLikeOperationBuilder.Start("playerlist").AddPlayers(map.Players)
@@ -68,7 +76,27 @@ namespace OddMud.SampleGamePlugins.EventPlugins
 
             await Game.Network.SendViewCommandsToMapAsync(map, update);
 
+        }
 
+        private async Task MapEntitiesChanged(IMap map, IReadOnlyList<IEntity> entities)
+        {
+            var entitiesUpdate = MudLikeOperationBuilder.Start(MudContainers.EntityList.ToString()).AddEntities(entities)
+                .Build();
+            await Game.Network.SendViewCommandsToMapAsync(map, MudLikeViewBuilder.Start().AddOperation(entitiesUpdate).Build());
+        }
+
+        private async Task MapItemsChanged(IMap map, IReadOnlyList<IItem> arg)
+        {
+            var itemsUpdate = MudLikeOperationBuilder.Start("itemlist").AddItems(map.Items)
+              .Build();
+            await Game.Network.SendViewCommandsToMapAsync(map, MudLikeViewBuilder.Start().AddOperation(itemsUpdate).Build());
+        }
+
+        private async Task MapPlayersChanged(IMap map, IReadOnlyList<IPlayer> arg)
+        {
+            var playersUpdate = MudLikeOperationBuilder.Start("playerlist").AddPlayers(map.Players)
+                .Build();
+            await Game.Network.SendViewCommandsToMapAsync(map, MudLikeViewBuilder.Start().AddOperation(playersUpdate).Build());
         }
     }
 }

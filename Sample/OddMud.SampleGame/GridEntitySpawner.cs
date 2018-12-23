@@ -2,6 +2,7 @@
 using OddMud.Core.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,11 +57,8 @@ namespace OddMud.SampleGame
 
         private async Task ResetSpawner(IEntity whoDied)
         {
-            // we dont care about this item being picked up anymore and it would actually cause issues when the item gets pickedup/dropped again and again later
             whoDied.Died -= ResetSpawner;
-
             await Map.RemoveEntityAsync(whoDied);
-
             await base.Reset(whoDied);
         }
 

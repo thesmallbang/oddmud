@@ -3,7 +3,7 @@ using OddMud.Core.Interfaces;
 using OddMud.View.MudLike;
 using System.Text;
 
-namespace OddMud.ViewBuilders.MudLikeHtml
+namespace OddMud.ViewConverters.MudLikeHtml
 {
     public class MudLikeHtmlConverter : IViewConverter<string>
     {

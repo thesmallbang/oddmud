@@ -30,12 +30,11 @@ namespace OddMud.SampleGame.GameModules
             }
 
             var dmg = _randomizer.Next(1, 4);
-            Debug.WriteLine($"dmg roll: {dmg}");
+            _damageDone = dmg;
             // test killing without stats yet
             if (dmg == 3)
             {
                 _damageDone = dmg;
-                Debug.WriteLine($"killing entity {TargetEntity.Name}");
                 await TargetEntity.KillAsync();
                 return;
             }
@@ -47,7 +46,6 @@ namespace OddMud.SampleGame.GameModules
                 return;
 
             await hpstat.ApplyToCurrentAsync(-dmg);
-            _damageDone = dmg;
 
         }
 
@@ -85,7 +83,7 @@ namespace OddMud.SampleGame.GameModules
                 .StartContainer("action")
                 .AddText($"{SourceEntity.Name} ")
                 .AddText("spits", TextColor.Aqua)
-                .AddText("on")
+                .AddText(" on ")
                 .AddText($"{TargetEntity.Name} for ")
                 .AddText($"{_damageDone}", TextColor.Red)
                 .AddTextLine(" damage")

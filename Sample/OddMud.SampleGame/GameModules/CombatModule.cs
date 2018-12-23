@@ -2,6 +2,7 @@
 using OddMud.Core.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,9 @@ namespace OddMud.SampleGame.GameModules
         private readonly ILogger<CombatModule> _logger;
         private readonly IGame _game;
         private readonly CombatModuleSettings _settings;
+
+        public event Func<IEncounter, Task> AddedEncounter;
+        public event Func<IEncounter, Task> RemovedEncounter;
 
         public IReadOnlyList<GridEncounter> Encounters => _encounters;
         private List<GridEncounter> _encounters = new List<GridEncounter>();
@@ -47,20 +51,26 @@ namespace OddMud.SampleGame.GameModules
             _ticking = false;
         }
 
-        public Task<bool> IsPlayerInCombatAsync(IPlayer player)
+        public Task<bool> IsInCombat(IEntity entity)
         {
-            var inEncounter = _encounters.Any(e => e.Combatants.ContainsKey(player));
-            return Task.FromResult<bool>(inEncounter);
+            var inEncounter = _encounters.Any(e => e.Combatants.ContainsKey(entity));
+            return Task.FromResult(inEncounter);
         }
 
         private Task AddEncounterAsync(GridEncounter encounter)
         {
             _encounters.Add(encounter);
+            if (AddedEncounter != null)
+                return AddedEncounter.Invoke(encounter);
+
             return Task.CompletedTask;
         }
         private Task RemoveEncounterAsync(GridEncounter encounter)
         {
-            _encounters.Add(encounter);
+            _encounters.Remove(encounter);
+            if (RemovedEncounter != null)
+                return RemovedEncounter.Invoke(encounter);
+
             return Task.CompletedTask;
         }
 
@@ -86,12 +96,19 @@ namespace OddMud.SampleGame.GameModules
             }
             else
             {
+
+                // the same encounter already? ignore
+                if (encounterForInitated != null && encounterForTarget != null & encounterForInitated == encounterForTarget)
+                    return null;
+
                 currentEncounter = encounterForTarget == null ? encounterForInitated : encounterForTarget;
                 if (currentEncounter == null)
                 {
                     // create 
                     _encounterCounter++;
                     currentEncounter = new GridEncounter(_encounterCounter);
+                    await currentEncounter.AddCombatantAsync(initiated, (ICombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
+                    await currentEncounter.AddCombatantAsync(target, (ICombatant)target.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
                     currentEncounter.Ended += EncounterEnded;
                     await AddEncounterAsync(currentEncounter);
                 }
@@ -117,8 +134,7 @@ namespace OddMud.SampleGame.GameModules
 
         private Task EncounterEnded(IEncounter encounter, EncounterEndings endingType)
         {
-            _encounters.Remove((GridEncounter)encounter);
-            return Task.CompletedTask;
+            return RemoveEncounterAsync((GridEncounter)encounter);
         }
     }
 }

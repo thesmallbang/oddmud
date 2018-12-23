@@ -15,7 +15,13 @@ namespace OddMud.Core.Interfaces
         IReadOnlyList<IPlayer> Players { get; }
         IReadOnlyList<IItem> Items { get; }
         IReadOnlyList<IEntity> Entities { get; }
-        
+
+
+        event Func<IMap, IReadOnlyList<IItem>, Task> ItemsChanged;
+        event Func<IMap, IReadOnlyList<IPlayer>, Task> PlayersChanged;
+        event Func<IMap, IReadOnlyList<IEntity>, Task> EntitiesChanged;
+
+
 
         Task AddPlayerAsync(IPlayer player);
         Task RemovePlayerAsync(IPlayer player);

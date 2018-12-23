@@ -16,24 +16,39 @@ namespace OddMud.SampleGame.GameModules
         public Dictionary<IEntity, ICombatant> Combatants { get; } = new Dictionary<IEntity, ICombatant>();
 
         public int Id { get; }
+        public List<ICombatAction> ActionLog { get; set; } = new List<ICombatAction>();
+        public List<IEntity> Dead { get; } = new List<IEntity>();
+
         public event Func<IEncounter, EncounterEndings, Task> Ended;
-        private bool _started;
+        public event Func<IEncounter, ICombatAction, Task> ActionExecuted;
+
+        private bool _ended;
 
 
         public GridEncounter(int id)
         {
             Id = id;
-        
+
         }
 
         private async Task Combatant_Death(IEntity deadCombatant)
         {
             deadCombatant.Died -= Combatant_Death;
 
-            Debug.WriteLine("Combatant Died");
+            Dead.Add(deadCombatant);
 
-            //var aliveNonPlayers = Combatants.Count(c => typeof(GridPlayer) != c.Key.GetType());
+            Debug.WriteLine("Combatant Died " + deadCombatant.Name);
+
+
+            _ended = true;
+
+            var aliveNonPlayers = Combatants.Count(c => typeof(GridPlayer) != c.Key.GetType());
             //if (deadNonPlayers == 0)
+
+            foreach (var combatant in Combatants.Keys.ToList())
+            {
+                combatant.Died -= Combatant_Death;
+            }
 
             // expand here when ready to support more than 2 entities in an encounter
             if (Ended != null)
@@ -49,7 +64,7 @@ namespace OddMud.SampleGame.GameModules
             return Task.CompletedTask;
         }
 
-      
+
         public Task TerminateAsync()
         {
             if (Ended != null)
@@ -61,11 +76,11 @@ namespace OddMud.SampleGame.GameModules
         public async Task TickAsync(IGame game)
         {
 
-            if (!_started)
-                await Start(game);
+            if (_ended)
+                return;
 
-            // any pending actions from either combatant?
-            foreach (var entity in Combatants.Keys.Select(o => o).ToList())
+            // any pending actions from not dead combatant?
+            foreach (var entity in Combatants.Keys.Where(k => !Dead.Contains(k)).Select(o => o).ToList())
             {
 
                 var combatant = (ICombatant<ICombatAction<GridEntity>>)Combatants[entity];
@@ -88,34 +103,17 @@ namespace OddMud.SampleGame.GameModules
 
                     await nextAction.Execute();
 
-                    var actionView = MudLikeOperationBuilder.Start(ViewOperationType.Append, $"enc_{Id}");
+                    ActionLog.Add(nextAction);
 
-                    nextAction.AppendToOperation(actionView);
+                    if (ActionExecuted != null)
+                        await ActionExecuted.Invoke(this, nextAction);
 
-
-                    await game.Network.SendViewCommandsToMapAsync(entity.Map, MudLikeViewBuilder.Start().AddOperation(actionView.Build()).Build());
                 }
-                else
-                {
-                }
-
             }
 
         }
 
-        private Task Start(IGame game)
-        {
-            _started = true;
-            var actionView = MudLikeOperationBuilder.Start(ViewOperationType.Set, $"enc_{Id}")
-                      .StartContainer($"enc_{Id}")
-                      .EndContainer($"enc_{Id}")
-                      .Build();
-
-            return game.Network.SendViewCommandsToMapAsync(Combatants.FirstOrDefault().Key.Map, MudLikeViewBuilder.Start().AddOperation(actionView).Build());
-
-
-        }
-
+       
 
     }
 }

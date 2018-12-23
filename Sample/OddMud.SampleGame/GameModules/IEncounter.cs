@@ -11,8 +11,13 @@ namespace OddMud.SampleGame.GameModules
 
         int Id { get; }
         event Func<IEncounter, EncounterEndings, Task> Ended;
+        event Func<IEncounter, ICombatAction, Task> ActionExecuted;
+
+
+        List<IEntity> Dead { get; }
 
         Dictionary<IEntity, ICombatant> Combatants { get; }
+        List<ICombatAction> ActionLog { get; }
 
         Task TickAsync(IGame game);
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OddMud.ViewBuilders.MudLikeHtml
+namespace OddMud.ViewConverters.MudLikeHtml
 {
     // https://stackoverflow.com/a/7301514/1832520
     public class TypeSwitch

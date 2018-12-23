@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OddMud.SampleGamePlugins;
 using OddMud.View.MudLike;
+using OddMud.SampleGame.Misc;
 
 namespace OddMud.SampleGamePlugins.CommandPlugins
 {
@@ -51,8 +52,10 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
             var itemsView = MudLikeOperationBuilder.Start("itemlist").AddItems(player.Map.Items)
              .Build();
 
+            var entitiesUpdate = MudLikeOperationBuilder.Start(MudContainers.EntityList.ToString()).AddEntities(player.Map.Entities)
+                 .Build();
 
-            await Game.Network.SendViewCommandsToPlayerAsync(player, MudLikeViewBuilder.Start().AddOperation(mapView).AddOperation(itemsView).Build());
+            await Game.Network.SendViewCommandsToPlayerAsync(player, MudLikeViewBuilder.Start().AddOperation(mapView).AddOperation(itemsView).AddOperation(entitiesUpdate).Build());
 
 
         }

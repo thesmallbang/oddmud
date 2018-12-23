@@ -69,7 +69,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                .AddOperation(
                    MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
                         .StartContainer($"enc_{encounter.Id}")
-                        .AddTextLine("An encounter has begun")
+                        .AddTextLine("Combat Starting")
                         .EndContainer($"enc_{encounter.Id}")
                         .Build()
                    )
@@ -144,11 +144,50 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
         }
 
-        private async  Task Encounter_ActionExecuted(IEncounter encounter, ICombatAction action)
+        private async Task Encounter_ActionExecuted(IEncounter encounter, ICombatAction action)
         {
 
-            var combatView  = MudLikeOperationBuilder.Start(ViewOperationType.Append, $"enc_{encounter.Id}");
-            action.AppendToOperation(combatView);
+            // this whole thing can be optimized to send way smaller replacement segments later
+
+            var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
+                 .StartContainer($"enc_{encounter.Id}")
+                 .AddTextLine("Combat In Progress");
+
+            var gridEncounter = (GridEncounter)encounter;
+
+            foreach (var factionName in gridEncounter.Factions.Keys)
+            {
+                var factionEntities = gridEncounter.Factions[factionName];
+
+
+                foreach (var entity in factionEntities)
+                {
+                    combatView
+                        .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
+                    if (entity.IsAlive && !encounter.Dead.Contains(entity))
+                    {
+                        combatView
+                        .AddText($" Hp> {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}")
+                        .AddText($" Mp> {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}")
+                        .AddTextLine($" Sta> {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}")
+                      ;
+                    } else
+                    {
+                        combatView.AddLineBreak();
+                    }
+
+                }
+
+                combatView.AddTextLine("---------------------------");
+
+            }
+
+
+            // add last X actions 
+            var actions = encounter.ActionLog.OrderByDescending(a => a.ExecutedTime).Take(10).OrderBy(a => a.ExecutedTime).ToList();
+            actions.ForEach((a) => a.AppendToOperation(combatView));
+
+            combatView.EndContainer($"enc_{encounter.Id}");
 
             var view = MudLikeViewBuilder.Start()
            .AddOperation(combatView.Build()
@@ -167,22 +206,48 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
             encounter.Ended -= Encounter_Ended;
 
             var map = ((GridPlayer)encounter.Combatants.First().Key).Map;
-            
+
 
 
             // build some sort of encounter ending
             var victors = encounter.Combatants.Keys.Where(k => k.IsAlive).Select(o => (GridEntity)o).ToList();
-            
 
+
+
+            var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
+                 .StartContainer($"enc_{encounter.Id}")
+                 .AddTextLine("Combat Finished!");
+
+            var gridEncounter = (GridEncounter)encounter;
+
+            foreach (var factionName in gridEncounter.Factions.Keys)
+            {
+                var factionEntities = gridEncounter.Factions[factionName];
+
+              
+                foreach (var entity in factionEntities)
+                {
+                    combatView
+                        .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
+                    if (entity.IsAlive && !encounter.Dead.Contains(entity)) { 
+                        combatView
+                        .AddText($" Hp> {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}")
+                        .AddText($" Mp> {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}")
+                        .AddTextLine($" Sta> {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}")
+                      ;
+                    }
+
+                }
+
+                combatView.AddTextLine("---------------------------");
+
+            }
+            
+            combatView.EndContainer($"enc_{encounter.Id}");
 
             var view = MudLikeViewBuilder.Start()
-             .AddOperation(
-                      MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
-                            .StartContainer($"enc_{encounter.Id}")
-                            .AddTextLine("Result : Completed")
-                            .EndContainer($"enc_{encounter.Id}")
-                            .Build()
-             ).Build();
+           .AddOperation(combatView.Build()
+           ).Build();
 
 
             await Game.Network.SendViewCommandsToMapAsync(map, view);

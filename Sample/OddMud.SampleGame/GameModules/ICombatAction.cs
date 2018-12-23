@@ -13,6 +13,9 @@ namespace OddMud.SampleGame.GameModules
     {
         void AppendToOperation(IOperationBuilder builder);
         string ToMessage();
+        DateTime ExecutedTime { get; set; }
+        int Damage { get; set; }
+
 
     }
     public interface ICombatAction<TEntity> : ICombatAction

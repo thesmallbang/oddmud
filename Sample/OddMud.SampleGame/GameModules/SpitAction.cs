@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OddMud.Core.Interfaces;
+using OddMud.SampleGame.Extensions;
 using OddMud.View.MudLike;
 
 namespace OddMud.SampleGame.GameModules
@@ -15,14 +16,16 @@ namespace OddMud.SampleGame.GameModules
         public GridEntity SourceEntity { get; set; }
 
         public GridEntity TargetEntity { get; set; }
+        public DateTime ExecutedTime { get; set; } 
 
-        private int _damageDone;
+        public int Damage { get; set; }
         private Random _randomizer = new Random();
 
 
 
         public async Task<bool> Execute()
         {
+            ExecutedTime = DateTime.Now;
 
             if (TargetEntity == null)
                 return false;
@@ -31,7 +34,7 @@ namespace OddMud.SampleGame.GameModules
                 return false;
 
             var dmg = _randomizer.Next(1, 10);
-            _damageDone = dmg;
+            Damage = dmg;
 
             var hpstat = TargetEntity.Stats.FirstOrDefault(s => s.Name == "health");
             if (hpstat == null)
@@ -55,17 +58,17 @@ namespace OddMud.SampleGame.GameModules
                 return Task.CompletedTask;
 
             // implement some sort of hate system using combatant.Stats to alter results here..
-            var isSourcePlayer = SourceEntity.GetType().GetInterfaces().Contains(typeof(IPlayer));
+            var isSourcePlayer = SourceEntity.IsPlayer();
             if (isSourcePlayer)
             {
                 // find a monster
-                var monsters = otherEntities.Where(e => !e.GetType().GetInterfaces().Contains(typeof(IPlayer))).ToList();
+                var monsters = otherEntities.Where(e => !e.IsPlayer()).ToList();
                 TargetEntity = monsters.FirstOrDefault();
             }
             else
             {
                 // find a player
-                var players = otherEntities.Where(e => e.GetType().GetInterfaces().Contains(typeof(IPlayer))).ToList();
+                var players = otherEntities.Where(e => e.IsPlayer()).ToList();
                 TargetEntity = players.FirstOrDefault();
             }
 
@@ -83,7 +86,7 @@ namespace OddMud.SampleGame.GameModules
                 .AddText("spits", TextColor.Aqua)
                 .AddText(" on ")
                 .AddText($"{TargetEntity.Name} for ")
-                .AddText($"{_damageDone}", TextColor.Red)
+                .AddText($"{Damage}", TextColor.Red)
                 .AddTextLine(" damage")
                 .EndContainer("action");
 
@@ -92,7 +95,7 @@ namespace OddMud.SampleGame.GameModules
 
         public string ToMessage()
         {
-            return $"{SourceEntity?.Name} spit on {TargetEntity?.Name} for {_damageDone}";
+            return $"{SourceEntity?.Name} spit on {TargetEntity?.Name} for {Damage}";
         }
 
 

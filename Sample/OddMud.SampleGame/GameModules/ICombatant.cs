@@ -11,7 +11,6 @@ namespace OddMud.SampleGame.GameModules
         ICombatAction DefaultAction { get; }
         bool CanAttack { get; }
 
-        List<IStat> Stats { get; }
 
     }
 

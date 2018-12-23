@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
+using OddMud.SampleGame.Extensions;
 using OddMud.View.MudLike;
 
 namespace OddMud.SampleGame.GameModules
@@ -23,13 +24,20 @@ namespace OddMud.SampleGame.GameModules
         public event Func<IEncounter, ICombatAction, Task> ActionExecuted;
 
         private bool _ended;
+        public DateTime LastAction = DateTime.Now;
+
+        public Dictionary<string, List<IEntity>> Factions { get; } = new Dictionary<string, List<IEntity>>();
+
 
 
         public GridEncounter(int id)
         {
             Id = id;
+            Factions.Add("faction_1", new List<IEntity>());
+            Factions.Add("faction_2", new List<IEntity>());
 
         }
+
 
         private async Task Combatant_Death(IEntity deadCombatant)
         {
@@ -56,9 +64,33 @@ namespace OddMud.SampleGame.GameModules
 
 
         }
-        public Task AddCombatantAsync(GridEntity entity, ICombatant combatant)
+        public Task AddCombatantAsync(GridEntity entity, ICombatant combatant, string factionKey = "")
         {
+
+            List<IEntity> faction;
+
+            // some default behaviour will be to find the faction with the matching isPlayer
+            if (string.IsNullOrEmpty(factionKey))
+            {
+                var testFaction = Factions.FirstOrDefault(o => o.Value.Any(e => e.IsPlayer() == entity.IsPlayer()));
+                if (testFaction.Value == null)
+                    testFaction = Factions.FirstOrDefault(o => o.Value.Count == 0);
+                if (testFaction.Value == null)
+                    testFaction = Factions.FirstOrDefault();
+
+                faction = testFaction.Value;
+            }
+            else
+            {
+                faction = Factions[factionKey];
+
+            }
+            if (faction != null)
+                faction.Add(entity);
+
             Combatants.Add(entity, combatant);
+
+
             entity.Died += Combatant_Death;
             return Task.CompletedTask;
         }
@@ -110,6 +142,7 @@ namespace OddMud.SampleGame.GameModules
 
                     if (executed)
                     {
+                        LastAction = DateTime.Now;
                         ActionLog.Add(nextAction);
 
                         if (ActionExecuted != null)

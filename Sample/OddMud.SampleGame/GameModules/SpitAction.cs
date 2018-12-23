@@ -21,37 +21,35 @@ namespace OddMud.SampleGame.GameModules
 
 
 
-        public async Task Execute()
+        public async Task<bool> Execute()
         {
 
             if (TargetEntity == null)
-            {
-                throw new Exception("SpitAction requires a target");
-            }
+                return false;
 
-            var dmg = _randomizer.Next(1, 4);
+            if (SourceEntity.Map != TargetEntity.Map)
+                return false;
+
+            var dmg = _randomizer.Next(1, 10);
             _damageDone = dmg;
-            // test killing without stats yet
-            if (dmg == 3)
-            {
-                _damageDone = dmg;
-                await TargetEntity.KillAsync();
-                return;
-            }
 
-
-            // apply the dmg ..stats missing
             var hpstat = TargetEntity.Stats.FirstOrDefault(s => s.Name == "health");
             if (hpstat == null)
-                return;
+                return false;
 
-            await hpstat.ApplyToCurrentAsync(-dmg);
+            await hpstat.ApplyAsync(-dmg);
 
+            if (hpstat.Value == 0)
+            {
+                await TargetEntity.KillAsync();
+            }
+
+            return true;
         }
 
         public Task SetDefaultTargetAsync(IEnumerable<GridEntity> entities)
         {
-            var otherEntities = entities.Where(e => e.IsAlive).Except(new List<GridEntity>() { SourceEntity }).ToList();
+            var otherEntities = entities.Where(e => e.IsAlive && e.Map == SourceEntity.Map).Except(new List<GridEntity>() { SourceEntity }).ToList();
 
             if (otherEntities.Count == 0)
                 return Task.CompletedTask;

@@ -134,6 +134,7 @@ namespace OddMud.Web.Game
             using (var dbContext = new GameDbContext())
             {
                 var dbPlayer = await dbContext.Players
+                    .Include(player => player.Stats)
                     .Include(player => player.Items).ThenInclude(item => item.Stats)
                     .Include(player => player.Items).ThenInclude(item => item.BaseItem).ThenInclude(baseitem => baseitem.ItemTypes)
                     .FirstOrDefaultAsync(o => o.Name.ToLower().Trim() == name.ToLower().Trim());
@@ -166,13 +167,19 @@ namespace OddMud.Web.Game
                     Name = player.Name,
                     Password = PasswordStorage.CreateHash(pass),
                     Class = gridPlayer.Class,
+                    Stats = gridPlayer.Stats.Select(s => new DbPlayerStat()
+                    {
+                        Base = s.Base,
+                        Current = s.Value,
+                        Name = s.Name
+                    }).ToList(),
                     Items = gridPlayer.Items.Select(i => new DbPlayerItem()
                     {
-                        PlayerId = player.Id,
                         BaseItemId = i.Id,
-                        Stats = i.Stats.Select(s => new DbPlayerItemStat() { Base = s.Base, Current = s.Current, Name = s.Name }).ToList()
+                        Stats = i.Stats.Select(s => new DbPlayerItemStat() { Base = s.Base, Current = s.Value, Name = s.Name }).ToList()
 
-                    }).ToList()
+                    }
+                    ).ToList()
                 };
                 using (var context = new GameDbContext())
                 {
@@ -196,7 +203,10 @@ namespace OddMud.Web.Game
 
             using (var context = new GameDbContext())
             {
-                var dbPlayers = await context.Players.Where(s => toGet.Contains(s.Id)).ToListAsync();
+                var dbPlayers = await context
+                    .Players.Where(s => toGet.Contains(s.Id))
+                    .Include(p => p.Stats)
+                    .ToListAsync();
                 if (dbPlayers.Count == 0)
                     return;
 
@@ -208,6 +218,40 @@ namespace OddMud.Web.Game
 
                         dbPlayer.Name = player.Name;
                     dbPlayer.LastMap = player.Map.Id;
+
+
+                    foreach (var stat in player.Stats)
+                    {
+                        var match = dbPlayer.Stats.FirstOrDefault(s => s.Name == stat.Name);
+                        if (match == null)
+                        {
+                            // add missing stat to db
+                            match = new DbPlayerStat();
+                            dbPlayer.Stats.Add(match);
+                        }
+                        else
+                        {
+                            if (stat.Value != match.Current
+                                || stat.Base != match.Base
+                                )
+                            {
+                                match.Base = stat.Base;
+                                match.Current = stat.Value;
+                            }
+                        }
+                    }
+
+                    // remove any from db no longer applied to player
+                    foreach (var stat in dbPlayer.Stats.ToList())
+                    {
+                        if (player.Stats.FirstOrDefault() == null)
+                            dbPlayer.Stats.Remove(stat);
+                    }
+
+
+
+                    // handle items
+
 
 
                     context.Players.Update(dbPlayer);
@@ -411,6 +455,12 @@ namespace OddMud.Web.Game
                     RecordDate = DateTimeOffset.Now,
                     Name = gridEntity.Name,
                     Class = gridEntity.Class,
+                    Stats = gridEntity.Stats.Select(s => new DbEntityStat()
+                    {
+                        Current = s.Value,
+                        Base = s.Base,
+                        Name = s.Name
+                    }).ToList(),
                     Items = gridEntity.Items.Select(i => new DbEntityItem()
                     {
                         BaseItemId = i.Id
@@ -448,6 +498,7 @@ namespace OddMud.Web.Game
             using (var dbContext = new GameDbContext())
             {
                 var dbEntities = await dbContext.Entities
+                    .Include(e =>e.Stats)
                     .Include(e => e.EntityTypes)
                     .Include(e => e.Items)
                     .Include(e => e.LootTable).ThenInclude(lt => lt.Item).ThenInclude(i => i.ItemTypes)

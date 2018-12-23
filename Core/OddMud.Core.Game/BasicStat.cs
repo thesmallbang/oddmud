@@ -9,8 +9,9 @@ namespace OddMud.Core.Game
     public class BasicStat : IStat
     {
         public virtual string Name { get; set; }
+        public int Minimum { get; set; }
 
-        public virtual int Current { get; set; }
+        public virtual int Value { get; set; }
 
         public virtual int Base { get; set; }
 
@@ -20,19 +21,30 @@ namespace OddMud.Core.Game
         {
             Name = name;
             Base = statbase;
-            Current = statcurrent;
+            Value = statcurrent;
 
         }
 
-        public async Task ApplyToCurrentAsync(int modifier)
+        public virtual async Task ApplyAsync(int modifier)
         {
-            var original = Current;
-            Current += modifier;
+            var original = Value;
+            Value += modifier;
+
+            Value = Math.Clamp(Value, Minimum, Base);
 
             if (StatChanged != null)
                 await StatChanged.Invoke(this, original);
 
 
+        }
+
+        public virtual async Task Fill()
+        {
+            var original = Value;
+            Value = Base;
+
+            if (StatChanged != null)
+                await StatChanged.Invoke(this, original);
         }
     }
 }

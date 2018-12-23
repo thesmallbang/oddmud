@@ -40,17 +40,16 @@ namespace OddMud.SampleGame.GameModules
             Debug.WriteLine("Combatant Died " + deadCombatant.Name);
 
 
+            // expand here when ready to support pvp
+
+
             _ended = true;
-
-            var aliveNonPlayers = Combatants.Count(c => typeof(GridPlayer) != c.Key.GetType());
-            //if (deadNonPlayers == 0)
-
             foreach (var combatant in Combatants.Keys.ToList())
             {
                 combatant.Died -= Combatant_Death;
             }
 
-            // expand here when ready to support more than 2 entities in an encounter
+
             if (Ended != null)
                 await Ended.Invoke(this, EncounterEndings.Death);
 
@@ -67,6 +66,12 @@ namespace OddMud.SampleGame.GameModules
 
         public Task TerminateAsync()
         {
+
+            foreach (var combatant in Combatants.Keys.ToList())
+            {
+                combatant.Died -= Combatant_Death;
+            }
+
             if (Ended != null)
                 Ended.Invoke(this, EncounterEndings.Other);
 
@@ -101,19 +106,21 @@ namespace OddMud.SampleGame.GameModules
 
                     }
 
-                    await nextAction.Execute();
+                    var executed = await nextAction.Execute();
 
-                    ActionLog.Add(nextAction);
+                    if (executed)
+                    {
+                        ActionLog.Add(nextAction);
 
-                    if (ActionExecuted != null)
-                        await ActionExecuted.Invoke(this, nextAction);
-
+                        if (ActionExecuted != null)
+                            await ActionExecuted.Invoke(this, nextAction);
+                    }
                 }
             }
 
         }
 
-       
+
 
     }
 }

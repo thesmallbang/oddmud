@@ -23,6 +23,8 @@ namespace OddMud.Web.Game.Database.Entities
         public DbLootTable LootTable { get; set; }
 
         public ICollection<DbEntityItem> Items { get; set; }
+        public ICollection<DbEntityStat> Stats { get; set; }
+
         public ICollection<DbEntityType> EntityTypes { get; set; }
 
 

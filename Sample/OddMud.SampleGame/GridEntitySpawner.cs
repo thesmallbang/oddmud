@@ -42,9 +42,12 @@ namespace OddMud.SampleGame
             if (Map == null)
                 throw new Exception("Map was created and the map was never set to match the MapId");
 
+            // make sure to create new instances of classes instead of taking references from the storage entity
 
             var storageNpc = (GridEntity)game.World.Entities.FirstOrDefault(i => i.Id == EntityId);
-            var entity = new GridEntity(storageNpc.Id, storageNpc.Name, (EntityClasses)storageNpc.Class, storageNpc.EntityTypes, storageNpc.EntityComponents, storageNpc.Items);
+            var entity = new GridEntity(storageNpc.Id, storageNpc.Name, (EntityClasses)storageNpc.Class, storageNpc.EntityTypes, storageNpc.EntityComponents, storageNpc.Items,
+                storageNpc.Stats.Select(s => new BasicStat(s.Name, s.Base, s.Value)).ToList()
+                );
             entity.Map = Map;
             await game.World.AddEntityAsync(entity);
             await Map.AddEntityAsync(entity);

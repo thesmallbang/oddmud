@@ -9,9 +9,18 @@ namespace OddMud.SampleGame
 {
     public class GridPlayer : GridEntity, IPlayer
     {
-        public GridPlayer(int id, string name, EntityClasses entityClass, IEnumerable<EntityType> entityTypes, IEnumerable<IEntityComponent> entityComponents, IEnumerable<IItem> items, IMap map)
-            : base(id, name, entityClass, entityTypes, entityComponents, items)
+        public GridPlayer(
+            int id, 
+            string name,
+            EntityClasses entityClass, 
+            IEnumerable<EntityType> entityTypes, 
+            IEnumerable<IEntityComponent> entityComponents,
+            IEnumerable<IItem> items, 
+            IEnumerable<IStat> stats,
+            IMap map)
+            : base(id, name, entityClass, entityTypes, entityComponents, items, stats)
         {
+            
             Map = map;
         }
 

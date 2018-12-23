@@ -15,7 +15,16 @@ namespace OddMud.SampleGame
 
         public EntityClasses Class { get; private set; } = EntityClasses.Spitter;
 
-        public GridEntity(int id, string name, EntityClasses entityClass, IEnumerable<EntityType> entityTypes, IEnumerable<IEntityComponent> entityComponents, IEnumerable<IItem> items) : base(id, name, items)
+        public GridEntity(
+            int id, 
+            string name, 
+            EntityClasses entityClass, 
+            IEnumerable<EntityType> entityTypes, 
+            IEnumerable<IEntityComponent> entityComponents,
+            IEnumerable<IItem> items,
+            IEnumerable<IStat> stats
+            ) 
+            : base(id, name, items, stats)
         {
             Class = entityClass;
             EntityTypes.AddRange(entityTypes);

@@ -23,7 +23,7 @@ namespace OddMud.SampleGame.GameModules
         // not all actions will need a target
         TEntity TargetEntity { get; set; }
 
-        Task Execute();
+        Task<bool> Execute();
 
         Task SetDefaultTargetAsync(IEnumerable<TEntity> entities);
 

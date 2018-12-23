@@ -36,6 +36,7 @@ namespace OddMud.Web.Game.Database
                         dbItem.Stats.Select(s =>
                             new BasicStat(s.Name, s.Base, s.Current)).ToList()
                         )).ToList(),
+                    dbPlayer.Stats.Select(s => new BasicStat(s.Name, s.Base, s.Current)).ToList(),
                     game.World.Maps.FirstOrDefault(m => m.Id == dbPlayer.LastMap)
                     );
 
@@ -74,7 +75,8 @@ namespace OddMud.Web.Game.Database
                     (EntityClasses)dbEntity.Class,
                     entityTypes,
                     components,
-                    dbEntity.Items.Select(dbItem => dbItem.BaseItem.ToItem()).ToList()
+                    dbEntity.Items.Select(dbItem => dbItem.BaseItem.ToItem()).ToList(),
+                    dbEntity.Stats.Select(s => new BasicStat(s.Name, s.Base, s.Current)).ToList()
                     );
 
 

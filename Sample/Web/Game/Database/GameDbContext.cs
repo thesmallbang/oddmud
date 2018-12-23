@@ -25,11 +25,15 @@ namespace OddMud.Web.Game.Database
         public DbSet<DbSpawner> Spawners { get; set; }
         public DbSet<DbEntity> Entities { get; set; }
         public DbSet<DbEntityItem> EntityItems { get; set; }
+        public DbSet<DbEntityStat> EntityStats { get; set; }
+
         public DbSet<DbEntityType> EntitiesAssignedTypes { get; set; }
 
 
 
         public DbSet<DbPlayer> Players { get; set; }
+        public DbSet<DbPlayerStat> PlayerStats { get; set; }
+
         public DbSet<DbPlayerItem> PlayerItems { get; set; }
         public DbSet<DbPlayerItemStat> PlayerItemStats { get; set; }
 

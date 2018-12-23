@@ -5,15 +5,18 @@ using System.Threading.Tasks;
 
 namespace OddMud.Core.Interfaces
 {
-    public interface IStat
+    public interface IStat : IProperty<int>
     {
-        string Name { get; }
-        int Current { get; }
+    
         int Base { get; }
 
         event Func<IStat, int, Task> StatChanged;
 
-        Task ApplyToCurrentAsync(int modifier);
+        Task ApplyAsync(int modifier);
+
+        Task Fill();
 
     }
+
+
 }

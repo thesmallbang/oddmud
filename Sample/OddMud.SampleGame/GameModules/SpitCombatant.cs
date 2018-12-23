@@ -20,11 +20,22 @@ namespace OddMud.SampleGame.GameModules
         }
         private DateTime _lastAction = DateTime.Now;
         private int attackDelay => 2000;
-
+        private Random _random = new Random();
 
         public Queue<ICombatAction<GridEntity>> Actions { get; } = new Queue<ICombatAction<GridEntity>>();
 
-        public ICombatAction DefaultAction => new SpitAction();
+        public ICombatAction DefaultAction { get
+            {
+                var rnd  = _random.Next(1, 10);
+                if (rnd < 2)
+                {
+                    return new LoogieAction();
+                } else
+                {
+                    return new SpitAction();
+                }
+            }
+        }
 
         public List<IStat> Stats => _stats;
         private List<IStat> _stats = new List<IStat>();

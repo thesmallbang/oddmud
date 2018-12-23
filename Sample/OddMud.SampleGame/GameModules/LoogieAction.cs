@@ -10,7 +10,7 @@ using OddMud.View.MudLike;
 
 namespace OddMud.SampleGame.GameModules
 {
-    public class SpitAction : GridAction
+    public class LoogieAction : GridAction
     {
 
         private Random _randomizer = new Random();
@@ -27,7 +27,7 @@ namespace OddMud.SampleGame.GameModules
             if (SourceEntity.Map != TargetEntity.Map)
                 return false;
 
-            var dmg = _randomizer.Next(1, 10);
+            var dmg = _randomizer.Next(10, 20);
             Damage = dmg;
 
             var hpstat = TargetEntity.Stats.FirstOrDefault(s => s.Name == "health");
@@ -53,7 +53,7 @@ namespace OddMud.SampleGame.GameModules
             builder
                 .StartContainer("action")
                 .AddText($"{SourceEntity.Name} ")
-                .AddText("spits", TextColor.Aqua)
+                .AddText(" hocks a loogie ", TextColor.Lime)
                 .AddText(" on ")
                 .AddText($"{TargetEntity.Name} for ")
                 .AddText($"{Damage}", TextColor.Red)

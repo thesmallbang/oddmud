@@ -151,9 +151,19 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
             var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
                  .StartContainer($"enc_{encounter.Id}")
-                 .AddTextLine("Combat In Progress");
+                 .AddTextLine("");
 
             var gridEncounter = (GridEncounter)encounter;
+
+            var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
+                  .GroupBy(a => new { a.SourceEntity })
+                  .Select(a => new { Attacker = a.Key.SourceEntity, Damage = a.Sum(s => s.Damage) })
+              .ToList();
+
+            var dmgTaken = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
+                                        .GroupBy(a => new { a.TargetEntity })
+                                        .Select(a => new { Attacked = a.Key.TargetEntity, Damage = a.Sum(s => s.Damage) })
+                                    .ToList();
 
             foreach (var factionName in gridEncounter.Factions.Keys)
             {
@@ -163,18 +173,36 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                 foreach (var entity in factionEntities)
                 {
                     combatView
-                        .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
+                      .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
                     if (entity.IsAlive && !encounter.Dead.Contains(entity))
                     {
                         combatView
-                        .AddText($" Hp> {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}")
-                        .AddText($" Mp> {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}")
-                        .AddTextLine($" Sta> {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}")
+                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}", TextColor.Green)
+                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}", TextColor.Blue)
+                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}", TextColor.Yellow)
                       ;
-                    } else
-                    {
-                        combatView.AddLineBreak();
                     }
+                    else
+                    {
+                        combatView.AddText(" Dead", TextColor.Red, TextSize.Small);
+                    }
+
+                    var entityDmgDone = dmgDone.FirstOrDefault(d => d.Attacker == entity);
+                    if (entityDmgDone != null)
+                    {
+                        combatView
+                            .AddText($" Dmg {entityDmgDone.Damage}", TextColor.Teal);
+                        ;
+                    }
+                    var entityDmgTaken = dmgTaken.FirstOrDefault(d => d.Attacked == entity);
+                    if (entityDmgTaken != null)
+                    {
+                        combatView
+                            .AddText($" Taken {entityDmgTaken.Damage}", TextColor.Teal);
+                        ;
+                    }
+
+                    combatView.AddLineBreak();
 
                 }
 
@@ -209,40 +237,72 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
 
 
-            // build some sort of encounter ending
-            var victors = encounter.Combatants.Keys.Where(k => k.IsAlive).Select(o => (GridEntity)o).ToList();
 
 
 
             var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
                  .StartContainer($"enc_{encounter.Id}")
-                 .AddTextLine("Combat Finished!");
+            .AddTextLine("");
 
             var gridEncounter = (GridEncounter)encounter;
+
+            var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
+                       .GroupBy(action => new { action.SourceEntity })
+                       .Select(action => new { Attacker = action.Key.SourceEntity, Damage = action.Sum(s => s.Damage) })
+                   .ToList();
+
+            var dmgTaken = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
+                                        .GroupBy(action => new { action.TargetEntity })
+                                        .Select(action => new { Attacked = action.Key.TargetEntity, Damage = action.Sum(s => s.Damage) })
+                                    .ToList();
+
+
 
             foreach (var factionName in gridEncounter.Factions.Keys)
             {
                 var factionEntities = gridEncounter.Factions[factionName];
 
-              
+
                 foreach (var entity in factionEntities)
                 {
                     combatView
                         .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
-                    if (entity.IsAlive && !encounter.Dead.Contains(entity)) { 
+                    if (entity.IsAlive && !encounter.Dead.Contains(entity))
+                    {
                         combatView
-                        .AddText($" Hp> {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}")
-                        .AddText($" Mp> {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}")
-                        .AddTextLine($" Sta> {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}")
+                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}", TextColor.Green)
+                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}", TextColor.Blue)
+                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}", TextColor.Yellow)
                       ;
                     }
+                    else
+                    {
+                        combatView.AddText(" Dead", TextColor.Red, TextSize.Small);
+                    }
+
+                    var entityDmgDone = dmgDone.FirstOrDefault(d => d.Attacker == entity);
+                    if (entityDmgDone != null)
+                    {
+                        combatView
+                            .AddText($" Dmg {entityDmgDone.Damage}", TextColor.Teal);
+                        ;
+                    }
+                    var entityDmgTaken = dmgTaken.FirstOrDefault(d => d.Attacked == entity);
+                    if (entityDmgTaken != null)
+                    {
+                        combatView
+                            .AddText($" Taken {entityDmgTaken.Damage}", TextColor.Teal);
+                        ;
+                    }
+
+                    combatView.AddLineBreak();
 
                 }
 
                 combatView.AddTextLine("---------------------------");
 
             }
-            
+
             combatView.EndContainer($"enc_{encounter.Id}");
 
             var view = MudLikeViewBuilder.Start()

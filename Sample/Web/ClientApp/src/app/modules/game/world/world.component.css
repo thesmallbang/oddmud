@@ -1,6 +1,8 @@
 .ui-worldcontainer {
   height: 60vh;
   overflow-y: scroll;
+  background-color: black;
+  padding: 5px 5px 5px 5px;
 }
 
 

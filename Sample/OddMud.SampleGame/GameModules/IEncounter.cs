@@ -21,7 +21,7 @@ namespace OddMud.SampleGame.GameModules
 
         Task TickAsync(IGame game);
 
-        Task TerminateAsync();
+        Task TerminateAsync(EncounterEndings ending);
 
     }
 }

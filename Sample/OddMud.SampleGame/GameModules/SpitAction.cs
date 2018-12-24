@@ -13,38 +13,18 @@ namespace OddMud.SampleGame.GameModules
     public class SpitAction : GridAction
     {
 
-        private Random _randomizer = new Random();
 
-
+        public override List<IActionModifier> Modifiers { get; set; } = new List<IActionModifier>() { new GridActionModifier() {Name = "health", ModifierType = ActionModifierType.Percent, Min  = -5, Max = -5 }};
 
         public override async Task<bool> Execute()
         {
 
-
             if (TargetEntity == null)
                 return false;
-
-            if (SourceEntity.Map != TargetEntity.Map)
-                return false;
-
-            var dmg = _randomizer.Next(1, 10);
-            Damage = dmg;
-
-            var hpstat = TargetEntity.Stats.FirstOrDefault(s => s.Name == "health");
-            if (hpstat == null)
-                return false;
-
-            await hpstat.ApplyAsync(-dmg);
-
-            if (hpstat.Value == 0)
-            {
-                await TargetEntity.KillAsync();
-            }
 
             return await base.Execute();
         }
 
-        
 
         public override void AppendToOperation(IOperationBuilder operationBuilder)
         {
@@ -56,14 +36,14 @@ namespace OddMud.SampleGame.GameModules
                 .AddText("spits", TextColor.Aqua)
                 .AddText(" on ")
                 .AddText($"{TargetEntity.Name} for ")
-                .AddText($"{Damage}", TextColor.Red)
+                .AddText($"{DamageDone}", TextColor.Red)
                 .AddTextLine(" damage")
                 .EndContainer("action");
 
             //return $"{SourceEntity?.Name} spit on {TargetEntity?.Name} for {_damageDone}";
         }
 
-      
+
 
     }
 }

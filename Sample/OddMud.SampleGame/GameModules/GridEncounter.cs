@@ -48,19 +48,28 @@ namespace OddMud.SampleGame.GameModules
             Debug.WriteLine("Combatant Died " + deadCombatant.Name);
 
 
-            // expand here when ready to support pvp
+            // figure out how many are alive per faction
 
-
-            _ended = true;
-            foreach (var combatant in Combatants.Keys.ToList())
+            foreach (var faction in Factions.Keys.ToList())
             {
-                combatant.Died -= Combatant_Death;
+                // if a faction has no members alive then we are ending
+                var aliveCount = Factions[faction].Count(e => e.IsAlive);
+                if (aliveCount == 0)
+                {
+                    _ended = true;
+                    foreach (var combatant in Combatants.Keys.ToList())
+                    {
+                        combatant.Died -= Combatant_Death;
+                    }
+
+
+                    if (Ended != null)
+                        await Ended.Invoke(this, EncounterEndings.Death);
+
+                    //break;
+                    return;
+                }
             }
-
-
-            if (Ended != null)
-                await Ended.Invoke(this, EncounterEndings.Death);
-
 
 
         }
@@ -96,7 +105,7 @@ namespace OddMud.SampleGame.GameModules
         }
 
 
-        public Task TerminateAsync()
+        public Task TerminateAsync(EncounterEndings ending = EncounterEndings.Other)
         {
 
             foreach (var combatant in Combatants.Keys.ToList())
@@ -105,7 +114,7 @@ namespace OddMud.SampleGame.GameModules
             }
 
             if (Ended != null)
-                Ended.Invoke(this, EncounterEndings.Other);
+                Ended.Invoke(this, ending);
 
             return Task.CompletedTask;
         }
@@ -115,6 +124,16 @@ namespace OddMud.SampleGame.GameModules
 
             if (_ended)
                 return;
+
+
+            // if no factions are on the same map then pause operations
+            var maps = Combatants.Keys.Select(c => c.Map.Id).Distinct();
+
+            if (maps.Count() == Combatants.Keys.Count())
+            {
+                // no combatants are on the same map... skip
+                return;
+            }
 
             // any pending actions from not dead combatant?
             foreach (var entity in Combatants.Keys.Where(k => !Dead.Contains(k)).Select(o => o).ToList())

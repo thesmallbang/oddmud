@@ -154,15 +154,16 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                  .AddTextLine("");
 
             var gridEncounter = (GridEncounter)encounter;
+            var entityAction = (ICombatAction<GridEntity>)action;
 
             var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
                   .GroupBy(a => new { a.SourceEntity })
-                  .Select(a => new { Attacker = a.Key.SourceEntity, Damage = a.Sum(s => s.Damage) })
+                  .Select(a => new { Attacker = a.Key.SourceEntity, Damage = a.Sum(s => s.DamageDone) })
               .ToList();
 
             var dmgTaken = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
                                         .GroupBy(a => new { a.TargetEntity })
-                                        .Select(a => new { Attacked = a.Key.TargetEntity, Damage = a.Sum(s => s.Damage) })
+                                        .Select(a => new { Attacked = a.Key.TargetEntity, Damage = a.Sum(s => s.DamageDone) })
                                     .ToList();
 
             foreach (var factionName in gridEncounter.Factions.Keys)
@@ -222,21 +223,27 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
            ).Build();
 
 
-            await Game.Network.SendViewCommandsToMapAsync(encounter.Combatants.Keys.First().Map, view);
+            if (entityAction.SourceEntity == entityAction.TargetEntity || entityAction.TargetEntity == null)
+                await Game.Network.SendViewCommandsToMapAsync(entityAction.SourceEntity.Map, view);
+            else
+            {
+                await Game.Network.SendViewCommandsToMapAsync(entityAction.SourceEntity.Map, view);
+                await Game.Network.SendViewCommandsToMapAsync(entityAction.TargetEntity.Map, view);
+            }
 
 
         }
 
-        private async Task Encounter_Ended(IEncounter encounter, EncounterEndings arg2)
+        private async Task Encounter_Ended(IEncounter encounter, EncounterEndings ending)
         {
 
             encounter.ActionExecuted -= Encounter_ActionExecuted;
             encounter.Ended -= Encounter_Ended;
 
-            var map = ((GridPlayer)encounter.Combatants.First().Key).Map;
+            if (ending == EncounterEndings.Expired)
+                return;
 
-
-
+            var maps = encounter.Combatants.Keys.Where(e => e.IsPlayer()).Select(c => c.Map).Distinct().ToList();
 
 
 
@@ -248,12 +255,12 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
             var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
                        .GroupBy(action => new { action.SourceEntity })
-                       .Select(action => new { Attacker = action.Key.SourceEntity, Damage = action.Sum(s => s.Damage) })
+                       .Select(action => new { Attacker = action.Key.SourceEntity, Damage = action.Sum(s => s.DamageDone) })
                    .ToList();
 
             var dmgTaken = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
                                         .GroupBy(action => new { action.TargetEntity })
-                                        .Select(action => new { Attacked = action.Key.TargetEntity, Damage = action.Sum(s => s.Damage) })
+                                        .Select(action => new { Attacked = action.Key.TargetEntity, Damage = action.Sum(s => s.DamageDone) })
                                     .ToList();
 
 
@@ -310,7 +317,11 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
            ).Build();
 
 
-            await Game.Network.SendViewCommandsToMapAsync(map, view);
+            foreach (var map in maps)
+            {
+                await Game.Network.SendViewCommandsToMapAsync(map, view);
+            }
+
 
 
 

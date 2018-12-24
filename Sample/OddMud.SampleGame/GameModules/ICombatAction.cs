@@ -14,7 +14,12 @@ namespace OddMud.SampleGame.GameModules
         void AppendToOperation(IOperationBuilder builder);
         string ToMessage();
         DateTime ExecutedTime { get; set; }
-        int Damage { get; set; }
+
+        Task<bool> Execute();
+
+        int DamageDone { get; set; }
+
+        List<IActionModifier> Modifiers { get; set; }
 
 
     }
@@ -25,8 +30,6 @@ namespace OddMud.SampleGame.GameModules
 
         // not all actions will need a target
         TEntity TargetEntity { get; set; }
-
-        Task<bool> Execute();
 
         Task SetDefaultTargetAsync(IEnumerable<TEntity> entities);
 

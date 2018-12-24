@@ -44,7 +44,7 @@ namespace OddMud.SampleGame.GameModules
             _ticking = true;
 
             // cleanup expired encounters
-            Encounters.Where(e => e.LastAction < DateTime.Now.AddMinutes(-1)).ToList().ForEach((e) => e.TerminateAsync());
+            Encounters.Where(e => e.LastAction < DateTime.Now.AddMinutes(-1)).ToList().ForEach((e) => e.TerminateAsync(EncounterEndings.Expired));
 
             foreach (var encounter in _encounters.ToList())
             {

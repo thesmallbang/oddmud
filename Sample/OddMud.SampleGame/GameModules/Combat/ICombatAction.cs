@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OddMud.SampleGame.GameModules
+namespace OddMud.SampleGame.GameModules.Combat
 {
 
 
@@ -13,11 +13,11 @@ namespace OddMud.SampleGame.GameModules
     {
         void AppendToOperation(IOperationBuilder builder);
         string ToMessage();
+
         DateTime ExecutedTime { get; set; }
 
         Task<bool> Execute();
 
-        int DamageDone { get; set; }
 
         List<IActionModifier> Modifiers { get; set; }
 
@@ -28,8 +28,6 @@ namespace OddMud.SampleGame.GameModules
     {
         TEntity SourceEntity { get; set; }
 
-        // not all actions will need a target
-        TEntity TargetEntity { get; set; }
 
         Task SetDefaultTargetAsync(IEnumerable<TEntity> entities);
 

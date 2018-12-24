@@ -9,6 +9,7 @@ using OddMud.SampleGame.Misc;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using OddMud.SampleGame.GameModules;
+using OddMud.SampleGame.GameModules.Combat;
 
 namespace OddMud.SampleGamePlugins.CommandPlugins
 {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
 
-namespace OddMud.SampleGame.GameModules
+namespace OddMud.SampleGame.GameModules.Combat
 {
     public class SpitCombatant : ICombatant<ICombatAction<GridEntity>>, IEntityComponent
     {

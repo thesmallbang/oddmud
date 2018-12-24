@@ -8,21 +8,17 @@ using OddMud.Core.Interfaces;
 using OddMud.SampleGame.Extensions;
 using OddMud.View.MudLike;
 
-namespace OddMud.SampleGame.GameModules
+namespace OddMud.SampleGame.GameModules.Combat
 {
-    public class LoogieAction : GridAction
+    public class LoogieAction : GridSingleTargetAction
     {
 
-        public override List<IActionModifier> Modifiers { get; set; } = new List<IActionModifier>() { new GridActionModifier() { Name = "health", ModifierType = ActionModifierType.Flat, Min = 0, Max = 20 } };
+        public override List<IActionModifier> Modifiers { get; set; } = new List<IActionModifier>() { new GridActionModifier() {
+            Name = "health", TargetType = TargetTypes.Caster,  ModifierType = ActionModifierType.Flat, Min = 0, Max = 20 }
+        };
 
 
-        public override async Task<bool> Execute()
-        {
-            TargetEntity = SourceEntity;
-            return await base.Execute();
-        }
-
-        
+       
         
 
         public override void AppendToOperation(IOperationBuilder operationBuilder)
@@ -34,9 +30,9 @@ namespace OddMud.SampleGame.GameModules
                 .AddText($"{SourceEntity.Name} ")
                 .AddText(" hocks a loogie ", TextColor.Lime)
                 .AddText(" on ")
-                .AddText($"{TargetEntity.Name} healing ")
-                .AddText($"{DamageDone}", TextColor.Green)
-                .AddTextLine(" damage")
+                .AddText($"{TargetEntity.Name} ")
+          //      .AddText($"{DamageDone}", TextColor.Green)
+          //      .AddTextLine(" damage")
                 .EndContainer("action");
 
             //return $"{SourceEntity?.Name} spit on {TargetEntity?.Name} for {_damageDone}";

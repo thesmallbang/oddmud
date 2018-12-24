@@ -1,12 +1,9 @@
 ﻿using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
-using OddMud.SampleGame.GameModules;
-using OddMud.SampleGame.Misc;
+using OddMud.SampleGame.GameModules.Combat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OddMud.SampleGame
 {

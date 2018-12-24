@@ -2,6 +2,7 @@
 using OddMud.Core.Interfaces;
 using OddMud.SampleGame;
 using OddMud.SampleGame.GameModules;
+using OddMud.SampleGame.GameModules.Combat;
 using OddMud.SampleGame.Misc;
 using OddMud.Web.Game.Database.Entities;
 using System;

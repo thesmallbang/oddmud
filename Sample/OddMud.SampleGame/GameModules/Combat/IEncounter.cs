@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using OddMud.Core.Interfaces;
 
-namespace OddMud.SampleGame.GameModules
+namespace OddMud.SampleGame.GameModules.Combat
 {
     public interface IEncounter
     {

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OddMud.SampleGame.GameModules
+namespace OddMud.SampleGame.GameModules.Combat
 {
     public class CombatModule : IGameModule<CombatModule>
     {
@@ -117,15 +117,18 @@ namespace OddMud.SampleGame.GameModules
                 }
 
                 // join
+
+                if (initiated.IsAlive)
+                    currentEncounter.Dead.Remove(initiated);
+
+                if (target.IsAlive)
+                    currentEncounter.Dead.Remove(target);
+
                 if (!currentEncounter.Combatants.ContainsKey(initiated))
                     await currentEncounter.AddCombatantAsync(initiated, (ICombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
 
                 if (!currentEncounter.Combatants.ContainsKey(target))
                     await currentEncounter.AddCombatantAsync(target, (ICombatant)target.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
-
-
-
-
 
             }
 

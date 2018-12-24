@@ -4,6 +4,7 @@ using OddMud.Core.Plugins;
 using OddMud.SampleGame;
 using OddMud.SampleGame.Commands;
 using OddMud.SampleGame.GameModules;
+using OddMud.SampleGame.GameModules.Combat;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

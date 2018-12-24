@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using OddMud.SampleGame.GameModules;
+using OddMud.SampleGame.GameModules.Combat;
 
 namespace OddMud.SampleGamePlugins.EventPlugins
 {

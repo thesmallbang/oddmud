@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OddMud.SampleGame.GameModules
+namespace OddMud.SampleGame.GameModules.Combat
 {
     public class GridActionModifier : IActionModifier
     {
@@ -17,5 +17,7 @@ namespace OddMud.SampleGame.GameModules
         private Random _random = new Random();
 
         public int Value => _random.Next(Min, Max);
+
+        public TargetTypes TargetType { get; set; }
     }
 }

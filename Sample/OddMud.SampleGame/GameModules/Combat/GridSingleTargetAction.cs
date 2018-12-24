@@ -8,30 +8,34 @@ using OddMud.Core.Interfaces;
 using OddMud.SampleGame.Extensions;
 using OddMud.View.MudLike;
 
-namespace OddMud.SampleGame.GameModules
+namespace OddMud.SampleGame.GameModules.Combat
 {
-    public class GridAction : ICombatAction<GridEntity>
+    public class GridSingleTargetAction : GridAction
     {
 
-        public GridEntity SourceEntity { get; set; }
+    
 
         public GridEntity TargetEntity { get; set; }
-        public DateTime ExecutedTime { get; set; }
-
-        public int DamageDone { get; set; }
-        public virtual List<IActionModifier> Modifiers { get; set; } = new List<IActionModifier>();
+      
 
 
-        public virtual async Task<bool> Execute()
+        public override async Task<bool> Execute()
         {
-            
+
+            if (TargetEntity == null)
+                return false;
+
             if (SourceEntity.Map != TargetEntity.Map)
                 return false;
+
+
 
             // apply modifiers
             foreach (var modifier in Modifiers)
             {
-                var stat = TargetEntity.Stats.FirstOrDefault(s => s.Name == modifier.Name);
+                var entityWithStat = modifier.TargetType == TargetTypes.Target ? TargetEntity : SourceEntity;
+
+                var stat = entityWithStat.Stats.FirstOrDefault(s => s.Name == modifier.Name);
                 if (stat != null)
                 {
 
@@ -43,14 +47,15 @@ namespace OddMud.SampleGame.GameModules
                             break;
                         case ActionModifierType.Percent:
                             applyValue = ((double)(modifier.Value / (double)stat.Base) * (double)100);
-                                break;
+                            break;
                     }
 
                     await stat.ApplyAsync((int)applyValue);
 
                     if (stat.Name == "health")
                     {
-                        DamageDone = Math.Abs((int)applyValue);
+                      //  if (applyValue < 0)
+                      //      DamageDone = Math.Abs((int)applyValue);
 
                         if (stat.Value == 0)
                             await TargetEntity.KillAsync();
@@ -65,12 +70,7 @@ namespace OddMud.SampleGame.GameModules
             return await Executing();
         }
 
-        public virtual Task<bool> Executing()
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task SetDefaultTargetAsync(IEnumerable<GridEntity> entities)
+        public override Task SetDefaultTargetAsync(IEnumerable<GridEntity> entities)
         {
             var otherEntities = entities.Where(e => e.IsAlive && e.Map == SourceEntity.Map).Except(new List<GridEntity>() { SourceEntity }).ToList();
 
@@ -96,24 +96,24 @@ namespace OddMud.SampleGame.GameModules
             return Task.CompletedTask;
         }
 
-        public virtual void AppendToOperation(IOperationBuilder operationBuilder)
+        public override void AppendToOperation(IOperationBuilder operationBuilder)
         {
             var builder = (MudLikeOperationBuilder)operationBuilder;
 
             builder
                 .StartContainer("action")
                 .AddText($"{SourceEntity.Name} hits ")
-                .AddText($"{TargetEntity.Name} for ")
-                .AddText($"{DamageDone}", TextColor.Red)
-                .AddTextLine(" damage")
+                .AddText($"{TargetEntity.Name}")
+             //   .AddText($"{DamageDone}", TextColor.Red)
+             //   .AddTextLine(" damage")
                 .EndContainer("action");
 
             //return $"{SourceEntity?.Name} spit on {TargetEntity?.Name} for {_damageDone}";
         }
 
-        public virtual string ToMessage()
+        public override string ToMessage()
         {
-            return $"{SourceEntity?.Name} hits {TargetEntity?.Name} for {DamageDone}";
+            return $"{SourceEntity?.Name} hits {TargetEntity?.Name}";
         }
 
 

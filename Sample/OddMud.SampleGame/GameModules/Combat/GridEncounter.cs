@@ -10,7 +10,7 @@ using OddMud.Core.Interfaces;
 using OddMud.SampleGame.Extensions;
 using OddMud.View.MudLike;
 
-namespace OddMud.SampleGame.GameModules
+namespace OddMud.SampleGame.GameModules.Combat
 {
     public class GridEncounter : IEncounter
     {
@@ -138,11 +138,26 @@ namespace OddMud.SampleGame.GameModules
             // any pending actions from not dead combatant?
             foreach (var entity in Combatants.Keys.Where(k => !Dead.Contains(k)).Select(o => o).ToList())
             {
+                // player offline?
+                if (entity.IsPlayer() && !game.Players.Contains((IPlayer)entity))
+                {
+
+
+                    // are there any players left? pause combat
+                    // i dont like making the specific decision about no offline combat here..
+                    // needs configuration in future
+                    if (Combatants.Keys.Count(k => k.IsPlayer() && game.Players.Contains((IPlayer)k)) == 0)
+                    {
+                        return;
+                    }
+
+
+                }
 
                 var combatant = (ICombatant<ICombatAction<GridEntity>>)Combatants[entity];
                 if (combatant.CanAttack)
                 {
-                    var nextAction = await combatant.GetNextActionAsync();
+                    var nextAction = (GridSingleTargetAction)await combatant.GetNextActionAsync();
                     if (nextAction == null)
                         continue;
 

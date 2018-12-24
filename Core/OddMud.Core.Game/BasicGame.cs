@@ -72,6 +72,12 @@ namespace OddMud.Core.Game
             if (removed && PlayerRemoved != null)
                 await PlayerRemoved(this, player);
 
+            if (player.Map != null)
+            {
+                await Network.RemovePlayerFromMapGroupAsync(player, player.Map);
+                await player.Map.RemovePlayerAsync(player);
+            }
+
             return removed;
         }
 

@@ -12,6 +12,7 @@ using OddMud.SampleGame;
 using OddMud.SampleGame.Commands;
 using OddMud.SampleGame.Extensions;
 using OddMud.SampleGame.GameModules;
+using OddMud.SampleGame.GameModules.Combat;
 using OddMud.View.MudLike;
 
 namespace OddMud.SampleGamePlugins.CommandPlugins
@@ -154,17 +155,17 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                  .AddTextLine("");
 
             var gridEncounter = (GridEncounter)encounter;
-            var entityAction = (ICombatAction<GridEntity>)action;
+            var entityAction = (GridSingleTargetAction)action;
 
-            var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
-                  .GroupBy(a => new { a.SourceEntity })
-                  .Select(a => new { Attacker = a.Key.SourceEntity, Damage = a.Sum(s => s.DamageDone) })
-              .ToList();
+            //var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
+            //      .GroupBy(a => new { a.SourceEntity })
+            //      .Select(a => new { Attacker = a.Key.SourceEntity, Damage = a.Sum(s => s.DamageDone) })
+            //  .ToList();
 
-            var dmgTaken = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
-                                        .GroupBy(a => new { a.TargetEntity })
-                                        .Select(a => new { Attacked = a.Key.TargetEntity, Damage = a.Sum(s => s.DamageDone) })
-                                    .ToList();
+            //var dmgTaken = encounter.ActionLog.Select((a) => (GridSingleTargetAction)a)
+            //                            .GroupBy(a => new { a.TargetEntity })
+            //                            .Select(a => new { Attacked = a.Key.TargetEntity, Damage = a.Sum(s => s.DamageDone) })
+            //                        .ToList();
 
             foreach (var factionName in gridEncounter.Factions.Keys)
             {
@@ -188,20 +189,20 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                         combatView.AddText(" Dead", TextColor.Red, TextSize.Small);
                     }
 
-                    var entityDmgDone = dmgDone.FirstOrDefault(d => d.Attacker == entity);
-                    if (entityDmgDone != null)
-                    {
-                        combatView
-                            .AddText($" Dmg {entityDmgDone.Damage}", TextColor.Teal);
-                        ;
-                    }
-                    var entityDmgTaken = dmgTaken.FirstOrDefault(d => d.Attacked == entity);
-                    if (entityDmgTaken != null)
-                    {
-                        combatView
-                            .AddText($" Taken {entityDmgTaken.Damage}", TextColor.Teal);
-                        ;
-                    }
+                    //var entityDmgDone = dmgDone.FirstOrDefault(d => d.Attacker == entity);
+                    //if (entityDmgDone != null)
+                    //{
+                    //    combatView
+                    //        .AddText($" Dmg {entityDmgDone.Damage}", TextColor.Teal);
+                    //    ;
+                    //}
+                    //var entityDmgTaken = dmgTaken.FirstOrDefault(d => d.Attacked == entity);
+                    //if (entityDmgTaken != null)
+                    //{
+                    //    combatView
+                    //        .AddText($" Taken {entityDmgTaken.Damage}", TextColor.Teal);
+                    //    ;
+                    //}
 
                     combatView.AddLineBreak();
 
@@ -253,15 +254,15 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
             var gridEncounter = (GridEncounter)encounter;
 
-            var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
-                       .GroupBy(action => new { action.SourceEntity })
-                       .Select(action => new { Attacker = action.Key.SourceEntity, Damage = action.Sum(s => s.DamageDone) })
-                   .ToList();
+            //var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
+            //           .GroupBy(action => new { action.SourceEntity })
+            //           .Select(action => new { Attacker = action.Key.SourceEntity, Damage = action.Sum(s => s.DamageDone) })
+            //       .ToList();
 
-            var dmgTaken = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
-                                        .GroupBy(action => new { action.TargetEntity })
-                                        .Select(action => new { Attacked = action.Key.TargetEntity, Damage = action.Sum(s => s.DamageDone) })
-                                    .ToList();
+            //var dmgTaken = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
+            //                            .GroupBy(action => new { action.TargetEntity })
+            //                            .Select(action => new { Attacked = action.Key.TargetEntity, Damage = action.Sum(s => s.DamageDone) })
+            //                        .ToList();
 
 
 
@@ -287,20 +288,20 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                         combatView.AddText(" Dead", TextColor.Red, TextSize.Small);
                     }
 
-                    var entityDmgDone = dmgDone.FirstOrDefault(d => d.Attacker == entity);
-                    if (entityDmgDone != null)
-                    {
-                        combatView
-                            .AddText($" Dmg {entityDmgDone.Damage}", TextColor.Teal);
-                        ;
-                    }
-                    var entityDmgTaken = dmgTaken.FirstOrDefault(d => d.Attacked == entity);
-                    if (entityDmgTaken != null)
-                    {
-                        combatView
-                            .AddText($" Taken {entityDmgTaken.Damage}", TextColor.Teal);
-                        ;
-                    }
+                    //var entityDmgDone = dmgDone.FirstOrDefault(d => d.Attacker == entity);
+                    //if (entityDmgDone != null)
+                    //{
+                    //    combatView
+                    //        .AddText($" Dmg {entityDmgDone.Damage}", TextColor.Teal);
+                    //    ;
+                    //}
+                    //var entityDmgTaken = dmgTaken.FirstOrDefault(d => d.Attacked == entity);
+                    //if (entityDmgTaken != null)
+                    //{
+                    //    combatView
+                    //        .AddText($" Taken {entityDmgTaken.Damage}", TextColor.Teal);
+                    //    ;
+                    //}
 
                     combatView.AddLineBreak();
 

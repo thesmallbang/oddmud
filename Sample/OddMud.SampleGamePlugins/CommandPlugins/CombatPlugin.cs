@@ -28,6 +28,10 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         [Option('a', "any", Required = false, HelpText = "any anything?", Default = false)]
         public bool AttackAny { get; set; }
 
+        [Option('s', "skip", Required = false, HelpText = "skip?", Default = 0)]
+        public int Skip { get; set; }
+
+
     }
 
     public class CombatPlugin : LoggedInCommandPlugin
@@ -111,6 +115,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                         parsed.AttackAny ?
                             player.Map.Entities :
                             player.Map.Entities.Where(mi => mi.Name.IndexOf(entityName, StringComparison.OrdinalIgnoreCase) >= 0))
+                            .Skip(parsed.Skip)
                    .FirstOrDefault();
 
                    if (target == null)
@@ -232,7 +237,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                 maps.AddRange(entityAction.TargetEntities.Where(t => t.Map != entityAction.SourceEntity.Map).Select(t => t.Map).Distinct());
 
                 maps.ForEach(async m => await Game.Network.SendViewCommandsToMapAsync(m, view));
-                
+
             }
 
 

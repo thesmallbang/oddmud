@@ -157,19 +157,16 @@ namespace OddMud.SampleGame.GameModules.Combat
                 var combatant = (ICombatant<ICombatAction<GridEntity>>)Combatants[entity];
                 if (combatant.CanAttack)
                 {
-                    var nextAction = (GridSingleTargetAction)await combatant.GetNextActionAsync();
+                    var nextAction = (GridTargetAction)await combatant.GetNextActionAsync();
                     if (nextAction == null)
                         continue;
 
                     if (nextAction.SourceEntity == null)
                         nextAction.SourceEntity = (GridEntity)entity;
 
-                    if (nextAction.TargetEntity == null)
+                    if (nextAction.TargetEntities.Count == 0)
                     {
-
-                        if (nextAction.TargetEntity == null)
-                            await nextAction.SetDefaultTargetAsync(Combatants.Keys.Select(k => (GridEntity)k).ToList());
-
+                        await nextAction.SetDefaultTargetAsync(this);
                     }
 
                     var executed = await nextAction.Execute();

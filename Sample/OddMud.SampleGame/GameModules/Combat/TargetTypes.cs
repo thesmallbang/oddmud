@@ -6,8 +6,10 @@ namespace OddMud.SampleGame.GameModules.Combat
 {
     public enum TargetTypes
     {
-        Target,
-        Caster,
-
+        Self,
+        Friend,
+        FriendArea,
+        Enemy,
+        EnemyArea
     }
 }

@@ -10,7 +10,7 @@ namespace OddMud.SampleGame.GameModules.Combat
         int Min { get; set; }
 
         // does the modifier apply to the target or the caster?
-        TargetTypes TargetType { get; set; }
+        ModifierTargetTypes TargetType { get; set; }
 
 
     }

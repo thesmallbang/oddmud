@@ -12,6 +12,12 @@ namespace OddMud.Web.Game.Database
     public class GameDbContext : DbContext
     {
 
+        public DbSet<DbAction> Actions { get; set; }
+        public DbSet<DbActionModifier> ActionModifiers { get; set; }
+
+        public DbSet<DbElement> Elements { get; set; }
+        public DbSet<DbElementRange> ElementRanges { get; set; }
+
         public DbSet<DbMap> Maps { get; set; }
         public DbSet<DbMapExit> MapExits { get; set; }
 

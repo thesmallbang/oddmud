@@ -13,7 +13,13 @@ namespace OddMud.SampleGame.GameModules.Combat
     public class GridAction : ICombatAction<GridEntity>
     {
 
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public TargetTypes TargetType { get; set; }
+
         public GridEntity SourceEntity { get; set; }
+
+        public Element Element { get; set; }
 
     
         public DateTime ExecutedTime { get; set; }
@@ -35,9 +41,11 @@ namespace OddMud.SampleGame.GameModules.Combat
             return Task.FromResult(true);
         }
 
-        public virtual Task SetDefaultTargetAsync(IEnumerable<GridEntity> entities)
+        public virtual Task SetDefaultTargetAsync(IEncounter encounter)
         {
+
             return Task.CompletedTask;
+
         }
 
         public virtual void AppendToOperation(IOperationBuilder operationBuilder)

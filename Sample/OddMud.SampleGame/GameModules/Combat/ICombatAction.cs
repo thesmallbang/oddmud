@@ -29,7 +29,7 @@ namespace OddMud.SampleGame.GameModules.Combat
         TEntity SourceEntity { get; set; }
 
 
-        Task SetDefaultTargetAsync(IEnumerable<TEntity> entities);
+        Task SetDefaultTargetAsync(IEncounter encounter);
 
 
     }

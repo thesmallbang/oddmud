@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OddMud.Core.Game;
@@ -24,15 +25,20 @@ namespace OddMud.SampleGame.GameModules.Combat
 
         public Queue<ICombatAction<GridEntity>> Actions { get; } = new Queue<ICombatAction<GridEntity>>();
 
-        public ICombatAction DefaultAction { get
+        public ICombatAction DefaultAction
+        {
+            get
             {
-                var rnd  = _random.Next(1, 10);
+                var rnd = _random.Next(1, 10);
                 if (rnd < 2)
                 {
-                    return new LoogieAction();
-                } else
+                    var natureElement = new Element() { Name = "Nature",  TextColor = View.MudLike.TextColor.Purple, Ranges = new List<ElementRange>() { new ElementRange() {Min = 0, Max = 10, Text = "barely heals", TextColor = View.MudLike.TextColor.Green }, new ElementRange() {Min = 11,  Text = "heals", TextColor = View.MudLike.TextColor.Green } } };
+                    return new GridTargetAction() { Id = 0, Name = "Heal Group", Element = natureElement, TargetType = TargetTypes.FriendArea, Modifiers = new List<GridActionModifier>() { new GridActionModifier() { Name = "health", Min = 5, Max = 20, ModifierType = ActionModifierType.Flat, TargetType = ModifierTargetTypes.Other } }.Select(a => (IActionModifier)a).ToList() };
+                }
+                else
                 {
-                    return new SpitAction();
+                    var salivaElement = new Element() { Name = "Saliva", TextColor = View.MudLike.TextColor.Aqua, Ranges = new List<ElementRange>() { new ElementRange() { Text = "hits", TextColor = View.MudLike.TextColor.Red } } };
+                    return new GridTargetAction() { Id = 0, Name = "Spit", Element = salivaElement , TargetType = TargetTypes.Enemy, Modifiers = new List<GridActionModifier>() { new GridActionModifier() { Name = "health", Min = -10, Max = -5, ModifierType = ActionModifierType.Flat, TargetType = ModifierTargetTypes.Other } }.Select(a => (IActionModifier)a).ToList() };
                 }
             }
         }

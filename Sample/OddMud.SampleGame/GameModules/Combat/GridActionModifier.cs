@@ -16,8 +16,18 @@ namespace OddMud.SampleGame.GameModules.Combat
 
         private Random _random = new Random();
 
-        public int Value => _random.Next(Min, Max);
+        private int? _value;
 
-        public TargetTypes TargetType { get; set; }
+        public int Value
+        {
+            get
+            {
+                if (!_value.HasValue) _value = _random.Next(Min, Max);
+                return _value.GetValueOrDefault(0);
+            }
+        }
+
+
+        public ModifierTargetTypes TargetType { get; set; }
     }
 }

@@ -155,7 +155,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                  .AddTextLine("");
 
             var gridEncounter = (GridEncounter)encounter;
-            var entityAction = (GridSingleTargetAction)action;
+            var entityAction = (GridTargetAction)action;
 
             //var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
             //      .GroupBy(a => new { a.SourceEntity })
@@ -224,12 +224,15 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
            ).Build();
 
 
-            if (entityAction.SourceEntity == entityAction.TargetEntity || entityAction.TargetEntity == null)
+            if (entityAction.TargetEntities.Contains(entityAction.SourceEntity) || entityAction.TargetEntities.Count == 0)
                 await Game.Network.SendViewCommandsToMapAsync(entityAction.SourceEntity.Map, view);
             else
             {
-                await Game.Network.SendViewCommandsToMapAsync(entityAction.SourceEntity.Map, view);
-                await Game.Network.SendViewCommandsToMapAsync(entityAction.TargetEntity.Map, view);
+                var maps = new List<IMap>() { entityAction.SourceEntity.Map };
+                maps.AddRange(entityAction.TargetEntities.Where(t => t.Map != entityAction.SourceEntity.Map).Select(t => t.Map).Distinct());
+
+                maps.ForEach(async m => await Game.Network.SendViewCommandsToMapAsync(m, view));
+                
             }
 
 

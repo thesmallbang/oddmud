@@ -53,7 +53,7 @@ namespace OddMud.SampleGame.GameModules.Combat
             foreach (var faction in Factions.Keys.ToList())
             {
                 // if a faction has no members alive then we are ending
-                var aliveCount = Factions[faction].Count(e => e.IsAlive);
+                var aliveCount = Factions[faction].Count(e => !Dead.Contains(e));
                 if (aliveCount == 0)
                 {
                     _ended = true;
@@ -157,7 +157,7 @@ namespace OddMud.SampleGame.GameModules.Combat
                 var combatant = (ICombatant<ICombatAction<GridEntity>>)Combatants[entity];
                 if (combatant.CanAttack)
                 {
-                    var nextAction = (GridTargetAction)await combatant.GetNextActionAsync();
+                    var nextAction = (GridTargetAction)await combatant.GetNextActionAsync(this);
                     if (nextAction == null)
                         continue;
 

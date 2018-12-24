@@ -12,6 +12,7 @@ namespace OddMud.Core.Interfaces
         string Name { get; }
         string Description { get; }
 
+        
         event Func<IItem, IEntity, Task> PickedUp;
         event Func<IItem, IEntity, Task> Dropped;
 

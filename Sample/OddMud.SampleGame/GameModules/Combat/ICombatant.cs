@@ -8,7 +8,6 @@ namespace OddMud.SampleGame.GameModules.Combat
 {
     public interface ICombatant
     {
-        ICombatAction DefaultAction { get; }
         bool CanAttack { get; }
 
 
@@ -20,6 +19,6 @@ namespace OddMud.SampleGame.GameModules.Combat
 
         Queue<TAction> Actions { get; }
 
-        Task<TAction> GetNextActionAsync();
+        Task<TAction> GetNextActionAsync(IEncounter encounter);
     }
 }

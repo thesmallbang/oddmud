@@ -2,6 +2,6 @@
 {
     public enum EntityClasses
     {
-        Spitter
+        Knight
     }
 }

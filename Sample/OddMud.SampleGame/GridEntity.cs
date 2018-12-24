@@ -10,7 +10,7 @@ namespace OddMud.SampleGame
     public class GridEntity : BasicEntity
     {
 
-        public EntityClasses Class { get; private set; } = EntityClasses.Spitter;
+        public EntityClasses Class { get; private set; } = EntityClasses.Knight;
 
         public GridEntity(
             int id, 

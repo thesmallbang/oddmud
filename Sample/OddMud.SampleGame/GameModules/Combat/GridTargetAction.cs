@@ -91,7 +91,7 @@ namespace OddMud.SampleGame.GameModules.Combat
                         var faction = gridEncounter.Factions[factionName];
                         if (!faction.Contains(SourceEntity))
                         {
-                            TargetEntities.Add((GridEntity)faction.FirstOrDefault());
+                            TargetEntities.Add((GridEntity)faction.FirstOrDefault(e => !encounter.Dead.Contains(e)));
                             break;
                         }
                     }
@@ -116,7 +116,7 @@ namespace OddMud.SampleGame.GameModules.Combat
                         var faction = gridEncounter.Factions[factionName];
                         if (faction.Contains(SourceEntity))
                         {
-                            TargetEntities.Add((GridEntity)faction.FirstOrDefault());
+                            TargetEntities.Add((GridEntity)faction.FirstOrDefault(e => !encounter.Dead.Contains(e)));
                             break;
                         }
                     }

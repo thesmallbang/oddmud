@@ -3,6 +3,7 @@ using OddMud.Core.Interfaces;
 using OddMud.SampleGame;
 using OddMud.SampleGame.GameModules;
 using OddMud.SampleGame.GameModules.Combat;
+using OddMud.SampleGame.GameModules.Combat.Intelligence;
 using OddMud.SampleGame.Misc;
 using OddMud.Web.Game.Database.Entities;
 using System;
@@ -46,7 +47,7 @@ namespace OddMud.Web.Game.Database
                             switch (e)
                             {
                                 case EntityType.Combat:
-                                    player.EntityComponents.Add(new SpitCombatant());
+                                    player.EntityComponents.Add(new GridPlayerCombatant());
                                     break;
                             }
                         });
@@ -64,7 +65,7 @@ namespace OddMud.Web.Game.Database
                 switch (e)
                 {
                     case EntityType.Combat:
-                        components.Add(new SpitCombatant());
+                        components.Add(new GridCombatant() { Intelligence = new KnightIntelligence() });
                         break;
                 }
             });

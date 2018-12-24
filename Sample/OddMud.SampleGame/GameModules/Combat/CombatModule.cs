@@ -140,6 +140,7 @@ namespace OddMud.SampleGame.GameModules.Combat
 
         private Task EncounterEnded(IEncounter encounter, EncounterEndings endingType)
         {
+            _logger.LogInformation("Encounter ended");
             return RemoveEncounterAsync((GridEncounter)encounter);
         }
     }

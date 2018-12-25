@@ -30,6 +30,9 @@ namespace OddMud.SampleGame.GameModules.Combat
 
         public virtual async Task<bool> Execute()
         {
+            if (!SourceEntity.IsAlive)
+                return false;
+
 
             ExecutedTime = DateTime.Now;
 

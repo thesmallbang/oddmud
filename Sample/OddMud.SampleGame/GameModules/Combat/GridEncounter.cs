@@ -77,6 +77,11 @@ namespace OddMud.SampleGame.GameModules.Combat
         {
 
             List<IEntity> faction;
+                   
+            if (entity.IsPlayer())
+            {
+                Dead.RemoveAll(d => d.Id == entity.Id);
+            }
 
             // some default behaviour will be to find the faction with the matching isPlayer
             if (string.IsNullOrEmpty(factionKey))
@@ -136,7 +141,8 @@ namespace OddMud.SampleGame.GameModules.Combat
             }
 
             // any pending actions from not dead combatant?
-            foreach (var entity in Combatants.Keys.Where(k => !Dead.Contains(k)).Select(o => o).ToList())
+            var entities = Combatants.Keys.Where(k => !Dead.Contains(k)).Select(o => o).ToList();
+            foreach (var entity in entities)
             {
                 // player offline?
                 if (entity.IsPlayer() && !game.Players.Contains((IPlayer)entity))
@@ -154,10 +160,10 @@ namespace OddMud.SampleGame.GameModules.Combat
 
                 }
 
-                var combatant = (ICombatant<ICombatAction<GridEntity>>)Combatants[entity];
+                var combatant = (ICombatant<GridTargetAction>)Combatants[entity];
                 if (combatant.CanAttack)
                 {
-                    var nextAction = (GridTargetAction)await combatant.GetNextActionAsync(this);
+                    var nextAction = await combatant.GetNextActionAsync(this);
                     if (nextAction == null)
                         continue;
 

@@ -22,13 +22,15 @@ namespace OddMud.SampleGame.GameModules.Combat
         public override async Task<bool> Execute()
         {
 
+            await base.Execute();
+
             if (TargetEntities.Count == 0)
                 return false;
 
             foreach (var target in TargetEntities)
             {
                 // this map check will need to be moved out eventually to support things like rez
-                if (SourceEntity.Map != target.Map)
+                if (SourceEntity.Map != target?.Map)
                     return false;
 
                 // apply modifiers
@@ -162,9 +164,11 @@ namespace OddMud.SampleGame.GameModules.Combat
                 builder.AddText($"{SourceEntity.Name}'s ")
                     .AddText($"{Name}", Element.TextColor)
                     .AddText($" {elementInfo.Text}", elementInfo.TextColor)
-                    .AddTextLine($" {target.Name}")
-                  //  .AddText(" for ")
-                  //  .AddTextLine($" {Math.Abs(primaryAffectedStat.Value)}", elementInfo.TextColor)
+                    .AddText($" {target.Name} for ")
+                    .AddTextLine($" {primaryAffectedStat.Value}", TextColor.Red)
+
+                    //  .AddText(" for ")
+                    //  .AddTextLine($" {Math.Abs(primaryAffectedStat.Value)}", elementInfo.TextColor)
                     ;
 
             }

@@ -15,6 +15,12 @@ namespace OddMud.Web.Game.Database
         public DbSet<DbAction> Actions { get; set; }
         public DbSet<DbActionModifier> ActionModifiers { get; set; }
 
+        public DbSet<DbClass> Classes { get; set; }
+        public DbSet<DbClassAction> ClassActions { get; set; }
+        public DbSet<DbClassActionRequirement> ClassActionRequirements { get; set; }
+        public DbSet<DbClassActionConsumeModifier> ClassActionConsumerModifiers { get; set; }
+        
+
         public DbSet<DbElement> Elements { get; set; }
         public DbSet<DbElementRange> ElementRanges { get; set; }
 

@@ -10,12 +10,10 @@ namespace OddMud.SampleGame
     public class GridEntity : BasicEntity
     {
 
-        public EntityClasses Class { get; private set; } = EntityClasses.Knight;
 
         public GridEntity(
             int id, 
             string name, 
-            EntityClasses entityClass, 
             IEnumerable<EntityType> entityTypes, 
             IEnumerable<IEntityComponent> entityComponents,
             IEnumerable<IItem> items,
@@ -23,7 +21,6 @@ namespace OddMud.SampleGame
             ) 
             : base(id, name, items, stats)
         {
-            Class = entityClass;
             EntityTypes.AddRange(entityTypes);
             EntityComponents.AddRange(entityComponents);
         }

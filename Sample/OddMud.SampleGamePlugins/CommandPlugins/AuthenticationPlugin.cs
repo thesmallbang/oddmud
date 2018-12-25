@@ -39,7 +39,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
 
                 var created = await Game.Store.NewPlayerAsync(Game, new GridPlayer(
-                    0, username, EntityClasses.Knight,
+                    0, username,
                     new List<EntityType>() { EntityType.Normal, EntityType.Combat }, new List<IEntityComponent>() { new GridCombatant() },
                     startingInventory, startingStats, null), pass: request.Data.ThirdPart);
                 if (created != null)

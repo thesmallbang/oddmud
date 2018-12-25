@@ -12,13 +12,12 @@ namespace OddMud.SampleGame
         public GridPlayer(
             int id, 
             string name,
-            EntityClasses entityClass, 
             IEnumerable<EntityType> entityTypes, 
             IEnumerable<IEntityComponent> entityComponents,
             IEnumerable<IItem> items, 
             IEnumerable<IStat> stats,
             IMap map)
-            : base(id, name, entityClass, entityTypes, entityComponents, items, stats)
+            : base(id, name, entityTypes, entityComponents, items, stats)
         {
             
             Map = map;

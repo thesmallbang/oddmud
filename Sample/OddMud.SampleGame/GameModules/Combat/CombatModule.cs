@@ -90,6 +90,10 @@ namespace OddMud.SampleGame.GameModules.Combat
             // we need to see if the 2 entities are already in other encounters.. of so we will merge.. otherwise we join or create one
             var encounterForInitated = _encounters.FirstOrDefault(e => e.Combatants.Any(c => c.Key == initiated));
             var encounterForTarget = _encounters.FirstOrDefault(e => e.Combatants.Any(c => c.Key == target));
+            var attackerCombatant = (GridCombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant)));
+            var targetCombatant = (GridCombatant)target.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant)));
+
+
             if (encounterForInitated != null
                 && encounterForTarget != null
                 && encounterForInitated != encounterForTarget)
@@ -100,9 +104,12 @@ namespace OddMud.SampleGame.GameModules.Combat
             else
             {
 
-                // the same encounter already? ignore
+                // the same encounter already? just switch to target it
                 if (encounterForInitated != null && encounterForTarget != null & encounterForInitated == encounterForTarget)
+                {
+                    attackerCombatant.TargetPreference = target;
                     return null;
+                }
 
                 currentEncounter = encounterForTarget == null ? encounterForInitated : encounterForTarget;
                 if (currentEncounter == null)
@@ -110,8 +117,12 @@ namespace OddMud.SampleGame.GameModules.Combat
                     // create 
                     _encounterCounter++;
                     currentEncounter = new GridEncounter(_encounterCounter);
-                    await currentEncounter.AddCombatantAsync(initiated, (ICombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
-                    await currentEncounter.AddCombatantAsync(target, (ICombatant)target.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
+                    attackerCombatant.TargetPreference = target;
+                    targetCombatant.TargetPreference = initiated;
+
+                    await currentEncounter.AddCombatantAsync(initiated, attackerCombatant);
+                    await currentEncounter.AddCombatantAsync(target, targetCombatant);
+
                     currentEncounter.Ended += EncounterEnded;
                     await AddEncounterAsync(currentEncounter);
                 }
@@ -125,10 +136,13 @@ namespace OddMud.SampleGame.GameModules.Combat
                     currentEncounter.Dead.Remove(target);
 
                 if (!currentEncounter.Combatants.ContainsKey(initiated))
-                    await currentEncounter.AddCombatantAsync(initiated, (ICombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
+                {
+                    attackerCombatant.TargetPreference = target;
+                    await currentEncounter.AddCombatantAsync(initiated, attackerCombatant);
+                }
 
                 if (!currentEncounter.Combatants.ContainsKey(target))
-                    await currentEncounter.AddCombatantAsync(target, (ICombatant)target.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant))));
+                    await currentEncounter.AddCombatantAsync(target, targetCombatant);
 
             }
 

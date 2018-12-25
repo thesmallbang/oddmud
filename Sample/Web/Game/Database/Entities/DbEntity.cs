@@ -14,8 +14,14 @@ namespace OddMud.Web.Game.Database.Entities
 
 
         public string Name { get; set; }
-        public EntityClasses Class { get; set; }
 
+        [ForeignKey("Class")]
+        public int? ClassId { get; set; }
+        public DbClass Class { get; set; }
+        
+        // when you have a custom class to provide non standard intelligence
+        // see dbconverter for additinal changes needed
+        public int? IntelligenceOverride { get; set; }
 
         [ForeignKey("LootTable")]
         public int? LootTableId { get; set; }

@@ -134,6 +134,10 @@ namespace OddMud.Web.Game
             using (var dbContext = new GameDbContext())
             {
                 var dbPlayer = await dbContext.Players
+                     .Include(e => e.Class).ThenInclude(e => e.Actions).ThenInclude(a => a.Action).ThenInclude(a => a.ElementType).ThenInclude(e => e.Ranges)
+                    .Include(e => e.Class).ThenInclude(e => e.Actions).ThenInclude(a => a.Action).ThenInclude(a => a.Modifiers)
+                    .Include(e => e.Class).ThenInclude(e => e.Actions).ThenInclude(a => a.Requirements)
+                    .Include(e => e.Class).ThenInclude(e => e.Actions).ThenInclude(a => a.Consumes)
                     .Include(player => player.Stats)
                     .Include(player => player.Items).ThenInclude(item => item.Stats)
                     .Include(player => player.Items).ThenInclude(item => item.BaseItem).ThenInclude(baseitem => baseitem.ItemTypes)
@@ -166,7 +170,6 @@ namespace OddMud.Web.Game
                     RecordDate = DateTimeOffset.Now,
                     Name = player.Name,
                     Password = PasswordStorage.CreateHash(pass),
-                    Class = gridPlayer.Class,
                     Stats = gridPlayer.Stats.Select(s => new DbPlayerStat()
                     {
                         Base = s.Base,
@@ -454,7 +457,7 @@ namespace OddMud.Web.Game
                     RecordBy = "notlinktoausercontextyet",
                     RecordDate = DateTimeOffset.Now,
                     Name = gridEntity.Name,
-                    Class = gridEntity.Class,
+                    Class = null,
                     Stats = gridEntity.Stats.Select(s => new DbEntityStat()
                     {
                         Current = s.Value,
@@ -498,7 +501,11 @@ namespace OddMud.Web.Game
             using (var dbContext = new GameDbContext())
             {
                 var dbEntities = await dbContext.Entities
-                    .Include(e =>e.Stats)
+                    .Include(e => e.Class).ThenInclude(e => e.Actions).ThenInclude(a => a.Action).ThenInclude(a => a.ElementType).ThenInclude(e => e.Ranges)
+                    .Include(e => e.Class).ThenInclude(e => e.Actions).ThenInclude(a => a.Action).ThenInclude(a => a.Modifiers)
+                    .Include(e => e.Class).ThenInclude(e => e.Actions).ThenInclude(a => a.Requirements)
+                    .Include(e => e.Class).ThenInclude(e => e.Actions).ThenInclude(a => a.Consumes)
+                    .Include(e => e.Stats)
                     .Include(e => e.EntityTypes)
                     .Include(e => e.Items)
                     .Include(e => e.LootTable).ThenInclude(lt => lt.Item).ThenInclude(i => i.ItemTypes)

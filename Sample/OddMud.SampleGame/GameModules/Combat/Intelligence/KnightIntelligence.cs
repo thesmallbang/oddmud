@@ -7,22 +7,26 @@ using System.Threading.Tasks;
 
 namespace OddMud.SampleGame.GameModules.Combat.Intelligence
 {
-    public class KnightIntelligence : IEncounterIntelligence
+    public class GenericClassIntelligence : IEncounterIntelligence
     {
 
 
-        private static Element physical = new Element() { Name = "Physical", TextColor = View.MudLike.TextColor.Normal, Ranges = new List<IElementRange>() { new ElementRange() { Min = 0, Max = 10, Text = "hits", TextColor = View.MudLike.TextColor.Red }, new ElementRange() { Min = 11, Text = "smashes", TextColor = View.MudLike.TextColor.Red } } };
-        
-        public EntityClasses Class => EntityClasses.Knight;
+        private GridTargetAction _defaultAction;
+        private List<GridTargetAction> _actions { get; set; }
+        public GenericClassIntelligence(List<ICombatAction> actions, ICombatAction defaultAction)
+        {
+            _actions = actions.Select(a => (GridTargetAction)a).ToList();
+            _defaultAction = (GridTargetAction)defaultAction;
+        }
+
 
         public Task<ICombatAction> GetNextActionAsync(IEncounter encounter)
         {
+            // make a copy of the action default action
+            var action = new GridTargetAction() { Element = _defaultAction.Element, Modifiers = _defaultAction.Modifiers.Select(m => (IActionModifier)new GridActionModifier() { Name = m.Name, TargetType = m.TargetType, ModifierType = m.ModifierType, Min = m.Min, Max = m.Max }).ToList(), Id = _defaultAction.Id, Name = _defaultAction.Name, TargetType = _defaultAction.TargetType };
 
-            var defaultAttack = new GridTargetAction() { Id = 0, Name = "knightly attack", Element = KnightIntelligence.physical, TargetType = TargetTypes.Enemy, Modifiers = new List<GridActionModifier>() { new GridActionModifier() { Name = "health", Min = -5, Max = 0, ModifierType = ActionModifierType.Flat, TargetType = ModifierTargetTypes.Other } }.Select(a => (IActionModifier)a).ToList() };
-            // no intelligence right now..just set a command to find any enemy and dmg the health
-            
 
-            return Task.FromResult((ICombatAction)defaultAttack);
+            return Task.FromResult((ICombatAction)action);
         }
     }
 }

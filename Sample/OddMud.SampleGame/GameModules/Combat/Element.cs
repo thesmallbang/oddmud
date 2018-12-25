@@ -20,8 +20,9 @@ namespace OddMud.SampleGame.GameModules.Combat
 
         public ElementRange GetRange(int value)
         {
-            var match = Ranges.FirstOrDefault(r => r.Min.GetValueOrDefault(int.MinValue) <= value
-            && r.Max.GetValueOrDefault(int.MaxValue) >= value);
+            var absValue = Math.Abs(value);
+            var match = Ranges.FirstOrDefault(r => r.Min.GetValueOrDefault(int.MinValue) <= absValue
+            && r.Max.GetValueOrDefault(int.MaxValue) >= absValue);
 
             if (match != null)
                 return (ElementRange)match;

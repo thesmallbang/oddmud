@@ -22,7 +22,9 @@ namespace OddMud.SampleGame.GameModules.Combat
         public override async Task<bool> Execute()
         {
 
-            await base.Execute();
+            var shouldContinue = await base.Execute();
+            if (!shouldContinue)
+                return false;
 
             if (TargetEntities.Count == 0)
                 return false;

@@ -168,8 +168,8 @@ namespace OddMud.Web.Controllers
                         EntityTypes = new List<DbEntityType>() { new DbEntityType() { EntityType = Core.Game.EntityType.Normal }, new DbEntityType() { EntityType = Core.Game.EntityType.Combat } },
                         Name = "Rat King",
                         Stats = new List<DbEntityStat>() {
-                            new DbEntityStat() { Name = "health", Base = 100, Current = 100 },
-                            new DbEntityStat() { Name = "mana", Base = 1000, Current = 1000 },
+                            new DbEntityStat() { Name = "health", Base = 50, Current = 50 },
+                            new DbEntityStat() { Name = "mana", Base = 30, Current = 30 },
                             new DbEntityStat() { Name = "stamina", Base = 10, Current = 10 }
                         }
                     });

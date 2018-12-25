@@ -35,14 +35,18 @@ namespace OddMud.SampleGame.GameModules.Combat
             if (!SourceEntity.IsAlive)
                 return false;
 
+            if (!SourceEntity.CurrentStatsAtLeast(Modifiers.Where(m => m.TargetType == ModifierTargetTypes.Caster)))
+                return false;
 
-            ExecutedTime = DateTime.Now;
+
 
             return await Executing();
         }
 
         public virtual Task<bool> Executing()
         {
+            ExecutedTime = DateTime.Now;
+
             return Task.FromResult(true);
         }
 

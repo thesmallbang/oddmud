@@ -55,7 +55,11 @@ namespace OddMud.SampleGame.GameModules.Combat.Intelligence
 
             // cache/categorize some generic spell types
             _actionsDmg = _actions.Where(a => a.Modifiers.Any(m => m.TargetType == ModifierTargetTypes.Other && m.Name == "health" && m.Min < 0)).ToList();
-            _actionsHeal = _actions.Where(a => a.Modifiers.Any(m => m.Name == "health" && m.Min > 0)).ToList();
+            _actionsHeal = _actions.Where(a => (a.TargetType == TargetTypes.Self || a.TargetType == TargetTypes.Friend || a.TargetType == TargetTypes.FriendArea)
+            && a.Modifiers.Any(m => m.Name == "health" && m.TargetType == ModifierTargetTypes.Other && m.Min > 0)).ToList();
+
+
+
 
         }
 
@@ -76,29 +80,10 @@ namespace OddMud.SampleGame.GameModules.Combat.Intelligence
             var hpstat = Entity.Stats.FirstOrDefault(s => s.Name == "health");
             if (hpstat != null)
             {
-                if (hpstat.Value <  hpstat.Base / 2)
+                if (hpstat.Value < hpstat.Base / 2)
                 {
-                    // do we have a heal we can cast?
-                    var potentialActions = _actionsHeal.Where(action =>
-                    (action.TargetType == TargetTypes.Self || action.TargetType == TargetTypes.Friend || action.TargetType == TargetTypes.FriendArea)
-                        && action.Modifiers.OrderByDescending(m => m.Max).Any(modifier =>
-                        {
-
-                            var modifierstat = Entity.Stats.FirstOrDefault(s => s.Name == modifier.Name);
-                            if (modifierstat == null)
-                                return false;
-
-                            if (modifierstat.Value < 0)
-                                return false;
-
-                            if (modifierstat.Value < modifier.Value)
-                                return false;
-
-
-
-                            return true;
-                        })
-                    );
+                    var potentialActions = _actionsHeal.Where(action => Entity.CurrentStatsAtLeast(action.Modifiers.Where(m => m.TargetType == ModifierTargetTypes.Caster))).ToList();
+                                       
 
                     if (potentialActions.Count() > 0)
                     {

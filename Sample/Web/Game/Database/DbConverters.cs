@@ -56,7 +56,7 @@ namespace OddMud.Web.Game.Database
                             {
                                 case EntityType.Combat:
                                     var playerIntelligence = new PlayerIntelligence(actions.FirstOrDefault());
-                                    player.EntityComponents.Add(new GridCombatant() { AllowedActions = actions,   Intelligence = playerIntelligence });
+                                    player.EntityComponents.Add(new GridCombatant() { AllowedActions = actions, Intelligence = playerIntelligence });
                                     playerIntelligence.Configure(player);
                                     break;
                             }
@@ -80,14 +80,15 @@ namespace OddMud.Web.Game.Database
                 switch (e)
                 {
                     case EntityType.Combat:
-             
-                        var actions = dbEntity.Class.Actions.Select(aref => aref.Action).Select(action => new GridTargetAction()
+
+                        var actions = dbEntity.Class.Actions.Select(aref => new GridTargetAction()
                         {
-                            Name = action.Name,
-                            TargetType = action.TargetType,
-                            Id = action.Id,
-                            Modifiers = action.Modifiers.Select(m => (IActionModifier)new GridActionModifier() { Name = m.Name, TargetType = m.TargetType, ModifierType = m.ModifierType, Min = m.Min, Max = m.Max }).ToList(),
-                            Element = new Element() { Id = action.ElementType.Id, Name = action.ElementType.Name, TextColor = action.ElementType.TextColor, Ranges = action.ElementType.Ranges.Select(r => (IElementRange)new ElementRange() { Text = r.Text, Min = r.Min, Max = r.Max, TextColor = r.TextColor }).ToList() }
+                            Name = aref.Action.Name,
+                            TargetType = aref.Action.TargetType,
+                            Id = aref.Action.Id,
+                            Requirements = aref.Requirements.Select(r => (IActionRequirement)new GridActionReqirement() { Name = r.Name, Id = r.Id, Min = r.Min.GetValueOrDefault(int.MinValue), Max = r.Max.GetValueOrDefault(int.MaxValue) }).ToList(),
+                            Modifiers = aref.Action.Modifiers.Select(m => (IActionModifier)new GridActionModifier() { Name = m.Name, TargetType = m.TargetType, ModifierType = m.ModifierType, Min = m.Min, Max = m.Max }).ToList(),
+                            Element = new Element() { Id = aref.Action.ElementType.Id, Name = aref.Action.ElementType.Name, TextColor = aref.Action.ElementType.TextColor, Ranges = aref.Action.ElementType.Ranges.Select(r => (IElementRange)new ElementRange() { Text = r.Text, Min = r.Min, Max = r.Max, TextColor = r.TextColor }).ToList() }
                         }).ToList();
 
 
@@ -101,7 +102,7 @@ namespace OddMud.Web.Game.Database
                                 break;
                         }
 
-                        components.Add(new GridCombatant() { AllowedActions = actions,  Intelligence = intelligence });
+                        components.Add(new GridCombatant() { AllowedActions = actions, Intelligence = intelligence });
                         break;
                 }
             });

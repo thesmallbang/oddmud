@@ -123,7 +123,7 @@ namespace OddMud.SampleGame.GameModules.Combat.Intelligence
                 selectedAction = _defaultAction;
 
             if (selectedAction == null)
-                return null;
+                return Task.FromResult((ICombatAction)null);
 
             var actionCopy = new GridTargetAction() { Element = selectedAction.Element, Modifiers = selectedAction.Modifiers.Select(m => (IActionModifier)new GridActionModifier() { Name = m.Name, TargetType = m.TargetType, ModifierType = m.ModifierType, Min = m.Min, Max = m.Max }).ToList(), Id = selectedAction.Id, Name = selectedAction.Name, TargetType = selectedAction.TargetType };
 

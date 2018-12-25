@@ -31,6 +31,22 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         [Option('s', "skip", Required = false, HelpText = "skip?", Default = 0)]
         public int Skip { get; set; }
 
+    }
+
+    public class CastingParserOptions
+    {
+        [Option('n', "name", Required = false, HelpText = "Name of the ability to use")]
+        public IEnumerable<string> Name { get; set; }
+
+        [Option("askip", Required = false, HelpText = "How many abilities matching that name to skip", Default = 0)]
+
+        public int AbiitySkip { get; set; }
+
+        [Option('a', "any", Required = false, HelpText = "any anything?", Default = false)]
+        public bool AttackAny { get; set; }
+
+        [Option('s', "skip", Required = false, HelpText = "skip?", Default = 0)]
+        public int Skip { get; set; }
 
     }
 
@@ -40,7 +56,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         private CombatModule _combatModule;
 
         public new GridGame Game => (GridGame)base.Game;
-        public override IReadOnlyList<string> Handles => new List<string>() { "attack" };
+        public override IReadOnlyList<string> Handles => new List<string>() { "attack", "cast" };
 
         public override void Configure(IGame game, IServiceProvider serviceProvider)
         {
@@ -90,8 +106,66 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                 case "attack":
                     await ProcessBasicAttack(request, player);
                     break;
+                case "cast":
+                    await ProcessBasicCast(request, player);
+                    break;
             }
 
+        }
+
+        private Task ProcessBasicCast(IProcessorData<CommandModel> request, IPlayer player)
+        {
+            request.Handled = true;
+
+            Parser.Default.ParseArguments<CastingParserOptions>(request.Data.StringFrom(1).Split(' '))
+               .WithParsed(async (parsed) =>
+               {
+
+                   var entityName = string.Join(" ", parsed.Name);
+
+                   if (!parsed.AttackAny && string.IsNullOrWhiteSpace(entityName))
+                   {
+                       await Game.Network.SendMessageToPlayerAsync(player, GetHelp());
+                       return;
+                   }
+
+
+                   GridEntity target = (GridEntity)(
+                        parsed.AttackAny ?
+                            player.Map.Entities :
+                            player.Map.Entities.Where(mi => mi.Name.IndexOf(entityName, StringComparison.OrdinalIgnoreCase) >= 0))
+                            .Skip(parsed.Skip)
+                   .FirstOrDefault();
+
+                   if (target == null)
+                   {
+                       await Game.Network.SendMessageToPlayerAsync(player, "No matching target found");
+                       return;
+                   }
+
+                   entityName = target.Name;
+
+                   if (!target.IsAttackable())
+                   {
+                       await Game.Network.SendMessageToPlayerAsync(player, $"{entityName} is not attackable");
+                       return;
+                   }
+
+                   var issues = string.Empty;
+
+                   var encounter = await _combatModule.AppendOrNewEncounterAsync((GridEntity)player, target);
+
+
+
+               })
+               .WithNotParsed(async (issues) =>
+               {
+                   await Game.Network.SendMessageToPlayerAsync(player, GetHelp());
+
+               })
+               ;
+
+            return Task.CompletedTask;
         }
 
         private Task ProcessBasicAttack(IProcessorData<CommandModel> request, IPlayer player)

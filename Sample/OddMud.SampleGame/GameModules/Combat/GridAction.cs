@@ -21,11 +21,13 @@ namespace OddMud.SampleGame.GameModules.Combat
 
         public Element Element { get; set; }
 
-    
+
         public DateTime ExecutedTime { get; set; }
 
 
         public virtual List<IActionModifier> Modifiers { get; set; } = new List<IActionModifier>();
+        public virtual List<IActionRequirement> Requirements { get; set; } = new List<IActionRequirement>();
+
 
 
         public virtual async Task<bool> Execute()

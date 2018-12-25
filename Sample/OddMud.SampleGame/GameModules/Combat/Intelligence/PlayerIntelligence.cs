@@ -10,6 +10,8 @@ namespace OddMud.SampleGame.GameModules.Combat.Intelligence
     public class PlayerIntelligence : IEncounterIntelligence
     {
 
+        private GridPlayer Player;
+
         private readonly GridTargetAction _defaultAction;
 
 
@@ -18,6 +20,10 @@ namespace OddMud.SampleGame.GameModules.Combat.Intelligence
             _defaultAction = defaultAction;
         }
 
+        public void Configure(IEntity entity)
+        {
+            Player = (GridPlayer)entity;
+        }
 
         public Task<ICombatAction> GetNextActionAsync(IEncounter encounter)
         {

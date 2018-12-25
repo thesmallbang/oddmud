@@ -165,7 +165,7 @@ namespace OddMud.SampleGame.GameModules.Combat
                     .AddText($"{Name}", Element.TextColor)
                     .AddText($" {elementInfo.Text}", elementInfo.TextColor)
                     .AddText($" {target.Name} for ")
-                    .AddTextLine($" {primaryAffectedStat.Value}", TextColor.Red)
+                    .AddTextLine($" {Math.Abs(primaryAffectedStat.Value)}", TextColor.Red)
 
                     //  .AddText(" for ")
                     //  .AddTextLine($" {Math.Abs(primaryAffectedStat.Value)}", elementInfo.TextColor)

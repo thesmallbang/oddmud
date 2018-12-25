@@ -55,10 +55,13 @@ namespace OddMud.Web.Game.Database
                             switch (e)
                             {
                                 case EntityType.Combat:
-                                    player.EntityComponents.Add(new GridCombatant() { AllowedActions = actions,   Intelligence = new PlayerIntelligence(actions.FirstOrDefault()) });
+                                    var playerIntelligence = new PlayerIntelligence(actions.FirstOrDefault());
+                                    player.EntityComponents.Add(new GridCombatant() { AllowedActions = actions,   Intelligence = playerIntelligence });
+                                    playerIntelligence.Configure(player);
                                     break;
                             }
                         });
+
             return player;
 
         }
@@ -67,14 +70,17 @@ namespace OddMud.Web.Game.Database
         {
             var entityTypes = dbEntity.EntityTypes.Select(et => et.EntityType).ToList();
 
+
+            IEncounterIntelligence intelligence = null;
+
+
             var components = new List<IEntityComponent>();
             entityTypes.ForEach(e =>
             {
                 switch (e)
                 {
                     case EntityType.Combat:
-                        IEncounterIntelligence intelligence = null;
-
+             
                         var actions = dbEntity.Class.Actions.Select(aref => aref.Action).Select(action => new GridTargetAction()
                         {
                             Name = action.Name,
@@ -88,7 +94,7 @@ namespace OddMud.Web.Game.Database
                         switch (dbEntity.ClassId.GetValueOrDefault(0))
                         {
                             case 1:
-                                intelligence = new GenericClassIntelligence(actions.Select(a => (ICombatAction)a).ToList(), actions.FirstOrDefault());
+                                intelligence = new GenericEntityIntelligence(actions.Select(a => (ICombatAction)a).ToList(), actions.FirstOrDefault());
                                 break;
                             default:
                                 intelligence = new PlayerIntelligence(actions.FirstOrDefault());
@@ -109,6 +115,10 @@ namespace OddMud.Web.Game.Database
                     dbEntity.Items.Select(dbItem => dbItem.BaseItem.ToItem()).ToList(),
                     dbEntity.Stats.Select(s => new BasicStat(s.Name, s.Base, s.Current)).ToList()
                     );
+
+            if (intelligence != null)
+                intelligence.Configure(entity);
+
 
 
             return entity;

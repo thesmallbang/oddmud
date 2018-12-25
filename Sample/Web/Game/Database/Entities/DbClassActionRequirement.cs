@@ -9,10 +9,11 @@ namespace OddMud.Web.Game.Database.Entities
 
     public class DbClassActionRequirement : BaseEntity
     {
-        [ForeignKey("Class")]
-        public int ClassId { get; set; }
 
-        public DbClass Class { get; set; }
+        [ForeignKey("ClassAction")]
+        public int ClassActionId { get; set; }
+
+        public DbClassAction ClassAction { get; set; }
 
         // level, str, etc..
         public string Name { get; set; }

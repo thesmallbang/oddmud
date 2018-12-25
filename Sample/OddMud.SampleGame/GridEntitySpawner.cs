@@ -1,5 +1,6 @@
 ﻿using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
+using OddMud.SampleGame.GameModules.Combat;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -48,6 +49,15 @@ namespace OddMud.SampleGame
             var entity = new GridEntity(storageNpc.Id, storageNpc.Name, storageNpc.EntityTypes, storageNpc.EntityComponents, storageNpc.Items,
                 storageNpc.Stats.Select(s => new BasicStat(s.Name, s.Base, s.Value)).ToList()
                 );
+
+            // configure the intel component again
+            if (entity.IsAttackable())
+            {
+                var component = (GridCombatant)entity.EntityComponents.First(r => r.GetType().GetInterfaces().Contains(typeof(ICombatant)));
+                component.Intelligence.Configure(entity);
+                
+            }
+
             entity.Map = Map;
             await game.World.AddEntityAsync(entity);
             await Map.AddEntityAsync(entity);

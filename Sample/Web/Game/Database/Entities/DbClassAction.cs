@@ -22,8 +22,7 @@ namespace OddMud.Web.Game.Database.Entities
 
         public ICollection<DbClassActionRequirement> Requirements { get; set; }
 
-        public ICollection<DbClassActionConsumeModifier> Consumes { get; set; }
-
+        
 
 
     }

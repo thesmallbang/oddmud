@@ -363,7 +363,7 @@ namespace OddMud.Web.Game
             {
                 var items = await dbContext.Items.Include(i => i.ItemTypes).Include(i => i.Stats)
                     .Select(db => db.ToItem(null)).ToListAsync();
-                _logger.LogInformation("Loaded items");
+                _logger.LogInformation($"Loaded {items.Count} items");
                 return items;
             }
         }
@@ -375,7 +375,9 @@ namespace OddMud.Web.Game
             using (var dbContext = new GameDbContext())
             {
                 var dbSpawners = await dbContext.Spawners.Where(s => s.Enabled).ToListAsync();
-                return dbSpawners.Select(s => s.ToSpawner()).ToList();
+                var spawners = dbSpawners.Select(s => s.ToSpawner()).ToList();
+                _logger.LogInformation($"Loaded {spawners.Count} spawners");
+                return spawners;
             }
         }
 

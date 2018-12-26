@@ -15,7 +15,7 @@ namespace OddMud.SampleGame
     public class GridEntitySpawner : GridSpawner
     {
 
-
+        public override SpawnType SpawnType => SpawnType.Entity;
         public GridEntitySpawner(int mapId, int itemId)
         {
             MapId = mapId;

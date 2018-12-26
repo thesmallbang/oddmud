@@ -23,11 +23,15 @@ namespace OddMud.Core.Game
         public IReadOnlyList<IItem> Items => _items;
 
         public IReadOnlyList<IEntity> Entities => _entities;
+        public IReadOnlyList<ISpawner> Spawners => _spawners;
+
 
 
         private readonly List<IItem> _items = new List<IItem>();
         private readonly List<IPlayer> _players = new List<IPlayer>();
         private readonly List<IEntity> _entities = new List<IEntity>();
+        private readonly List<ISpawner> _spawners = new List<ISpawner>();
+
 
         public event Func<object, EventArgs, Task> Ticked;
         public event Func<object, IPlayer, Task> PlayerAdded;
@@ -67,7 +71,7 @@ namespace OddMud.Core.Game
             if (!Players.Any(p => p == player))
                 return false;
 
-           var removed = _players.Remove(player);
+            var removed = _players.Remove(player);
 
             if (removed && PlayerRemoved != null)
                 await PlayerRemoved(this, player);
@@ -84,7 +88,7 @@ namespace OddMud.Core.Game
 
         public virtual Task TickAsync()
         {
-           Ticked?.Invoke(this, null);
+            Ticked?.Invoke(this, null);
             return Task.CompletedTask;
         }
 
@@ -95,7 +99,11 @@ namespace OddMud.Core.Game
 
         public virtual Task<bool> AddItemAsync(IItem item)
         {
+            if (_items.Contains(item))
+                return Task.FromResult(false);
+
             _items.Add(item);
+
             return Task.FromResult(true);
         }
 
@@ -104,30 +112,37 @@ namespace OddMud.Core.Game
             return Task.FromResult(_items.Remove(item));
         }
 
-        public async Task<bool> AddSpawnerAsync(ISpawner spawner)
+        public Task<bool> AddSpawnerAsync(ISpawner spawner)
         {
-            await World.AddSpawnerAsync(spawner);
+            if (_spawners.Contains(spawner))
+                return Task.FromResult(false);
 
-            return true;
+            _spawners.Add(spawner);
+
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> RemoveSpawnerAsync(ISpawner spawner)
+        public virtual Task<bool> RemoveSpawnerAsync(ISpawner spawner)
         {
-            await World.RemoveSpawnerAsync(spawner);
+            if (!_spawners.Contains(spawner))
+                return Task.FromResult(false);
 
-            return true;
+            return Task.FromResult(_spawners.Remove(spawner));
         }
 
-        public async Task<bool> AddEntityAsync(IEntity entity)
+        public virtual Task<bool> AddEntityAsync(IEntity entity)
         {
-            await World.AddEntityAsync(entity);
-            return true;
+            if (_entities.Contains(entity))
+                return Task.FromResult(false);
+
+            _entities.Add(entity);
+
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> RemoveEntity(IEntity entity)
+        public virtual Task<bool> RemoveEntity(IEntity entity)
         {
-            await World.RemoveEntityAsync(entity);
-            return true;
+            return Task.FromResult(_entities.Remove(entity));
         }
     }
 }

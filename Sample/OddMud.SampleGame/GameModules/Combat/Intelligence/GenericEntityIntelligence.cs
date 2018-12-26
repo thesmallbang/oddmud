@@ -83,7 +83,7 @@ namespace OddMud.SampleGame.GameModules.Combat.Intelligence
                 if (hpstat.Value < hpstat.Base / 2)
                 {
                     var potentialActions = _actionsHeal.Where(action => Entity.CurrentStatsAtLeast(action.Modifiers.Where(m => m.TargetType == ModifierTargetTypes.Caster))).ToList();
-                                       
+
 
                     if (potentialActions.Count() > 0)
                     {
@@ -126,7 +126,6 @@ namespace OddMud.SampleGame.GameModules.Combat.Intelligence
                 return Task.FromResult((ICombatAction)null);
 
             var actionCopy = new GridTargetAction() { Element = selectedAction.Element, Modifiers = selectedAction.Modifiers.Select(m => (IActionModifier)new GridActionModifier() { Name = m.Name, TargetType = m.TargetType, ModifierType = m.ModifierType, Min = m.Min, Max = m.Max }).ToList(), Id = selectedAction.Id, Name = selectedAction.Name, TargetType = selectedAction.TargetType };
-
 
 
             return Task.FromResult((ICombatAction)actionCopy);

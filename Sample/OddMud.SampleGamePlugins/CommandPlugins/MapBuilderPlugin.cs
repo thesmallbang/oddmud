@@ -36,8 +36,9 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
         [Option('z', "zlocation", Required = false, HelpText = "set the Z coordinate")]
         public int? Z { get; set; }
-
     }
+
+  
 
     public class EditMapParserOptions
     {
@@ -80,7 +81,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
     public class MapBuilderPlugin : LoggedInCommandPlugin
     {
-        public override string Name => nameof(ChatPlugin);
+        public override string Name => nameof(MapBuilderPlugin);
         public new GridGame Game => (GridGame)base.Game;
         public override IReadOnlyList<string> Handles => _handles;
         private List<string> _handles = new List<string>() { "map" };

@@ -14,6 +14,7 @@ namespace OddMud.SampleGame.Extensions
             return entity.GetType().GetInterfaces().Contains(typeof(IPlayer));
         }
 
+
         public static bool CurrentStatsAtLeast(this IEntity entity, IEnumerable<IActionModifier> modifiers)
         {
 

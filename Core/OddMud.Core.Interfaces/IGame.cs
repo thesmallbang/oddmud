@@ -17,6 +17,7 @@ namespace OddMud.Core.Interfaces
         // database of all items in the game (not their instances)
         IReadOnlyList<IItem> Items { get; }
         IReadOnlyList<IEntity> Entities { get; }
+        IReadOnlyList<ISpawner> Spawners { get; }
 
 
         ITransport Network { get; }

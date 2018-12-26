@@ -12,8 +12,8 @@ namespace OddMud.SampleGame
 
     public class GridItemSpawner : GridSpawner
     {
+        public override SpawnType SpawnType => SpawnType.Item;
 
- 
         public GridItemSpawner(int mapId, int itemId)
         {
             MapId = mapId;
@@ -44,6 +44,7 @@ namespace OddMud.SampleGame
             
             var storageItem = (GridItem)game.Items.FirstOrDefault(i => i.Id == EntityId);
             var item = new GridItem(storageItem.Id,storageItem.Name,storageItem.Description,storageItem.ItemTypes.ToList(), storageItem.Stats.Select(s => (BasicStat)s).ToList());
+            await game.World.AddItemAsync(item);
             await Map.AddItemAsync(item);
 
             SpawnedEntity = item;

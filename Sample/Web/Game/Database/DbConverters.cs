@@ -94,11 +94,9 @@ namespace OddMud.Web.Game.Database
 
                         switch (dbEntity.ClassId.GetValueOrDefault(0))
                         {
-                            case 1:
-                                intelligence = new GenericEntityIntelligence(actions.Select(a => (ICombatAction)a).ToList(), actions.FirstOrDefault());
-                                break;
+
                             default:
-                                intelligence = new PlayerIntelligence(actions.FirstOrDefault());
+                                intelligence = new GenericEntityIntelligence(actions.Select(a => (ICombatAction)a).ToList(), actions.FirstOrDefault());
                                 break;
                         }
 
@@ -131,9 +129,9 @@ namespace OddMud.Web.Game.Database
             switch (spawnType)
             {
                 case SpawnType.Item:
-                    return new GridItemSpawner(dbSpawner.MapId, dbSpawner.EntityId);
+                    return new GridItemSpawner(dbSpawner.MapId, dbSpawner.EntityId) { ResetDuration = dbSpawner.Delay };
                 case SpawnType.Entity:
-                    return new GridEntitySpawner(dbSpawner.MapId, dbSpawner.EntityId);
+                    return new GridEntitySpawner(dbSpawner.MapId, dbSpawner.EntityId) { ResetDuration = dbSpawner.Delay };
                 default:
                     return null;
 

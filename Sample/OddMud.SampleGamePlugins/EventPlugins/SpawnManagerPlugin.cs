@@ -76,12 +76,28 @@ namespace OddMud.SampleGamePlugins.EventPlugins
 
         }
 
-        private Task SpawnerSpawned(ISpawnable arg, IMap map)
+        private async Task SpawnerSpawned(ISpawnable spawned, IMap map)
         {
 
-            var itemsUpdate = MudLikeOperationBuilder.Start("itemlist").AddItems(map.Items)
-           .Build();
-            return Game.Network.SendViewCommandsToMapAsync(map, MudLikeViewBuilder.Start().AddOperation(itemsUpdate).Build());
+
+            if (spawned.GetType() == typeof(GridEntity))
+            {
+                var entity = (GridEntity)spawned;
+                entity.Died += EntityDied;
+            }
+            else
+            {
+               var itemsUpdate = MudLikeOperationBuilder.Start("itemlist").AddItems(map.Items)
+               .Build();
+                await Game.Network.SendViewCommandsToMapAsync(map, MudLikeViewBuilder.Start().AddOperation(itemsUpdate).Build());
+            }
+
+        }
+
+        private async Task EntityDied(IEntity entity)
+        {
+            entity.Died -= EntityDied;
+            await Game.World.RemoveEntityAsync(entity);
 
 
         }

@@ -27,8 +27,19 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         [Option('t', "type", Required = false, HelpText = "enemy or item")]
         public string SpawnType { get; set; }
 
+    }
 
+    public class AddSpawnerParserOptions
+    {
 
+        [Option('t', "type", Required = false, HelpText = "enemy or item")]
+        public string SpawnType { get; set; }
+
+        [Option('i', "id", Required = false, HelpText = "enemy or item id")]
+        public string EntityId { get; set; }
+
+        [Option('m', "mapid", Required = false, HelpText = "map")]
+        public int? MapId { get; set; }
 
     }
 
@@ -37,7 +48,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         public override string Name => nameof(SpawnBuilderPlugin);
         public new GridGame Game => (GridGame)base.Game;
         public override IReadOnlyList<string> Handles => _handles;
-        private List<string> _handles = new List<string>() { "spawn" };
+        private List<string> _handles = new List<string>() { "spawner" };
 
         public override Task LoggedInProcessAsync(IProcessorData<CommandModel> request, IPlayer player)
         {
@@ -45,14 +56,15 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
             {
                 case "list":
                     return ProcessListSpawnersAsync(request, player);
-
+                case "add":
+                    return ProcessAddSpawnersAsync(request, player);
 
             }
 
             return base.LoggedInProcessAsync(request, player);
         }
 
-        private async Task ProcessListSpawnersAsync(IProcessorData<CommandModel> request, IPlayer player)
+        private Task ProcessListSpawnersAsync(IProcessorData<CommandModel> request, IPlayer player)
         {
             request.Handled = true;
 
@@ -148,8 +160,42 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                    await Game.Network.SendMessageToPlayerAsync(player, "invalid command - for help type spawner help");
                });
 
+            return Task.CompletedTask;
+
         }
 
+        private Task ProcessAddSpawnersAsync(IProcessorData<CommandModel> request, IPlayer player)
+        {
+            request.Handled = true;
+
+            Parser.Default.ParseArguments<AddSpawnerParserOptions>(request.Data.StringFrom(2).Split(' '))
+               .WithParsed(async (parsed) =>
+               {
+                   var validSpawnTypes = new List<string>() { "item", "entity" };
+
+
+                   var match = validSpawnTypes.FirstOrDefault(s => s == parsed.SpawnType);
+                   if (match != null)
+                   {
+                       validSpawnTypes.RemoveAll(s => s != match);
+                   }
+
+                   if (validSpawnTypes.Count > 1)
+                       validSpawnTypes.RemoveAt(1);
+
+
+                   
+
+
+               })
+               .WithNotParsed(async (issues) =>
+               {
+                   await Game.Network.SendMessageToPlayerAsync(player, "invalid command - for help type spawner help");
+               });
+
+            return Task.CompletedTask;
+
+        }
 
 
 

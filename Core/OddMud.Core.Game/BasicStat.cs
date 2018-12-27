@@ -38,6 +38,13 @@ namespace OddMud.Core.Game
 
         }
 
+        public virtual Task RebaseAsync(int newbase, int newval)
+        {
+            Base = newbase;
+            Value = newval;
+            return Task.CompletedTask;
+        }
+
         public virtual async Task Fill()
         {
             var original = Value;

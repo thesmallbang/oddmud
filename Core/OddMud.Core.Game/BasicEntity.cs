@@ -16,7 +16,7 @@ namespace OddMud.Core.Game
 
         public event Func<IItem, IEntity, Task> ItemPickedUp;
         public event Func<IItem, IEntity, Task> ItemDropped;
-        public event Func<IEntity, Task> Died;
+        public event Func<IEntity,  Task> Died;
 
         public virtual IReadOnlyList<IItem> Items => _items;
 

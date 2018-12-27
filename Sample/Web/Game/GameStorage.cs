@@ -392,6 +392,7 @@ namespace OddMud.Web.Game
                 RecordBy = "notlinktoausercontextyet",
                 RecordDate = DateTimeOffset.Now,
                 Enabled = true,
+                Delay = sSpawner.ResetDuration,
                 EntityId = sSpawner.EntityId
             };
 
@@ -420,7 +421,7 @@ namespace OddMud.Web.Game
                     if (dbSpawner == null)
                         continue;
                     // should we save as new here? .. right now i wont so the current world can hold temporary spawners from events etc etc. 
-
+                    dbSpawner.Delay = spawner.ResetDuration;
                     dbSpawner.MapId = spawner.MapId;
                     dbSpawner.EntityId = spawner.Id;
                     dbSpawner.ModifiedBy = "nousercontextyet";

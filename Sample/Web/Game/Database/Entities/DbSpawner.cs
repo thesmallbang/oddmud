@@ -20,6 +20,8 @@ namespace OddMud.Web.Game.Database.Entities
         [ForeignKey("Map")]
         public int MapId { get; set; }
 
+        public int Delay { get; set; }
+
         public DbMap Map { get; set; }
 
 

@@ -30,5 +30,16 @@ namespace OddMud.SampleGame
                return EntityComponents.Any(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant)));
         }
 
+        public T FindComponent<T>()
+        {
+            return (T)EntityComponents.FirstOrDefault(ec => ec.GetType() == typeof(T));
+
+        }
+        public TResult FindComponent<TResult, TInterface>()
+        {
+            return (TResult)EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(TInterface)));
+
+        }
+
     }
 }

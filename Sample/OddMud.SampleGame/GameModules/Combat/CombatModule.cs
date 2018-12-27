@@ -90,8 +90,8 @@ namespace OddMud.SampleGame.GameModules.Combat
             // we need to see if the 2 entities are already in other encounters.. of so we will merge.. otherwise we join or create one
             var encounterForInitated = _encounters.FirstOrDefault(e => e.Combatants.Any(c => c.Key == initiated));
             var encounterForTarget = _encounters.FirstOrDefault(e => e.Combatants.Any(c => c.Key == target));
-            var attackerCombatant = (GridCombatant)initiated.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant)));
-            var targetCombatant = (GridCombatant)target.EntityComponents.FirstOrDefault(ec => ec.GetType().GetInterfaces().Contains(typeof(ICombatant)));
+            var attackerCombatant = initiated.FindComponent<GridCombatant>();
+            var targetCombatant = target.FindComponent<GridCombatant>();
 
 
             if (encounterForInitated != null

@@ -45,7 +45,7 @@ namespace OddMud.SampleGame
 
             // make sure to create new instances of classes instead of taking references from the storage entity
 
-            var storageNpc = (GridEntity)game.World.Entities.FirstOrDefault(i => i.Id == EntityId);
+            var storageNpc = (GridEntity)game.Entities.FirstOrDefault(i => i.Id == EntityId);
             var entity = new GridEntity(storageNpc.Id, storageNpc.Name, storageNpc.EntityTypes, storageNpc.EntityComponents, storageNpc.Items,
                 storageNpc.Stats.Select(s => new BasicStat(s.Name, s.Base, s.Value)).ToList()
                 );
@@ -53,9 +53,8 @@ namespace OddMud.SampleGame
             // configure the intel component again
             if (entity.IsAttackable())
             {
-                var component = (GridCombatant)entity.EntityComponents.First(r => r.GetType().GetInterfaces().Contains(typeof(ICombatant)));
+                var component = entity.FindComponent<GridCombatant>();
                 component.Intelligence.Configure(entity);
-                
             }
 
             entity.Map = Map;

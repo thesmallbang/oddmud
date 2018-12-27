@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.Logging;
+using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using OddMud.SampleGame;
@@ -326,35 +327,82 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
             if (ending == EncounterEndings.Expired)
                 return;
 
-            var maps = encounter.Combatants.Keys.Where(e => e.IsPlayer()).Select(c => c.Map).Distinct().ToList();
-
-
-
-            var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
-                 .StartContainer($"enc_{encounter.Id}")
-            .AddTextLine("");
-
             var gridEncounter = (GridEncounter)encounter;
 
-            //var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
-            //           .GroupBy(action => new { action.SourceEntity })
-            //           .Select(action => new { Attacker = action.Key.SourceEntity, Damage = action.Sum(s => s.DamageDone) })
-            //       .ToList();
 
-            //var dmgTaken = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
-            //                            .GroupBy(action => new { action.TargetEntity })
-            //                            .Select(action => new { Attacked = action.Key.TargetEntity, Damage = action.Sum(s => s.DamageDone) })
-            //                        .ToList();
+            // allocate experience to winners
 
-
-
-            foreach (var factionName in gridEncounter.Factions.Keys)
+            var factionInfo = gridEncounter.Factions.Select(f => new
             {
-                var factionEntities = gridEncounter.Factions[factionName];
+                FactionName = f.Key,
+                FactionEntities = f.Value,
+                isWinner = f.Value.Count(e => !gridEncounter.Dead.Contains(e)) > 0,
+                AverageLevel = f.Value.Average(e => e.Stats.FirstOrDefault(s => s.Name == "level")?.Value).GetValueOrDefault(0),
+                MinLevel = f.Value.Min(e => e.Stats.FirstOrDefault(s => s.Name == "level")?.Value).GetValueOrDefault(0),
+                MaxLevel = f.Value.Max(e => e.Stats.FirstOrDefault(s => s.Name == "level")?.Value).GetValueOrDefault(0)
+            }).ToList();
 
 
-                foreach (var entity in factionEntities)
+            // this would need updated to support more than 2 factions properly
+            var winners = factionInfo.FirstOrDefault(f => f.isWinner);
+            var losers = factionInfo.FirstOrDefault(f => !f.isWinner);
+
+            var cancelExperience = false;
+
+            if (winners.MinLevel < winners.MaxLevel - 5)
+                cancelExperience = true;
+
+
+            var experienceScaler = 1 + (losers.AverageLevel - winners.AverageLevel) * 0.2;
+            var experience = (3 * losers.AverageLevel) * experienceScaler;
+
+            if (!cancelExperience)
+            {
+                foreach (var winner in winners.FactionEntities)
                 {
+                    // players and monsters both gain experience the same for now
+                    var experienceStat = (BasicStat)winner.Stats.FirstOrDefault(s => s.Name == "experience");
+                    await experienceStat?.ApplyAsync(Convert.ToInt32(experience));
+
+                    if (experienceStat != null)
+                    {
+                        // check if leveled
+                        if (experienceStat.Value == experienceStat.Base)
+                        {
+                            var levelStat = winner.Stats.FirstOrDefault(s => s.Name == "level");
+                            await levelStat?.ApplyAsync(1);
+                            await experienceStat.RebaseAsync(Convert.ToInt32(experienceStat.Base * 1.5), 0);
+
+                            // fill stats
+                            var vitalStats = new List<string>() {"health","mana","stamina" };
+                            foreach (BasicStat stat in winner.Stats.Where(s => vitalStats.Contains(s.Name)).ToList())
+                            {
+                                await stat.Fill();
+                            }
+
+                        }
+                    }
+
+                }
+            }
+
+
+
+            foreach (var faction in factionInfo)
+            {
+                var players = faction.FactionEntities.Where(e => e.IsPlayer()).Select(e => e).Distinct();
+
+                if (!players.Any())
+                    continue;
+
+                var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
+               .StartContainer($"enc_{encounter.Id}").AddLineBreak();
+
+                foreach (var entity in faction.FactionEntities)
+                {
+
+                    var experienceStat = entity.Stats.FirstOrDefault(s => s.Name == "experience");
+
                     combatView
                         .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
                     if (entity.IsAlive && !encounter.Dead.Contains(entity))
@@ -363,6 +411,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                         .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}", TextColor.Green)
                         .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}", TextColor.Blue)
                         .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}", TextColor.Yellow)
+                        .AddText($" Lv {experienceStat.Value}/{experienceStat.Base}", TextColor.Yellow)
                       ;
                     }
                     else
@@ -370,45 +419,25 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                         combatView.AddText(" Dead", TextColor.Red, TextSize.Small);
                     }
 
-                    //var entityDmgDone = dmgDone.FirstOrDefault(d => d.Attacker == entity);
-                    //if (entityDmgDone != null)
-                    //{
-                    //    combatView
-                    //        .AddText($" Dmg {entityDmgDone.Damage}", TextColor.Teal);
-                    //    ;
-                    //}
-                    //var entityDmgTaken = dmgTaken.FirstOrDefault(d => d.Attacked == entity);
-                    //if (entityDmgTaken != null)
-                    //{
-                    //    combatView
-                    //        .AddText($" Taken {entityDmgTaken.Damage}", TextColor.Teal);
-                    //    ;
-                    //}
-
                     combatView.AddLineBreak();
 
                 }
 
-                combatView.AddTextLine("---------------------------");
+
+                if (faction.isWinner)
+                    combatView.AddTextLine($"You earned {experience} experience");
+                else
+                    combatView.AddTextLine($"You lost the encounter.");
+
+                combatView.EndContainer($"enc_{encounter.Id}");
+
+
+                var view = MudLikeViewBuilder.Start().AddOperation(combatView.Build()).Build();
+
+                await Game.Network.SendViewCommandsToPlayersAsync(players.Cast<IPlayer>(), view);
+
 
             }
-
-            combatView.EndContainer($"enc_{encounter.Id}");
-
-            var view = MudLikeViewBuilder.Start()
-           .AddOperation(combatView.Build()
-           ).Build();
-
-
-            foreach (var map in maps)
-            {
-                await Game.Network.SendViewCommandsToMapAsync(map, view);
-            }
-
-
-
-
-
 
         }
 

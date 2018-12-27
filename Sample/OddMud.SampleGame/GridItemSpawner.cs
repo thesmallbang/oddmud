@@ -57,7 +57,6 @@ namespace OddMud.SampleGame
         {
             // we dont care about this item being picked up anymore and it would actually cause issues when the item gets pickedup/dropped again and again later
             item.PickedUp -= ResetSpawner;
-           
             await base.Reset(item);
         }
 

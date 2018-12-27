@@ -18,6 +18,7 @@ namespace OddMud.SampleGame.GameModules.Combat.Intelligence
 
         private List<GridTargetAction> _actionsDmg = new List<GridTargetAction>();
         private List<GridTargetAction> _actionsHeal = new List<GridTargetAction>();
+        private Random _random = new Random();
 
 
         public GenericEntityIntelligence(List<ICombatAction> actions, ICombatAction defaultAction)
@@ -82,7 +83,7 @@ namespace OddMud.SampleGame.GameModules.Combat.Intelligence
             {
                 if (hpstat.Value < hpstat.Base / 2)
                 {
-                    var potentialActions = _actionsHeal.Where(action => Entity.CurrentStatsAtLeast(action.Modifiers.Where(m => m.TargetType == ModifierTargetTypes.Caster))).ToList();
+                    var potentialActions = _actionsHeal.Where(action => Entity.CurrentStatsAtLeast(action.Modifiers.Where(m => m.TargetType == ModifierTargetTypes.Caster && m.Min < 0))).ToList();
 
 
                     if (potentialActions.Count() > 0)
@@ -105,7 +106,12 @@ namespace OddMud.SampleGame.GameModules.Combat.Intelligence
                 var potentialActions = _actionsDmg.OrderByDescending(action => Math.Abs(action.Modifiers.FirstOrDefault(m => m.Name == "health").Value));
                 foreach (var action in potentialActions)
                 {
-                    var consumerMods = action.Modifiers.Where(m => m.TargetType == ModifierTargetTypes.Caster).ToList();
+
+                    if (_random.Next(1, 101) > 50)
+                        continue;
+
+
+                    var consumerMods = action.Modifiers.Where(m => m.TargetType == ModifierTargetTypes.Caster && m.Min < 0).ToList();
                     // can we meet all requirements?
 
                     var affordable = Entity.CurrentStatsAtLeast(consumerMods);
@@ -117,6 +123,10 @@ namespace OddMud.SampleGame.GameModules.Combat.Intelligence
                 }
 
             }
+
+            // randomly skip the ability altogether to add some feel of variety
+            if (_random.Next(1, 101) > 50)
+                selectedAction = null;
 
 
             if (selectedAction == null && Entity.CurrentStatsAtLeast(_defaultAction.Modifiers.Where(m => m.TargetType == ModifierTargetTypes.Caster)))

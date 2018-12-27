@@ -55,6 +55,8 @@ namespace OddMud.Web.Game
             var spawners = await Game.Store.LoadSpawnersAsync(Game);
             spawners.Select(o => (GridSpawner)o).ToList().ForEach(async (i) => {
                 await Game.AddSpawnerAsync((ISpawner)i);
+                await Game.World.AddSpawnerAsync((ISpawner)i);
+
                 // set the map object on each spawner loaded from db
                 i.Map = Game.World.Maps.FirstOrDefault(m => m.Id == i.MapId);
             });

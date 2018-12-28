@@ -4,26 +4,30 @@ using System.Collections.Generic;
 
 namespace OddMud.View.ComponentBased
 {
-    public class ComponentViewBuilder<T>
+    public class ComponentViewBuilder<T> : IViewCommand
     {
 
-        public List<ViewComponent<T>> ViewComponents { get; set; }
+        public List<ViewComponent<T>> ViewComponents { get; set; } = new List<ViewComponent<T>>();
+
 
         public static ComponentViewBuilder<T> Start() => new ComponentViewBuilder<T>();
 
-        public void AddComponent(T componentType,  string name, object componentData)
+        public ComponentViewBuilder<T> AddComponent(T componentType,  object componentData)
         {
-            ViewComponents.Add(new ViewComponent<T>() { componentType = componentType, name = name, data = componentData });        
+            var component = new ViewComponent<T>() { componentType = componentType, data = componentData };
+            ViewComponents.Add(component);
+            return this;
         }
+                
 
-        
-
+     
     }
+
+
 
     public class ViewComponent<TEnum> : IViewItem
     {
         public TEnum componentType { get; set; }
-        public string name { get; set; }
         public object data { get; set; }
 
     }

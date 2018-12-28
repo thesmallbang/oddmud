@@ -6,6 +6,10 @@ namespace OddMud.SampleGame.ViewComponents
 {
     public enum ComponentTypes
     {
-
+        MapData,
+        PlayerData,
+        ItemData,
+        EntityData,
+        EncounterData
     }
 }

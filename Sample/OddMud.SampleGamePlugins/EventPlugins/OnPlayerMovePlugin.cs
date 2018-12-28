@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OddMud.Core.Game;
+using OddMud.View.ComponentBased;
+using OddMud.SampleGame.ViewComponents;
 
 namespace OddMud.SampleGamePlugins.EventPlugins
 {
@@ -52,7 +54,17 @@ namespace OddMud.SampleGamePlugins.EventPlugins
             map.EntitiesChanged += MapEntitiesChanged; ;
 
 
-           // await Game.Network.SendViewCommandsToMapAsync(map, null);
+            var builder = ComponentViewBuilder<ComponentTypes>.Start()
+                .AddComponent(ComponentTypes.MapData, new WorldComponentData()
+                {
+                    Id = map.Id,
+                    Title = map.Name,
+                    Description = map.Description,
+                    Exits = map.Exits.Select(ex => ex.ToString().ToLower()).ToList()
+                })
+                ;
+
+            await Game.Network.SendViewCommandsToMapAsync(map, builder);
 
         }
 

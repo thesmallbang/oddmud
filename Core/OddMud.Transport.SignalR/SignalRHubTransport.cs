@@ -87,59 +87,30 @@ namespace OddMud.Transport.SignalR
             return _hub.Clients.Clients(players.Select(p => p.TransportId).ToList()).SendAsync("ChatStream", message);
         }
 
-        public Task SendViewCommandsToMapAsync(IMap map, IViewCommand<IViewItem> viewCommand)
+        public Task SendViewCommandsToMapAsync(IMap map, IViewCommand viewCommand)
         {
-            return _hub.Clients.Group($"map_{map.Id}").SendAsync("WorldStream", ViewToOutput(viewCommand));
+            return _hub.Clients.Group($"map_{map.Id}").SendAsync("WorldStream", viewCommand);
         }
 
-        private IEnumerable<ViewOverWire> ViewToOutput(IViewCommand<IViewItem> viewCommand)
+     
+
+        public Task SendViewCommandsToMapExceptAsync(IMap map, IEnumerable<IPlayer> players, IViewCommand viewCommand)
         {
-            var operations = viewCommand.Operations.ToList();
-            var output = new List<ViewOverWire>();
-
-
-            foreach (var operation in operations)
-            {
-                var objectToSend = new ViewOverWire()
-                {
-                    OperationType = operation.OperationType,
-                    RelatedId = operation.RelatedId,
-                    Output = BuildOperationOutput(operation)
-                };
-                output.Add(objectToSend);
-            }
-
-
-            return output;
-        }
-        private class ViewOverWire
-        {
-            public ViewOperationType OperationType { get; set; }
-            public string RelatedId { get; set; }
-            public string Output { get; set; }
-
+            return _hub.Clients.GroupExcept($"map_{map.Id}", players.Select(p => p.TransportId).ToList()).SendAsync("WorldStream", viewCommand);
         }
 
-        public Task SendViewCommandsToMapExceptAsync(IMap map, IEnumerable<IPlayer> players, IViewCommand<IViewItem> viewCommand)
-        {
-            return _hub.Clients.GroupExcept($"map_{map.Id}", players.Select(p => p.TransportId).ToList()).SendAsync("WorldStream", ViewToOutput(viewCommand));
-        }
-
-        public Task SendViewCommandsToMapExceptAsync(IMap map, IPlayer player, IViewCommand<IViewItem> viewCommand)
+        public Task SendViewCommandsToMapExceptAsync(IMap map, IPlayer player, IViewCommand viewCommand)
         {
 
             return SendViewCommandsToMapExceptAsync(map, new List<IPlayer>() { player }, viewCommand);
         }
 
-        public Task SendViewCommandsToPlayerAsync(IPlayer player, IViewCommand<IViewItem> viewCommand)
+        public Task SendViewCommandsToPlayerAsync(IPlayer player, IViewCommand viewCommand)
         {
-            return _hub.Clients.Client(player.TransportId).SendAsync("WorldStream", ViewToOutput(viewCommand));
+            return _hub.Clients.Client(player.TransportId).SendAsync("WorldStream", viewCommand);
         }
 
-        private string BuildOperationOutput(IViewOperation<IViewItem> operation)
-        {
-            return string.Join("", operation.Data.Select((viewItem) => _viewBuilder.Build(viewItem)));
-        }
+       
 
         public async Task AddConnectionAsync(string transportId)
         {
@@ -158,17 +129,17 @@ namespace OddMud.Transport.SignalR
 
         public Task SendViewCommandsToAllAsync(IViewCommand<IViewItem> viewCommand)
         {
-            return _hub.Clients.All.SendAsync("WorldStream", ViewToOutput(viewCommand));
+            return _hub.Clients.All.SendAsync("WorldStream", viewCommand);
         }
 
-        public Task SendViewCommandsToAllExceptAsync(IPlayer player, IViewCommand<IViewItem> viewCommand)
+        public Task SendViewCommandsToAllExceptAsync(IPlayer player, IViewCommand viewCommand)
         {
-            return _hub.Clients.AllExcept(new List<string>() { player.TransportId }).SendAsync("WorldStream", ViewToOutput(viewCommand));
+            return _hub.Clients.AllExcept(new List<string>() { player.TransportId }).SendAsync("WorldStream", viewCommand);
         }
 
-        public Task SendViewCommandsToPlayersAsync(IEnumerable<IPlayer> players, IViewCommand<IViewItem> viewCommand)
+        public Task SendViewCommandsToPlayersAsync(IEnumerable<IPlayer> players, IViewCommand viewCommand)
         {
-            return _hub.Clients.Clients(players.Select(p => p.TransportId).ToList()).SendAsync("WorldStream", ViewToOutput(viewCommand));
+            return _hub.Clients.Clients(players.Select(p => p.TransportId).ToList()).SendAsync("WorldStream", viewCommand);
         }
     }
 

@@ -8,9 +8,11 @@ import { GameRoutingModule } from './game-routing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MapInfoComponent } from './world/components/map-info/map-info.component';
+
 
 @NgModule({
-  declarations: [MainComponent, WorldComponent, ChatComponent, CommandsComponent],
+  declarations: [MainComponent, WorldComponent, ChatComponent, CommandsComponent, MapInfoComponent],
   imports: [
     ReactiveFormsModule,
     MatButtonModule,

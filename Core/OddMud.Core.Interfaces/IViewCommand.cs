@@ -4,7 +4,15 @@ using System.Text;
 
 namespace OddMud.Core.Interfaces
 {
-    public interface IViewCommand<TData>
+
+
+    public interface IViewCommand
+    {
+
+
+
+    }
+    public interface IViewCommand<TData> : IViewCommand
     {
 
         IEnumerable<IViewOperation<TData>> Operations { get;  }

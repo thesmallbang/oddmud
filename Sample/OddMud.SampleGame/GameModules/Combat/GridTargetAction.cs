@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using OddMud.Core.Interfaces;
 using OddMud.SampleGame.Extensions;
-using OddMud.View.MudLike;
 
 namespace OddMud.SampleGame.GameModules.Combat
 {
@@ -144,46 +143,7 @@ namespace OddMud.SampleGame.GameModules.Combat
             return Task.CompletedTask;
         }
 
-        public override void AppendToOperation(IOperationBuilder operationBuilder)
-        {
-            var builder = (MudLikeOperationBuilder)operationBuilder;
-
-            if (TargetEntities.Count == 0)
-                return;
-
-            builder
-                .StartContainer("action");
-
-            foreach (var target in TargetEntities)
-            {
-                var primaryAffectedStat = Modifiers.FirstOrDefault();
-                if (primaryAffectedStat == null)
-                    continue;
-
-                var elementInfo = Element.GetRange(primaryAffectedStat.Value);
-
-                // dude's actionName hits target for # statname
-                builder.AddText($"{SourceEntity.Name}'s ")
-                    .AddText($"{Name}", Element.TextColor)
-                    .AddText($" {elementInfo.Text}", elementInfo.TextColor)
-                    .AddText($" {target.Name} for ")
-                    .AddTextLine($" {Math.Abs(primaryAffectedStat.Value)}", TextColor.Red)
-
-                    //  .AddText(" for ")
-                    //  .AddTextLine($" {Math.Abs(primaryAffectedStat.Value)}", elementInfo.TextColor)
-                    ;
-
-            }
-
-
-
-            //   .AddText($"{DamageDone}", TextColor.Red)
-            //   .AddTextLine(" damage")
-            builder.EndContainer("action");
-
-            //return $"{SourceEntity?.Name} spit on {TargetEntity?.Name} for {_damageDone}";
-        }
-
+  
 
 
     }

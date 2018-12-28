@@ -11,7 +11,6 @@ using OddMud.SampleGamePlugins;
 using CommandLine;
 using OddMud.SampleGame.Misc;
 using System.Linq;
-using OddMud.View.MudLike;
 using System.Diagnostics;
 using OddMud.SampleGame.GameModules.Combat;
 
@@ -81,77 +80,77 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                    }
 
 
-                   var viewbuilder = MudLikeViewBuilder.Start();
+                   //var viewbuilder = MudLikeViewBuilder.Start();
 
-                   var partial = Game.Spawners.Cast<GridSpawner>().Where(spawner => spawner.Map == player.Map).ToList();
-                   foreach (var spawnType in validSpawnTypes)
-                   {
-                       IViewOperation<IViewItem> operation = null;
-                       var opBuilder = MudLikeOperationBuilder.Start();
-                       opBuilder
-                       .AddTextLine(spawnType, TextColor.Olive)
-                       .AddTextLine("------------------------------", TextColor.Olive);
+                   //var partial = Game.Spawners.Cast<GridSpawner>().Where(spawner => spawner.Map == player.Map).ToList();
+                   //foreach (var spawnType in validSpawnTypes)
+                   //{
+                   //    IViewOperation<IViewItem> operation = null;
+                   //    var opBuilder = MudLikeOperationBuilder.Start();
+                   //    opBuilder
+                   //    .AddTextLine(spawnType, TextColor.Olive)
+                   //    .AddTextLine("------------------------------", TextColor.Olive);
 
-                       switch (spawnType)
-                       {
-                           case "entity":
-                               var entityMatches = partial.Where(spawner => spawner.SpawnType == Core.Game.SpawnType.Entity).Select(s => s.EntityId).ToList();
-                               var entities = Game.Entities.Where(e => entityMatches.Contains(e.Id)).ToList();
-                               foreach (GridEntity entity in entities)
-                               {
-                                   opBuilder
-                                   .AddText($"{entity.Id} ", TextColor.Aqua)
-                                   .AddText($"{entity.Name} ");
-
-
-                                   entity.Stats.ToList().ForEach(stat =>
-                                   {
-                                       opBuilder
-                                       .AddText($"{stat.Name} ", TextColor.Gray)
-                                       .AddText($"{stat.Value} ")
-                                       ;
-                                   });
-                                   opBuilder.AddLineBreak();
-                               }
-
-                               operation = opBuilder.Build();
-
-                               break;
-                           case "item":
-                               var itemMatches = partial.Where(spawner => spawner.SpawnType == Core.Game.SpawnType.Item);
-                               var items = Game.Items.Where(e => itemMatches.Select(i => i.Id).Contains(e.Id)).ToList();
-
-                               foreach (GridItem item in items)
-                               {
-                                   opBuilder
-                                   .AddText($"{item.Id} ", TextColor.Aqua)
-                                   .AddText($"{item.Name} ")
-                                   ;
-
-                                   item.Stats.ToList().ForEach(stat =>
-                                   {
-                                       opBuilder
-                                       .AddText($"{stat.Name} ", TextColor.Gray)
-                                       .AddText($"{stat.Value} ")
-                                       ;
-                                   });
-                                   opBuilder.AddLineBreak();
-                               }
-
-                               operation = opBuilder.Build();
-                               break;
-                           default:
-                               break;
-                       }
-
-                       if (operation != null)
-                           viewbuilder.AddOperation(operation);
+                   //    switch (spawnType)
+                   //    {
+                   //        case "entity":
+                   //            var entityMatches = partial.Where(spawner => spawner.SpawnType == Core.Game.SpawnType.Entity).Select(s => s.EntityId).ToList();
+                   //            var entities = Game.Entities.Where(e => entityMatches.Contains(e.Id)).ToList();
+                   //            foreach (GridEntity entity in entities)
+                   //            {
+                   //                opBuilder
+                   //                .AddText($"{entity.Id} ", TextColor.Aqua)
+                   //                .AddText($"{entity.Name} ");
 
 
-                   }
+                   //                entity.Stats.ToList().ForEach(stat =>
+                   //                {
+                   //                    opBuilder
+                   //                    .AddText($"{stat.Name} ", TextColor.Gray)
+                   //                    .AddText($"{stat.Value} ")
+                   //                    ;
+                   //                });
+                   //                opBuilder.AddLineBreak();
+                   //            }
+
+                   //            operation = opBuilder.Build();
+
+                   //            break;
+                   //        case "item":
+                   //            var itemMatches = partial.Where(spawner => spawner.SpawnType == Core.Game.SpawnType.Item);
+                   //            var items = Game.Items.Where(e => itemMatches.Select(i => i.Id).Contains(e.Id)).ToList();
+
+                   //            foreach (GridItem item in items)
+                   //            {
+                   //                opBuilder
+                   //                .AddText($"{item.Id} ", TextColor.Aqua)
+                   //                .AddText($"{item.Name} ")
+                   //                ;
+
+                   //                item.Stats.ToList().ForEach(stat =>
+                   //                {
+                   //                    opBuilder
+                   //                    .AddText($"{stat.Name} ", TextColor.Gray)
+                   //                    .AddText($"{stat.Value} ")
+                   //                    ;
+                   //                });
+                   //                opBuilder.AddLineBreak();
+                   //            }
+
+                   //            operation = opBuilder.Build();
+                   //            break;
+                   //        default:
+                   //            break;
+                   //    }
+
+                   //    if (operation != null)
+                   //        viewbuilder.AddOperation(operation);
 
 
-                   await Game.Network.SendViewCommandsToPlayerAsync(player, viewbuilder.Build());
+                   //}
+
+
+                   //await Game.Network.SendViewCommandsToPlayerAsync(player, viewbuilder.Build());
 
 
                })

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OddMud.Core.Interfaces;
 using OddMud.SampleGame.Extensions;
-using OddMud.View.MudLike;
+
 
 namespace OddMud.SampleGame.GameModules.Combat
 {
@@ -57,16 +57,7 @@ namespace OddMud.SampleGame.GameModules.Combat
 
         }
 
-        public virtual void AppendToOperation(IOperationBuilder operationBuilder)
-        {
-
-        }
-
-        public virtual string ToMessage()
-        {
-            return "";
-        }
-
+    
 
     }
 }

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OddMud.Core.Game;
 using Microsoft.Extensions.Logging;
-using OddMud.View.MudLike;
+
 
 namespace OddMud.SampleGamePlugins.EventPlugins
 {
@@ -87,9 +87,9 @@ namespace OddMud.SampleGamePlugins.EventPlugins
             }
             else
             {
-               var itemsUpdate = MudLikeOperationBuilder.Start("itemlist").AddItems(map.Items)
-               .Build();
-                await Game.Network.SendViewCommandsToMapAsync(map, MudLikeViewBuilder.Start().AddOperation(itemsUpdate).Build());
+               //var itemsUpdate = MudLikeOperationBuilder.Start("itemlist").AddItems(map.Items)
+               //.Build();
+               // await Game.Network.SendViewCommandsToMapAsync(map, MudLikeViewBuilder.Start().AddOperation(itemsUpdate).Build());
             }
 
         }

@@ -1,5 +1,4 @@
 ﻿using OddMud.Core.Interfaces;
-using OddMud.View.MudLike;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +13,6 @@ namespace OddMud.SampleGame.GameModules.Combat
 
         public string Name { get; set; }
 
-        public TextColor TextColor { get; set; }
-
         public List<IElementRange> Ranges { get; set; }
 
         public ElementRange GetRange(int value)
@@ -27,7 +24,7 @@ namespace OddMud.SampleGame.GameModules.Combat
             if (match != null)
                 return (ElementRange)match;
 
-            return new ElementRange() { Min = value, Max = value, Text = "touches", TextColor = TextColor.Normal };
+            return new ElementRange() { Min = value, Max = value, Text = "touches" };
 
         }
 

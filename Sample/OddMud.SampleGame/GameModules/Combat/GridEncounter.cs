@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using OddMud.Core.Game;
 using OddMud.Core.Interfaces;
 using OddMud.SampleGame.Extensions;
-using OddMud.View.MudLike;
 
 namespace OddMud.SampleGame.GameModules.Combat
 {

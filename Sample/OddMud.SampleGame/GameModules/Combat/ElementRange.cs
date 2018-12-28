@@ -1,9 +1,6 @@
 ﻿using OddMud.Core.Interfaces;
-using OddMud.View.MudLike;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
+
 
 namespace OddMud.SampleGame.GameModules.Combat
 {
@@ -14,7 +11,6 @@ namespace OddMud.SampleGame.GameModules.Combat
         public int? Max { get; set; }
 
         public string Text { get; set; }
-        public TextColor TextColor { get; set; }
 
 
     }

@@ -14,7 +14,6 @@ using OddMud.SampleGame.Commands;
 using OddMud.SampleGame.Extensions;
 using OddMud.SampleGame.GameModules;
 using OddMud.SampleGame.GameModules.Combat;
-using OddMud.View.MudLike;
 
 namespace OddMud.SampleGamePlugins.CommandPlugins
 {
@@ -86,16 +85,16 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
             var map = ((GridPlayer)encounter.Combatants.First().Key).Map;
 
-            await Game.Network.SendViewCommandsToMapAsync(map,
-               MudLikeViewBuilder.Start()
-               .AddOperation(
-                   MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
-                        .StartContainer($"enc_{encounter.Id}")
-                        .AddTextLine("Combat Starting")
-                        .EndContainer($"enc_{encounter.Id}")
-                        .Build()
-                   )
-               .Build());
+            //await Game.Network.SendViewCommandsToMapAsync(map,
+            //   MudLikeViewBuilder.Start()
+            //   .AddOperation(
+            //       MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
+            //            .StartContainer($"enc_{encounter.Id}")
+            //            .AddTextLine("Combat Starting")
+            //            .EndContainer($"enc_{encounter.Id}")
+            //            .Build()
+            //       )
+            //   .Build());
 
         }
 
@@ -228,92 +227,92 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
         private async Task Encounter_ActionExecuted(IEncounter encounter, ICombatAction action)
         {
 
-            // this whole thing can be optimized to send way smaller replacement segments later
+            // // this whole thing can be optimized to send way smaller replacement segments later
 
-            var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
-                 .StartContainer($"enc_{encounter.Id}")
-                 .AddTextLine("");
+            // var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
+            //      .StartContainer($"enc_{encounter.Id}")
+            //      .AddTextLine("");
 
-            var gridEncounter = (GridEncounter)encounter;
-            var entityAction = (GridTargetAction)action;
+            // var gridEncounter = (GridEncounter)encounter;
+            // var entityAction = (GridTargetAction)action;
 
-            //var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
-            //      .GroupBy(a => new { a.SourceEntity })
-            //      .Select(a => new { Attacker = a.Key.SourceEntity, Damage = a.Sum(s => s.DamageDone) })
-            //  .ToList();
+            // //var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
+            // //      .GroupBy(a => new { a.SourceEntity })
+            // //      .Select(a => new { Attacker = a.Key.SourceEntity, Damage = a.Sum(s => s.DamageDone) })
+            // //  .ToList();
 
-            //var dmgTaken = encounter.ActionLog.Select((a) => (GridSingleTargetAction)a)
-            //                            .GroupBy(a => new { a.TargetEntity })
-            //                            .Select(a => new { Attacked = a.Key.TargetEntity, Damage = a.Sum(s => s.DamageDone) })
-            //                        .ToList();
+            // //var dmgTaken = encounter.ActionLog.Select((a) => (GridSingleTargetAction)a)
+            // //                            .GroupBy(a => new { a.TargetEntity })
+            // //                            .Select(a => new { Attacked = a.Key.TargetEntity, Damage = a.Sum(s => s.DamageDone) })
+            // //                        .ToList();
 
-            foreach (var factionName in gridEncounter.Factions.Keys)
-            {
-                var factionEntities = gridEncounter.Factions[factionName];
-
-
-                foreach (var entity in factionEntities)
-                {
-                    combatView
-                      .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
-                    if (entity.IsAlive && !encounter.Dead.Contains(entity))
-                    {
-                        combatView
-                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}", TextColor.Green)
-                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}", TextColor.Blue)
-                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}", TextColor.Yellow)
-                      ;
-                    }
-                    else
-                    {
-                        combatView.AddText(" Dead", TextColor.Red, TextSize.Small);
-                    }
-
-                    //var entityDmgDone = dmgDone.FirstOrDefault(d => d.Attacker == entity);
-                    //if (entityDmgDone != null)
-                    //{
-                    //    combatView
-                    //        .AddText($" Dmg {entityDmgDone.Damage}", TextColor.Teal);
-                    //    ;
-                    //}
-                    //var entityDmgTaken = dmgTaken.FirstOrDefault(d => d.Attacked == entity);
-                    //if (entityDmgTaken != null)
-                    //{
-                    //    combatView
-                    //        .AddText($" Taken {entityDmgTaken.Damage}", TextColor.Teal);
-                    //    ;
-                    //}
-
-                    combatView.AddLineBreak();
-
-                }
-
-                combatView.AddTextLine("---------------------------");
-
-            }
+            // foreach (var factionName in gridEncounter.Factions.Keys)
+            // {
+            //     var factionEntities = gridEncounter.Factions[factionName];
 
 
-            // add last X actions 
-            var actions = encounter.ActionLog.OrderByDescending(a => a.ExecutedTime).Take(10).OrderBy(a => a.ExecutedTime).ToList();
-            actions.ForEach((a) => a.AppendToOperation(combatView));
+            //     foreach (var entity in factionEntities)
+            //     {
+            //         combatView
+            //           .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
+            //         if (entity.IsAlive && !encounter.Dead.Contains(entity))
+            //         {
+            //             combatView
+            //             .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}", TextColor.Green)
+            //             .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}", TextColor.Blue)
+            //             .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}", TextColor.Yellow)
+            //           ;
+            //         }
+            //         else
+            //         {
+            //             combatView.AddText(" Dead", TextColor.Red, TextSize.Small);
+            //         }
 
-            combatView.EndContainer($"enc_{encounter.Id}");
+            //         //var entityDmgDone = dmgDone.FirstOrDefault(d => d.Attacker == entity);
+            //         //if (entityDmgDone != null)
+            //         //{
+            //         //    combatView
+            //         //        .AddText($" Dmg {entityDmgDone.Damage}", TextColor.Teal);
+            //         //    ;
+            //         //}
+            //         //var entityDmgTaken = dmgTaken.FirstOrDefault(d => d.Attacked == entity);
+            //         //if (entityDmgTaken != null)
+            //         //{
+            //         //    combatView
+            //         //        .AddText($" Taken {entityDmgTaken.Damage}", TextColor.Teal);
+            //         //    ;
+            //         //}
 
-            var view = MudLikeViewBuilder.Start()
-           .AddOperation(combatView.Build()
-           ).Build();
+            //         combatView.AddLineBreak();
+
+            //     }
+
+            //     combatView.AddTextLine("---------------------------");
+
+            // }
 
 
-            if (entityAction.TargetEntities.Contains(entityAction.SourceEntity) || entityAction.TargetEntities.Count == 0)
-                await Game.Network.SendViewCommandsToMapAsync(entityAction.SourceEntity.Map, view);
-            else
-            {
-                var maps = new List<IMap>() { entityAction.SourceEntity.Map };
-                maps.AddRange(entityAction.TargetEntities.Where(t => t.Map != entityAction.SourceEntity.Map).Select(t => t.Map).Distinct());
+            // // add last X actions 
+            // var actions = encounter.ActionLog.OrderByDescending(a => a.ExecutedTime).Take(10).OrderBy(a => a.ExecutedTime).ToList();
+            // actions.ForEach((a) => a.AppendToOperation(combatView));
 
-                maps.ForEach(async m => await Game.Network.SendViewCommandsToMapAsync(m, view));
+            // combatView.EndContainer($"enc_{encounter.Id}");
 
-            }
+            // var view = MudLikeViewBuilder.Start()
+            //.AddOperation(combatView.Build()
+            //).Build();
+
+
+            // if (entityAction.TargetEntities.Contains(entityAction.SourceEntity) || entityAction.TargetEntities.Count == 0)
+            //     await Game.Network.SendViewCommandsToMapAsync(entityAction.SourceEntity.Map, view);
+            // else
+            // {
+            //     var maps = new List<IMap>() { entityAction.SourceEntity.Map };
+            //     maps.AddRange(entityAction.TargetEntities.Where(t => t.Map != entityAction.SourceEntity.Map).Select(t => t.Map).Distinct());
+
+            //     maps.ForEach(async m => await Game.Network.SendViewCommandsToMapAsync(m, view));
+
+            // }
 
 
         }
@@ -398,45 +397,45 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                 if (!players.Any())
                     continue;
 
-                var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
-               .StartContainer($"enc_{encounter.Id}").AddLineBreak();
+                //    var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
+                //   .StartContainer($"enc_{encounter.Id}").AddLineBreak();
 
-                foreach (var entity in faction.FactionEntities)
-                {
-                    var experienceStat = entity.Stats.FirstOrDefault(s => s.Name == "experience");
+                //    foreach (var entity in faction.FactionEntities)
+                //    {
+                //        var experienceStat = entity.Stats.FirstOrDefault(s => s.Name == "experience");
 
-                    combatView
-                        .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
-                    if (entity.IsAlive && !encounter.Dead.Contains(entity))
-                    {
-                        combatView
-                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}", TextColor.Green)
-                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}", TextColor.Blue)
-                        .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}", TextColor.Yellow)
-                        .AddText($" Lv {experienceStat.Value}/{experienceStat.Base}", TextColor.Yellow)
-                      ;
-                    }
-                    else
-                    {
-                        combatView.AddText(" Dead", TextColor.Red, TextSize.Small);
-                    }
+                //        combatView
+                //            .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
+                //        if (entity.IsAlive && !encounter.Dead.Contains(entity))
+                //        {
+                //            combatView
+                //            .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}", TextColor.Green)
+                //            .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}", TextColor.Blue)
+                //            .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}", TextColor.Yellow)
+                //            .AddText($" Lv {experienceStat.Value}/{experienceStat.Base}", TextColor.Yellow)
+                //          ;
+                //        }
+                //        else
+                //        {
+                //            combatView.AddText(" Dead", TextColor.Red, TextSize.Small);
+                //        }
 
-                    combatView.AddLineBreak();
+                //        combatView.AddLineBreak();
 
-                }
-
-
-                if (faction.isWinner)
-                    combatView.AddTextLine($"You earned {experience} experience");
-                else
-                    combatView.AddTextLine($"You lost the encounter.");
-
-                combatView.EndContainer($"enc_{encounter.Id}");
+                //    }
 
 
-                var view = MudLikeViewBuilder.Start().AddOperation(combatView.Build()).Build();
+                //    if (faction.isWinner)
+                //        combatView.AddTextLine($"You earned {experience} experience");
+                //    else
+                //        combatView.AddTextLine($"You lost the encounter.");
 
-                await Game.Network.SendViewCommandsToPlayersAsync(players.Cast<IPlayer>(), view);
+                //    combatView.EndContainer($"enc_{encounter.Id}");
+
+
+                //    var view = MudLikeViewBuilder.Start().AddOperation(combatView.Build()).Build();
+
+                //    await Game.Network.SendViewCommandsToPlayersAsync(players.Cast<IPlayer>(), view);
 
 
             }

@@ -11,7 +11,6 @@ using OddMud.SampleGamePlugins;
 using CommandLine;
 using OddMud.SampleGame.Misc;
 using System.Linq;
-using OddMud.View.MudLike;
 
 namespace OddMud.SampleGamePlugins.CommandPlugins
 {
@@ -157,9 +156,9 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                    {
                        await Game.Store.UpdateMapsAsync(Game, new List<IMap>() { map });
 
-                       var mapView = MudLikeOperationBuilder.Start("mapdata").AddMap(map).Build();
+                       //var mapView = MudLikeOperationBuilder.Start("mapdata").AddMap(map).Build();
 
-                       await Game.Network.SendViewCommandsToMapAsync(map, MudLikeViewBuilder.Start().AddOperation(mapView).Build());
+                       //await Game.Network.SendViewCommandsToMapAsync(map, MudLikeViewBuilder.Start().AddOperation(mapView).Build());
 
                    }
 

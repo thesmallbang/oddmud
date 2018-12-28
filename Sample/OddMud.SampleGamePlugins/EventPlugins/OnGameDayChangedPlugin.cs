@@ -3,7 +3,6 @@ using OddMud.SampleGame;
 using OddMud.SampleGame.Extensions;
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
-using OddMud.View.MudLike;
 using System;
 using System.Threading.Tasks;
 
@@ -24,11 +23,11 @@ namespace OddMud.SampleGamePlugins.EventPlugins
             if (lastRunWorldDate.Day != worldTime.Day)
             {
                 lastRunWorldDate = worldTime;
-                var viewUpdate = MudLikeOperationBuilder.Start("dateview")
-                    .AddWorldDate(worldTime)
-                    .Build();
+                //var viewUpdate = MudLikeOperationBuilder.Start("dateview")
+                //    .AddWorldDate(worldTime)
+                //    .Build();
 
-                await Game.Network.SendViewCommandsToPlayersAsync(Game.Players, MudLikeViewBuilder.Start().AddOperation(viewUpdate).Build());
+                //await Game.Network.SendViewCommandsToPlayersAsync(Game.Players, MudLikeViewBuilder.Start().AddOperation(viewUpdate).Build());
             }
 
 

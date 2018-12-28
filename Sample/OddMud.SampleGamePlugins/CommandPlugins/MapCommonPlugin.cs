@@ -9,7 +9,7 @@ using OddMud.Core.Plugins;
 using OddMud.SampleGame;
 using OddMud.SampleGame.Commands;
 using OddMud.SampleGame.Extensions;
-using OddMud.View.MudLike;
+
 
 namespace OddMud.SampleGamePlugins.CommandPlugins
 {
@@ -81,13 +81,13 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                            await player.PickupItemAsync(Game, i);
                    }
 
-                   var itemView = MudLikeViewBuilder.Start()
-                    .AddOperation(
-                        MudLikeOperationBuilder.Start("itemlist").AddItems(player.Map.Items).Build())
-                    .Build();
+                   //var itemView = MudLikeViewBuilder.Start()
+                   // .AddOperation(
+                   //     MudLikeOperationBuilder.Start("itemlist").AddItems(player.Map.Items).Build())
+                   // .Build();
 
 
-                   await Game.Network.SendViewCommandsToMapAsync(player.Map, itemView);
+                   //await Game.Network.SendViewCommandsToMapAsync(player.Map, itemView);
 
                })
                .WithNotParsed(async (issues) =>

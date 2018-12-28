@@ -337,6 +337,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                 FactionName = f.Key,
                 FactionEntities = f.Value,
                 isWinner = f.Value.Count(e => !gridEncounter.Dead.Contains(e)) > 0,
+                FactionSize = f.Value.Count,
                 AverageLevel = f.Value.Average(e => e.Stats.FirstOrDefault(s => s.Name == "level")?.Value).GetValueOrDefault(0),
                 MinLevel = f.Value.Min(e => e.Stats.FirstOrDefault(s => s.Name == "level")?.Value).GetValueOrDefault(0),
                 MaxLevel = f.Value.Max(e => e.Stats.FirstOrDefault(s => s.Name == "level")?.Value).GetValueOrDefault(0)
@@ -353,8 +354,10 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                 cancelExperience = true;
 
 
+            var sizeScaler = 1.5 * (winners.FactionSize - losers.FactionSize);
             var experienceScaler = 1 + (losers.AverageLevel - winners.AverageLevel) * 0.2;
-            var experience = (3 * losers.AverageLevel) * experienceScaler;
+            var partialScaled = (3 * losers.AverageLevel) * experienceScaler;
+            var experience = partialScaled - sizeScaler;
 
             if (!cancelExperience)
             {
@@ -374,7 +377,7 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
                             await experienceStat.RebaseAsync(Convert.ToInt32(experienceStat.Base * 1.5), 0);
 
                             // fill stats
-                            var vitalStats = new List<string>() {"health","mana","stamina" };
+                            var vitalStats = new List<string>() { "health", "mana", "stamina" };
                             foreach (BasicStat stat in winner.Stats.Where(s => vitalStats.Contains(s.Name)).ToList())
                             {
                                 await stat.Fill();
@@ -400,7 +403,6 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
                 foreach (var entity in faction.FactionEntities)
                 {
-
                     var experienceStat = entity.Stats.FirstOrDefault(s => s.Name == "experience");
 
                     combatView

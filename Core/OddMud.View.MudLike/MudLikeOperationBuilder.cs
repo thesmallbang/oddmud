@@ -59,6 +59,20 @@ namespace OddMud.View.MudLike
             return this;
         }
 
+        public MudLikeOperationBuilder AddLink(string message, string command)
+        {
+            viewItems.Add(new LinkItem(message,command));
+            return this;
+        }
+        public MudLikeOperationBuilder AddLinkLine(string message, string command)
+        {
+            AddLink(message, command);
+            AddLineBreak();
+            return this;
+        }
+
+
+
         public MudLikeOperationBuilder AddLineBreak()
         {
             viewItems.Add(new LineBreakItem());

@@ -50,9 +50,19 @@ namespace OddMud.SampleGame.Extensions
                 .AddText($"{map.Id} ", TextColor.Gray, TextSize.Small)
                 .AddTextLine(map.Name, color: TextColor.Aqua, size: TextSize.Strong)
                 .AddTextLine(map.Description, size: TextSize.Strong)
-                .AddText("Exits ")
-                .AddTextLine(string.Join(",", map.Exits.Select(o => o.ToString().ToLower())), TextColor.Green)
-                .EndContainer("mapdata");
+                .AddText("Exits ");
+
+            var exitCounter = 0;
+            foreach (var exit in map.Exits)
+            {
+                exitCounter++;
+                builder.AddLink(exit.ToString(), exit.ToString().ToLower());
+                if (exitCounter != map.Exits.Count)
+                    builder.AddText(", ");
+
+            }
+            //.AddTextLine(string.Join(",", map.Exits.Select(o => o.ToString().ToLower())), TextColor.Green)
+            builder.EndContainer("mapdata");
             if (includePlayers)
                 builder.AddPlayers(map.Players);
 

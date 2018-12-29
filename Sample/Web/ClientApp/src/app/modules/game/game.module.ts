@@ -9,14 +9,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MapInfoComponent } from './world/components/map-info/map-info.component';
+import { PlayerHealthComponent } from './world/components/player-health/player-health.component';
+import { AngularDraggableModule } from 'angular2-draggable';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 
 @NgModule({
-  declarations: [MainComponent, WorldComponent, ChatComponent, CommandsComponent, MapInfoComponent],
+  declarations: [MainComponent, WorldComponent, ChatComponent, CommandsComponent, MapInfoComponent, PlayerHealthComponent],
   imports: [
     ReactiveFormsModule,
     MatButtonModule,
     FlexLayoutModule,
+    PerfectScrollbarModule,
+    AngularDraggableModule,
     CommonModule,
     GameRoutingModule
   ]

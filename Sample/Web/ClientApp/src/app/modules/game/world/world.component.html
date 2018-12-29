@@ -1,8 +1,28 @@
-<div class="ui-worldcontainer">
-  <span class="text-item" *ngIf="!worldHtml">Login to continue  (type: login username)</span>
+
+
+
+
+<div style="position:absolute"  class="ui-worldcontainer ps"
+     [ngDraggable] rzContainment="body"
+     [perfectScrollbar]
+     ngResizable
+     [rzGrid]="50"
+     [handle]="handle"
+     (endOffset)="savePosition($event)"
+     (rzStop)="saveSize($event)"
+     [position]="position"
+     [rzMinWidth]="200"
+     [rzMinHeight]="200"
+     >
+
+  <div #handle style="text-align:center">
+    Main Window
+  </div>
   <div #worldbox>
     <app-map-info #mapInfo>
-
     </app-map-info>
   </div>
 </div>
+
+
+<app-player-health></app-player-health>

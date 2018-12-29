@@ -12,7 +12,11 @@ import { MatButtonModule } from '@angular/material';
 import { FlexLayoutModule, BREAKPOINT } from '@angular/flex-layout';
 import { GameHubService } from '../communication/signal/game-hub';
 import { FullLayoutComponent } from '../layout/full-layout/full-layout.component';
-
+import { AngularDraggableModule } from 'angular2-draggable';
+import {
+  PerfectScrollbarModule, PerfectScrollbarConfigInterface,
+  PERFECT_SCROLLBAR_CONFIG
+} from 'ngx-perfect-scrollbar';
 
 const PRINT_BREAKPOINTS = [{
   alias: 'xs.print',
@@ -20,6 +24,12 @@ const PRINT_BREAKPOINTS = [{
   mediaQuery: 'print and (max-width: 297px)',
   overlapping: false
 }];
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+  wheelPropagation: true
+};
+
+
 
 @NgModule({
   declarations: [
@@ -32,7 +42,9 @@ const PRINT_BREAKPOINTS = [{
     BrowserAnimationsModule,
     FlexLayoutModule.withConfig({ useColumnBasisZero: false }),
     HttpClientModule,
+    AngularDraggableModule,
     MatButtonModule,
+    PerfectScrollbarModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot([
@@ -58,7 +70,11 @@ const PRINT_BREAKPOINTS = [{
   ],
   providers: [
     { provide: BREAKPOINT, useValue: PRINT_BREAKPOINTS, multi: true },
-    GameHubService
+    GameHubService,
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
+    }
   ],
   bootstrap: [AppComponent]
 })

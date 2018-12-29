@@ -3,6 +3,7 @@ import { InboundChannels } from 'src/app/communication/signal/InboundChannels';
 import { GameHubService } from 'src/app/communication/signal/game-hub';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MapInfoComponent } from './components/map-info/map-info.component';
+import { PlayerHealthComponent } from './components/player-health/player-health.component';
 
 @Component({
   selector: 'app-game-world',
@@ -13,11 +14,15 @@ import { MapInfoComponent } from './components/map-info/map-info.component';
 export class WorldComponent implements OnInit, OnDestroy {
   @ViewChild('worldbox') worldBoxRef: ElementRef;
   @ViewChild(MapInfoComponent) mapInfo: MapInfoComponent;
+  @ViewChild(PlayerHealthComponent) playerInfo: PlayerHealthComponent;
+
 
   public messages: string[] = [];
   public worldHtml: SafeHtml;
 
   public listeners: Function[] = [];
+  private position;
+  private size;
 
 
   constructor(
@@ -35,6 +40,9 @@ export class WorldComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
+    this.loadWindowStore();
+
     this.hub.Subscribe(InboundChannels.WorldStream, (data: any) => {
 
 
@@ -68,6 +76,30 @@ export class WorldComponent implements OnInit, OnDestroy {
     // build angular components from server message data
 
     this.mapInfo.SetData(data);
+  }
+
+
+  public loadWindowStore() {
+    var lastPosition = JSON.parse(localStorage.getItem("main_position"));
+    var lastSize = JSON.parse(localStorage.getItem("main_size"));
+
+    if (lastPosition) {
+      this.position = lastPosition;
+      console.log("loaded position", this.position);
+    }
+    if (lastSize) {
+      this.size = lastSize;
+    }
+  }
+
+  public savePosition(evt: any) {
+    console.log("saving position", evt);
+    localStorage.setItem("main_position", JSON.stringify(evt));
+  }
+
+  public saveSize(evt: any) {
+    console.log("saving size", evt);
+    localStorage.setItem("main_size", JSON.stringify(evt));
   }
 
 

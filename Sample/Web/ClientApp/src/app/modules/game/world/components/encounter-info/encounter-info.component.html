@@ -1,0 +1,13 @@
+<div class="encounter-block" [ngDraggable] (endOffset)="savePosition($event)" [position]="position" [zIndex]="2" [handle]="handle">
+  <span #handle>Fight Window</span>
+
+
+  <div *ngFor="let entity of entities">
+    <span>Lv. {{entity.level}} {{entity.name}} </span>
+    <mat-progress-bar mode="determinate" class="green-progress" [value]="entity.health"></mat-progress-bar>
+    <mat-progress-bar mode="determinate" class="blue-progress mt-xs" [value]="entity.mana"></mat-progress-bar>
+    <mat-progress-bar mode="determinate" class="yellow-progress mt-xs" [value]="entity.stamina"></mat-progress-bar>
+
+    <hr />
+  </div>
+ </div>

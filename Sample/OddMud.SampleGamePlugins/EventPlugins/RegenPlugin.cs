@@ -2,6 +2,8 @@
 using OddMud.Core.Interfaces;
 using OddMud.Core.Plugins;
 using OddMud.SampleGame.GameModules.Combat;
+using OddMud.SampleGame.ViewComponents;
+using OddMud.View.ComponentBased;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,13 +40,44 @@ namespace OddMud.SampleGamePlugins.EventPlugins
             {
                 if (!await _combatModule.IsInCombat(entity))
                 {
+
+                    var playerData = new PlayerData() { Id = entity.Id, Name = entity.Name };
+                    var changed = false;
+                    
+
                     var vitals = new List<string>() { "health", "mana", "stamina" };
                     entity.Stats.Where(s => s.Value > 0 && s.Value < s.Base && vitals.Contains(s.Name)).ToList().ForEach(async vital =>
                     {
                         var percent = (1 / (double)vital.Base) * 100;
                         await vital.ApplyAsync((int)percent);
+
+                        var currentStatPercent = Convert.ToInt32(((double)vital.Value / (double)vital.Base * 100));
+                        changed = true;
+                        switch (vital.Name)
+                        {
+                            case "health":
+                                playerData.Health = currentStatPercent;
+                                break;
+                            case "mana":
+                                playerData.Mana = currentStatPercent;
+                                break;
+                            case "stamina":
+                                playerData.Stamina = currentStatPercent;
+                                break;
+                        }
+                      
                     });
+
+                    if (changed)
+                    {
+                        var statUpdate = ComponentViewBuilder<ComponentTypes>.Start().AddComponent(ComponentTypes.PlayerData, playerData);
+                        await Game.Network.SendViewCommandsToPlayerAsync(entity, statUpdate);
+                    }
+
+
                 }
+
+
             });
 
             await base.IntervalTick(sender, e);

@@ -9,7 +9,11 @@ export class PlayerHealthComponent implements OnInit {
 
   public position;
   public Id;
-
+  public Name = "Guest";
+  public Health = 0;
+  public Mana = 100;
+  public Stamina = 100;
+  
 
   constructor() { }
 
@@ -30,7 +34,10 @@ export class PlayerHealthComponent implements OnInit {
   }
 
   public SetData(data: any) {
-    this.Id = data.Id;
+    this.Id = data.id;
+    this.Name = data.name;
+    this.Health = data.health;
+
   }
 
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ using OddMud.SampleGame.Commands;
 using OddMud.SampleGame.Extensions;
 using OddMud.SampleGame.GameModules;
 using OddMud.SampleGame.GameModules.Combat;
+using OddMud.SampleGame.ViewComponents;
+using OddMud.View.ComponentBased;
 
 namespace OddMud.SampleGamePlugins.CommandPlugins
 {
@@ -226,93 +229,52 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
         private async Task Encounter_ActionExecuted(IEncounter encounter, ICombatAction action)
         {
+            var gridEncounter = (GridEncounter)encounter;
 
-            // // this whole thing can be optimized to send way smaller replacement segments later
+            var encounterData = new EncounterData() { Id = encounter.Id, Status = "Fighting" };
+            var viewBuilder = ComponentViewBuilder<ComponentTypes>.Start()
+            .AddComponent(ComponentTypes.EncounterData, encounterData)
+            ;
 
-            // var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
-            //      .StartContainer($"enc_{encounter.Id}")
-            //      .AddTextLine("");
+            var info = new List<string>() { "health", "mana", "stamina", "level" };
+            foreach (GridEntity entity in gridEncounter.Combatants.Keys.ToList())
+            {
+                var stats = entity.Stats.Where(s => info.Contains(s.Name)).ToList();
+                var entityData = new PlayerData() { Id = entity.Id, Name = entity.Name };
+                encounterData.Entities.Add(entityData);
+                foreach (BasicStat stat in stats)
+                {
+                    Debug.WriteLine(stat.Name);
 
-            // var gridEncounter = (GridEncounter)encounter;
-            // var entityAction = (GridTargetAction)action;
+                    switch (stat.Name)
+                    {
+                        case "health":
+                            var currentStatPercent = Convert.ToInt32(((double)stat.Value / (double)stat.Base * 100));
+                            entityData.Health = currentStatPercent;
+                            if (entityData.Health <= 0)
+                                entityData.Name += " (Dead)";
+                            break;
+                        case "mana":
+                            currentStatPercent = Convert.ToInt32(((double)stat.Value / (double)stat.Base * 100));
 
-            // //var dmgDone = encounter.ActionLog.Select((a) => (ICombatAction<GridEntity>)a)
-            // //      .GroupBy(a => new { a.SourceEntity })
-            // //      .Select(a => new { Attacker = a.Key.SourceEntity, Damage = a.Sum(s => s.DamageDone) })
-            // //  .ToList();
+                            entityData.Mana = currentStatPercent;
+                            break;
+                        case "stamina":
+                            currentStatPercent = Convert.ToInt32(((double)stat.Value / (double)stat.Base * 100));
 
-            // //var dmgTaken = encounter.ActionLog.Select((a) => (GridSingleTargetAction)a)
-            // //                            .GroupBy(a => new { a.TargetEntity })
-            // //                            .Select(a => new { Attacked = a.Key.TargetEntity, Damage = a.Sum(s => s.DamageDone) })
-            // //                        .ToList();
+                            entityData.Stamina = currentStatPercent;
+                            break;
+                        case "level":
+                            entityData.Level = stat.Value;
+                            break;
+                    }
+                }
 
-            // foreach (var factionName in gridEncounter.Factions.Keys)
-            // {
-            //     var factionEntities = gridEncounter.Factions[factionName];
+            }
+            Debug.WriteLine("done loop");
+            var players = gridEncounter.Combatants.Keys.Where(e => e.IsPlayer()).Select(e => (IPlayer)e).ToList();
 
-
-            //     foreach (var entity in factionEntities)
-            //     {
-            //         combatView
-            //           .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
-            //         if (entity.IsAlive && !encounter.Dead.Contains(entity))
-            //         {
-            //             combatView
-            //             .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}", TextColor.Green)
-            //             .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}", TextColor.Blue)
-            //             .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}", TextColor.Yellow)
-            //           ;
-            //         }
-            //         else
-            //         {
-            //             combatView.AddText(" Dead", TextColor.Red, TextSize.Small);
-            //         }
-
-            //         //var entityDmgDone = dmgDone.FirstOrDefault(d => d.Attacker == entity);
-            //         //if (entityDmgDone != null)
-            //         //{
-            //         //    combatView
-            //         //        .AddText($" Dmg {entityDmgDone.Damage}", TextColor.Teal);
-            //         //    ;
-            //         //}
-            //         //var entityDmgTaken = dmgTaken.FirstOrDefault(d => d.Attacked == entity);
-            //         //if (entityDmgTaken != null)
-            //         //{
-            //         //    combatView
-            //         //        .AddText($" Taken {entityDmgTaken.Damage}", TextColor.Teal);
-            //         //    ;
-            //         //}
-
-            //         combatView.AddLineBreak();
-
-            //     }
-
-            //     combatView.AddTextLine("---------------------------");
-
-            // }
-
-
-            // // add last X actions 
-            // var actions = encounter.ActionLog.OrderByDescending(a => a.ExecutedTime).Take(10).OrderBy(a => a.ExecutedTime).ToList();
-            // actions.ForEach((a) => a.AppendToOperation(combatView));
-
-            // combatView.EndContainer($"enc_{encounter.Id}");
-
-            // var view = MudLikeViewBuilder.Start()
-            //.AddOperation(combatView.Build()
-            //).Build();
-
-
-            // if (entityAction.TargetEntities.Contains(entityAction.SourceEntity) || entityAction.TargetEntities.Count == 0)
-            //     await Game.Network.SendViewCommandsToMapAsync(entityAction.SourceEntity.Map, view);
-            // else
-            // {
-            //     var maps = new List<IMap>() { entityAction.SourceEntity.Map };
-            //     maps.AddRange(entityAction.TargetEntities.Where(t => t.Map != entityAction.SourceEntity.Map).Select(t => t.Map).Distinct());
-
-            //     maps.ForEach(async m => await Game.Network.SendViewCommandsToMapAsync(m, view));
-
-            // }
+            await Game.Network.SendViewCommandsToPlayersAsync(players, viewBuilder);
 
 
         }
@@ -390,55 +352,53 @@ namespace OddMud.SampleGamePlugins.CommandPlugins
 
 
 
-            foreach (var faction in factionInfo)
+            var encounterData = new EncounterData() { Id = encounter.Id, Status = "Ended" };
+            var viewBuilder = ComponentViewBuilder<ComponentTypes>.Start()
+            .AddComponent(ComponentTypes.EncounterData, encounterData)
+            ;
+
+            var info = new List<string>() { "health", "mana", "stamina", "level" };
+            foreach (GridEntity entity in gridEncounter.Combatants.Keys.ToList())
             {
-                var players = faction.FactionEntities.Where(e => e.IsPlayer()).Select(e => e).Distinct();
+                var stats = entity.Stats.Where(s => info.Contains(s.Name)).ToList();
+                var entityData = new PlayerData() { Id = entity.Id, Name = entity.Name };
+                encounterData.Entities.Add(entityData);
+                foreach (BasicStat stat in stats)
+                {
+                    Debug.WriteLine(stat.Name);
 
-                if (!players.Any())
-                    continue;
+                    switch (stat.Name)
+                    {
+                        case "health":
+                            var currentStatPercent = Convert.ToInt32(((double)stat.Value / (double)stat.Base * 100));
 
-                //    var combatView = MudLikeOperationBuilder.Start($"enc_{encounter.Id}")
-                //   .StartContainer($"enc_{encounter.Id}").AddLineBreak();
+                            entityData.Health = currentStatPercent;
+                            if (entityData.Health <= 0)
+                            {
+                                entityData.Name += " (Dead)";
+                            }
+                            break;
+                        case "mana":
+                            currentStatPercent = Convert.ToInt32(((double)stat.Value / (double)stat.Base * 100));
 
-                //    foreach (var entity in faction.FactionEntities)
-                //    {
-                //        var experienceStat = entity.Stats.FirstOrDefault(s => s.Name == "experience");
+                            entityData.Mana = currentStatPercent;
+                            break;
+                        case "stamina":
+                            currentStatPercent = Convert.ToInt32(((double)stat.Value / (double)stat.Base * 100));
 
-                //        combatView
-                //            .AddText(entity.Name, (entity.IsAlive && !encounter.Dead.Contains(entity) ? TextColor.Normal : TextColor.Red));
-                //        if (entity.IsAlive && !encounter.Dead.Contains(entity))
-                //        {
-                //            combatView
-                //            .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "health")?.Value}", TextColor.Green)
-                //            .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "mana")?.Value}", TextColor.Blue)
-                //            .AddText($" {entity.Stats.FirstOrDefault(s => s.Name == "stamina")?.Value}", TextColor.Yellow)
-                //            .AddText($" Lv {experienceStat.Value}/{experienceStat.Base}", TextColor.Yellow)
-                //          ;
-                //        }
-                //        else
-                //        {
-                //            combatView.AddText(" Dead", TextColor.Red, TextSize.Small);
-                //        }
-
-                //        combatView.AddLineBreak();
-
-                //    }
-
-
-                //    if (faction.isWinner)
-                //        combatView.AddTextLine($"You earned {experience} experience");
-                //    else
-                //        combatView.AddTextLine($"You lost the encounter.");
-
-                //    combatView.EndContainer($"enc_{encounter.Id}");
-
-
-                //    var view = MudLikeViewBuilder.Start().AddOperation(combatView.Build()).Build();
-
-                //    await Game.Network.SendViewCommandsToPlayersAsync(players.Cast<IPlayer>(), view);
-
+                            entityData.Stamina = currentStatPercent;
+                            break;
+                        case "level":
+                            entityData.Level = stat.Value;
+                            break;
+                    }
+                }
 
             }
+            var players = gridEncounter.Combatants.Keys.Where(e => e.IsPlayer()).Select(e => (IPlayer)e).ToList();
+
+            await Game.Network.SendViewCommandsToPlayersAsync(players, viewBuilder);
+
 
         }
 

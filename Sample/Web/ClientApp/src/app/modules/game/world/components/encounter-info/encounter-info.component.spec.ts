@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapInfoComponent } from './map-info.component';
+import { EncounterInfoComponent } from './encounter-info.component';
 
-describe('MapInfoComponent', () => {
-  let component: MapInfoComponent;
-  let fixture: ComponentFixture<MapInfoComponent>;
+describe('EncounterInfoComponent', () => {
+  let component: EncounterInfoComponent;
+  let fixture: ComponentFixture<EncounterInfoComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MapInfoComponent ]
+      declarations: [ EncounterInfoComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MapInfoComponent);
+    fixture = TestBed.createComponent(EncounterInfoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

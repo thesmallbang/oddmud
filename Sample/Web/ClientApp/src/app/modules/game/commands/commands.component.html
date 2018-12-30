@@ -1,5 +1,8 @@
 
-<div ngDraggable>
+<div ngDraggable [handle]="handle">
+  <div #handle class="movehandle">
+    drag
+  </div>
   <form [formGroup]="form">
     <input #commandRef autofocus="autofocus" type="text" formControlName="command" style="width: 90%">
     <button mat-button (click)="sendMessage()">Send</button>

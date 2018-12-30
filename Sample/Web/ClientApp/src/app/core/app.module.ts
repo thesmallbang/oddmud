@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { NavMenuComponent } from '../nav-menu/nav-menu.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatButtonModule } from '@angular/material';
+import { MatButtonModule, MatProgressBarModule } from '@angular/material';
 import { FlexLayoutModule, BREAKPOINT } from '@angular/flex-layout';
 import { GameHubService } from '../communication/signal/game-hub';
 import { FullLayoutComponent } from '../layout/full-layout/full-layout.component';
@@ -43,6 +43,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FlexLayoutModule.withConfig({ useColumnBasisZero: false }),
     HttpClientModule,
     AngularDraggableModule,
+    MatProgressBarModule,
     MatButtonModule,
     PerfectScrollbarModule,
     FormsModule,

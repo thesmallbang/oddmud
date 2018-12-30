@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using OddMud.SampleGame.ViewComponents;
+using OddMud.View.ComponentBased;
 
 namespace OddMud.SampleGamePlugins.EventPlugins
 {
@@ -37,7 +39,33 @@ namespace OddMud.SampleGamePlugins.EventPlugins
 
             await Game.World.MovePlayerAsync(player, assignedPlayerMap);
 
+            var playerData = new PlayerData() { Id = player.Id, Name = player.Name };
 
+
+
+            var vitals = new List<string>() { "health", "mana", "stamina" };
+            player.Stats.Where(s => vitals.Contains(s.Name)).ToList().ForEach(async vital =>
+            {
+                var percent = (1 / (double)vital.Base) * 100;
+                await vital.ApplyAsync((int)percent);
+
+                var currentStatPercent = Convert.ToInt32(((double)vital.Value / (double)vital.Base * 100));
+                switch (vital.Name)
+                {
+                    case "health":
+                        playerData.Health = currentStatPercent;
+                        break;
+                    case "mana":
+                        playerData.Mana = currentStatPercent;
+                        break;
+                    case "stamina":
+                        playerData.Stamina = currentStatPercent;
+                        break;
+                }
+
+            });
+            var statUpdate = ComponentViewBuilder<ComponentTypes>.Start().AddComponent(ComponentTypes.PlayerData, playerData);
+            await Game.Network.SendViewCommandsToPlayerAsync(player, statUpdate);
 
         }
 
